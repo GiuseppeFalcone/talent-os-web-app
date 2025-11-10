@@ -1,0 +1,51 @@
+<nav
+  class="sticky top-0 z-50 backdrop-blur-md bg-white/80 dark:bg-neutral-950/85 border-b border-black/10 dark:border-white/10 shadow-[0_2px_4px_-1px_rgba(0,0,0,0.06)] dark:shadow-[0_2px_4px_-1px_rgba(0,0,0,0.6)]"
+>
+  <div class="mx-auto max-w-7xl px-4">
+    <div class="flex h-14 items-center justify-between">
+      <a
+        routerLink="/"
+        class="flex items-center gap-2 text-neutral-900 hover:text-black dark:text-neutral-100 dark:hover:text-white transition-colors"
+        aria-label="EasyCV home"
+      >
+        <span
+          class="inline-flex h-8 w-8 items-center justify-center rounded-md bg-fuchsia-600/15 dark:bg-fuchsia-600/25 text-fuchsia-600 dark:text-fuchsia-300 ring-1 ring-inset ring-fuchsia-500/25 dark:ring-fuchsia-500/30"
+        >
+          <i class="pi pi-sparkles text-base"></i>
+        </span>
+        <span class="font-semibold tracking-tight text-sm">EasyCV</span>
+      </a>
+
+      <div class="flex items-center gap-1">
+        <p-button
+          [label]="theme.modeLabel()"
+          [icon]="theme.modeIcon()"
+          [text]="true"
+          styleClass="text-fuchsia-600 hover:text-fuchsia-700
+                      dark:text-fuchsia-300 dark:hover:text-fuchsia-900"
+          (click)="theme.toggle()"
+          [ariaLabel]="theme.modeLabel() + ' mode'"
+        >
+        </p-button>
+
+        <p-button
+          label="Login"
+          icon="pi pi-sign-in"
+          [text]="true"
+          styleClass="text-fuchsia-600 hover:text-fuchsia-700
+                      dark:text-fuchsia-300 dark:hover:text-fuchsia-900"
+          (click)="navigateToLogin()"
+          aria-label="Login"
+        >
+        </p-button>
+
+        <p-button
+          label="Sign Up"
+          icon="pi pi-user-plus"
+          styleClass="bg-fuchsia-600 hover:bg-fuchsia-500 text-white border-0 shadow-sm"
+        >
+        </p-button>
+      </div>
+    </div>
+  </div>
+</nav>

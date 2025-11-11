@@ -1,12 +1,11 @@
+<p-toast></p-toast>
 <div
   class="relative min-h-[calc(100vh-3.5rem)] flex items-center justify-center px-4 py-10 bg-neutral-50 dark:bg-neutral-950"
 >
-  <!-- Light accent -->
   <div
     class="pointer-events-none absolute inset-0 -z-10 bg-[radial-gradient(60rem_30rem_at_20%_10%,rgba(216,180,254,0.25),transparent), radial-gradient(40rem_20rem_at_80%_20%,rgba(233,213,255,0.20),transparent)] dark:hidden"
     aria-hidden="true"
   ></div>
-  <!-- Dark accent -->
   <div
     class="pointer-events-none absolute inset-0 -z-10 hidden dark:block bg-[radial-gradient(60rem_30rem_at_20%_10%,rgba(217,70,239,0.10),transparent), radial-gradient(40rem_20rem_at_80%_20%,rgba(147,51,234,0.10),transparent)]"
     aria-hidden="true"
@@ -34,11 +33,11 @@
             pInputText
             id="username"
             formControlName="username"
-            class="w-full bg-fuchsia-50 dark:bg-fuchsia-900/30 text-neutral-900 dark:text-neutral-100 placeholder:text-fuchsia-700/70 dark:placeholder:text-fuchsia-200/60 border border-fuchsia-200 dark:border-fuchsia-800 focus:outline-none focus:ring-2 focus:ring-fuchsia-500/60 focus:border-fuchsia-500/60"
+            class="w-full bg-fuchsia-100 dark:bg-fuchsia-900/30 text-neutral-900 dark:text-neutral-100 placeholder:text-fuchsia-700/70 dark:placeholder:text-fuchsia-200/60 border border-fuchsia-200 dark:border-fuchsia-800 focus:outline-none focus:ring-2 focus:ring-fuchsia-500/60 focus:border-fuchsia-500/60"
             autocomplete="username"
-            [class.ng-invalid]="username?.invalid && username?.touched"
-            [class.ng-dirty]="username?.invalid && username?.touched"
-            aria-invalid="{{ username?.invalid && username?.touched }}"
+            [class.ng-invalid]="usernameInvalid()"
+            [class.ng-dirty]="usernameInvalid()"
+            aria-invalid="{{ usernameInvalid() }}"
             aria-describedby="username-error"
           />
           <label
@@ -47,7 +46,7 @@
             >Username</label
           >
         </p-floatLabel>
-        @if (username?.invalid && username?.touched) {
+        @if (usernameInvalid()) {
         <small id="username-error" class="text-red-600 dark:text-red-500">
           A valid username is required.
         </small>
@@ -60,11 +59,11 @@
             [feedback]="false"
             [toggleMask]="true"
             class="w-full"
-            inputStyleClass="w-full bg-fuchsia-50 dark:bg-fuchsia-900/30 text-neutral-900 dark:text-neutral-100 placeholder:text-fuchsia-700/70 dark:placeholder:text-fuchsia-200/60 border border-fuchsia-200 dark:border-fuchsia-800 focus:outline-none focus:ring-2 focus:ring-fuchsia-500/60 focus:border-fuchsia-500/60"
+            inputStyleClass="w-full bg-fuchsia-100 dark:bg-fuchsia-900/30 text-neutral-900 dark:text-neutral-100 placeholder:text-fuchsia-700/70 dark:placeholder:text-fuchsia-200/60 border border-fuchsia-200 dark:border-fuchsia-800 focus:outline-none focus:ring-2 focus:ring-fuchsia-500/60 focus:border-fuchsia-500/60"
             autocomplete="current-password"
-            [class.ng-invalid]="password?.invalid && password?.touched"
-            [class.ng-dirty]="password?.invalid && password?.touched"
-            aria-invalid="{{ password?.invalid && password?.touched }}"
+            [class.ng-invalid]="passwordInvalid()"
+            [class.ng-dirty]="passwordInvalid()"
+            aria-invalid="{{ passwordInvalid() }}"
             aria-describedby="password-error"
           ></p-password>
           <label
@@ -73,18 +72,17 @@
             >Password</label
           >
         </p-floatLabel>
-        @if (password?.invalid && password?.touched) {
+        @if (passwordInvalid()) {
         <small id="password-error" class="text-red-600 dark:text-red-500">
           Password is required.
         </small>
-        } @if (error(); as errorMessage) {
-        <small class="text-red-600 dark:text-red-500">{{ errorMessage }}</small>
         }
 
         <p-button
           label="Log In"
           type="submit"
-          [disabled]="loginForm.invalid"
+          [disabled]="loginForm.invalid || isSubmitting()"
+          [loading]="isSubmitting()"
           styleClass="bg-fuchsia-600 hover:bg-fuchsia-500 text-white border-0 w-full
                               shadow-[0_2px_6px_-1px_rgba(0,0,0,0.12)] dark:shadow-[0_2px_6px_-1px_rgba(0,0,0,0.6)]"
           aria-label="Submit login form"

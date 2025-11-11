@@ -11,6 +11,7 @@ import Aura from '@primeuix/themes/aura';
 
 import { providePrimeNG } from 'primeng/config';
 
+import { provideHttpClient } from '@angular/common/http';
 import { routes } from './app.routes';
 
 const EasyCVAura = definePreset(Aura, {
@@ -181,6 +182,7 @@ export const appConfig: ApplicationConfig = {
     provideZonelessChangeDetection(),
     provideRouter(routes),
     provideAnimationsAsync(),
+    provideHttpClient(),
     providePrimeNG({
       theme: {
         preset: EasyCVAura,

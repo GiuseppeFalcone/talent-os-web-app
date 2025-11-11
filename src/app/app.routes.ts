@@ -1,4 +1,15 @@
 import { Routes } from '@angular/router';
-import { LoginComponent } from './login/login';
 
-export const routes: Routes = [{ path: 'login', component: LoginComponent }];
+export const routes: Routes = [
+  {
+    path: 'login',
+    // Usiamo il lazy loading come da istruzioni
+    loadComponent: () => import('./login/login').then((m) => m.LoginComponent),
+  },
+  {
+    path: 'forgot-password',
+    // Aggiungiamo la nuova rotta con lazy loading
+    loadComponent: () =>
+      import('./forgot-password/forgot-password').then((m) => m.ForgotPasswordComponent),
+  },
+];

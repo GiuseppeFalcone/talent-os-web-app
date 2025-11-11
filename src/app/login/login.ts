@@ -1,66 +1,92 @@
-import { ChangeDetectionStrategy, Component, inject, signal } from '@angular/core';
-import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
-import { Router } from '@angular/router';
+import { ChangeDetectionStrategy, Component, computed, inject, signal } from '@angular/core';
+import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
+import { Router, RouterLink } from '@angular/router';
 import { AuthService } from '../service/auth/auth';
 
-import { CommonModule } from '@angular/common';
+import { HttpErrorResponse } from '@angular/common/http';
+import { MessageService } from 'primeng/api';
 import { ButtonModule } from 'primeng/button';
 import { CardModule } from 'primeng/card';
 import { FloatLabelModule } from 'primeng/floatlabel';
 import { InputTextModule } from 'primeng/inputtext';
 import { PasswordModule } from 'primeng/password';
+import { ToastModule } from 'primeng/toast';
 
 @Component({
   selector: 'app-login',
   imports: [
-    CommonModule,
     ReactiveFormsModule,
+    RouterLink,
     CardModule,
     InputTextModule,
     PasswordModule,
     FloatLabelModule,
     ButtonModule,
+    ToastModule,
   ],
+  providers: [MessageService],
   templateUrl: './login.html',
   styleUrl: './login.css',
   changeDetection: ChangeDetectionStrategy.OnPush,
   host: {
-    class: 'block',
+    class: 'block min-h-screen bg-surface-background',
   },
 })
 export class LoginComponent {
-  loginForm!: FormGroup;
+  private readonly fb = inject(FormBuilder);
+  private readonly authService = inject(AuthService);
+  private readonly router = inject(Router);
+  private readonly messageService = inject(MessageService);
 
-  private fb = inject(FormBuilder);
-  private authService = inject(AuthService);
-  private router = inject(Router);
+  readonly loginForm = this.fb.group({
+    username: ['', [Validators.required]],
+    password: ['', [Validators.required]],
+  });
 
-  error = signal<string | null>(null);
+  readonly isSubmitting = signal(false);
 
-  ngOnInit(): void {
-    this.loginForm = this.fb.group({
-      username: ['', [Validators.required]],
-      password: ['', Validators.required],
-    });
-  }
+  readonly usernameControl = this.loginForm.controls.username;
+  readonly passwordControl = this.loginForm.controls.password;
 
-  get username() {
-    return this.loginForm.get('username');
-  }
-  get password() {
-    return this.loginForm.get('password');
-  }
+  readonly usernameInvalid = computed(
+    () => this.usernameControl.invalid && this.usernameControl.touched
+  );
+
+  readonly passwordInvalid = computed(
+    () => this.passwordControl.invalid && this.passwordControl.touched
+  );
+
+  readonly isFormValid = computed(() => this.loginForm.valid);
 
   onSubmit(): void {
     if (this.loginForm.invalid) {
       this.loginForm.markAllAsTouched();
       return;
     }
+
+    this.isSubmitting.set(true);
+
     const { username, password } = this.loginForm.value;
-    if (this.authService.login(username, password)) {
-      this.router.navigate(['/dashboard']);
-    } else {
-      this.error.set('Invalid username or password.');
-    }
+
+    this.authService.login(username!, password!).subscribe({
+      next: () => {
+        this.router.navigate(['/dashboard']);
+      },
+      error: (err: HttpErrorResponse) => {
+        this.isSubmitting.set(false);
+
+        const errorMsg =
+          err.status === 401 || err.status === 404
+            ? 'Invalid username or password.'
+            : 'An unexpected error occurred. Please try again.';
+
+        this.messageService.add({
+          severity: 'error',
+          summary: 'Login Failed',
+          detail: errorMsg,
+          life: 5000,
+        });
+      },
+    });
   }
 }

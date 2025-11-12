@@ -78,15 +78,17 @@
         </small>
         }
 
-        <p-button
-          label="Log In"
-          type="submit"
-          [disabled]="loginForm.invalid || isSubmitting()"
-          [loading]="isSubmitting()"
-          styleClass="bg-fuchsia-600 hover:bg-fuchsia-500 text-white border-0 w-full
+        <div class="flex justify-center">
+          <p-button
+            label="Log In"
+            type="submit"
+            [disabled]="loginForm.invalid || isSubmitting()"
+            [loading]="isSubmitting()"
+            styleClass="bg-fuchsia-600 hover:bg-fuchsia-500 text-white border-0
                               shadow-[0_2px_6px_-1px_rgba(0,0,0,0.12)] dark:shadow-[0_2px_6px_-1px_rgba(0,0,0,0.6)]"
-          aria-label="Submit login form"
-        ></p-button>
+            aria-label="Submit login form"
+          ></p-button>
+        </div>
 
         <div class="flex justify-end">
           <a

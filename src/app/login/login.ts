@@ -1,7 +1,7 @@
 import { ChangeDetectionStrategy, Component, computed, inject, signal } from '@angular/core';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Router, RouterLink } from '@angular/router';
-import { AuthService } from '../service/auth/auth';
+import { AuthService } from '../../service/auth/auth';
 
 import { HttpErrorResponse } from '@angular/common/http';
 import { MessageService } from 'primeng/api';

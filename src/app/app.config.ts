@@ -11,7 +11,8 @@ import Aura from '@primeuix/themes/aura';
 
 import { providePrimeNG } from 'primeng/config';
 
-import { provideHttpClient } from '@angular/common/http';
+import { provideHttpClient, withInterceptors } from '@angular/common/http';
+import { authInterceptor } from '../middleware/auth-interceptor';
 import { routes } from './app.routes';
 
 const EasyCVAura = definePreset(Aura, {
@@ -182,7 +183,7 @@ export const appConfig: ApplicationConfig = {
     provideZonelessChangeDetection(),
     provideRouter(routes),
     provideAnimationsAsync(),
-    provideHttpClient(),
+    provideHttpClient(withInterceptors([authInterceptor])),
     providePrimeNG({
       theme: {
         preset: EasyCVAura,

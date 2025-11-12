@@ -1,4 +1,4 @@
-import { UserLighDto } from '../user/user-light-dto';
+import { UserLighDto } from '../dto/user/user-light-dto';
 
 export interface LoginResponse {
   userLighDto: UserLighDto;

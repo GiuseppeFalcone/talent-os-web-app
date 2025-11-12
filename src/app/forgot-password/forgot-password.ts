@@ -16,7 +16,7 @@ import { FloatLabelModule } from 'primeng/floatlabel';
 import { InputTextModule } from 'primeng/inputtext';
 import { PasswordModule } from 'primeng/password';
 import { ToastModule } from 'primeng/toast';
-import { AuthService } from '../service/auth/auth';
+import { AuthService } from '../../service/auth/auth';
 
 function passwordMatchValidator(control: AbstractControl): ValidationErrors | null {
   const parent = control.parent;

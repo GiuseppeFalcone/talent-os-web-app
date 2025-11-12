@@ -1,4 +1,4 @@
-import { UserRoleEnum } from '../../enumeration/user-role-enum';
+import { UserRoleEnum } from '../../../enumeration/user-role-enum';
 
 export interface UserLighDto {
   userId: number;

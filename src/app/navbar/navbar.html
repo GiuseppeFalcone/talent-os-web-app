@@ -16,29 +16,71 @@
         <span class="font-semibold tracking-tight text-sm">EasyCV</span>
       </a>
 
-      <div class="flex items-center gap-1">
+      <div class="flex items-center gap-2">
         <p-button
-          type="button"
-          [label]="theme.modeLabel()"
-          [icon]="theme.modeIcon()"
+          *appHasRole="['ADMIN', 'MANAGER', 'EMPLOYEE', 'SUPERADMIN']"
+          routerLink="/cv"
+          label="Your CV"
+          icon="pi pi-id-card"
           [text]="true"
-          styleClass="text-fuchsia-600 hover:text-fuchsia-700
-                      dark:text-fuchsia-300 dark:hover:text-fuchsia-900"
-          (click)="theme.toggle()"
-          [ariaLabel]="theme.modeLabel() + ' mode'"
-        >
-        </p-button>
+          aria-label="Your CV"
+          routerLink="/cv"
+        ></p-button>
 
+        <p-button
+          *appHasRole="['MANAGER']"
+          routerLink="/employees"
+          label="Your Employees"
+          icon="pi pi-users"
+          [text]="true"
+          aria-label="Your Employees"
+        ></p-button>
+
+        <p-button
+          *appHasRole="['ADMIN', 'SUPERADMIN']"
+          routerLink="/domains"
+          label="Manage Domains"
+          icon="pi pi-shield"
+          [text]="true"
+          aria-label="Manage Domains"
+        ></p-button>
+
+        <p-button
+          *appHasRole="['ADMIN', 'SUPERADMIN']"
+          routerLink="/users"
+          label="Manage Users"
+          icon="pi pi-sitemap"
+          [text]="true"
+          aria-label="Manage Users"
+        ></p-button>
+
+        @if (isLoggedIn()) { @if (currentUser(); as user) {
+        <p-splitbutton
+          [label]="user.firstName + ' ' + user.lastName"
+          icon="pi pi-user"
+          (onClick)="navigateToProfile()"
+          [model]="userMenuItems()"
+          [text]="true"
+          aria-label="User menu"
+        ></p-splitbutton>
+        } } @else {
         <p-button
           type="button"
           label="Login"
           icon="pi pi-sign-in"
           [text]="true"
-          styleClass="bg-fuchsia-600 hover:bg-fuchsia-500 text-white border-0 shadow-sm"
           (click)="navigateToLogin()"
           aria-label="Login"
-        >
-        </p-button>
+        ></p-button>
+        }
+
+        <p-button
+          type="button"
+          [icon]="theme.modeIcon()"
+          [text]="true"
+          (click)="theme.toggle()"
+          [ariaLabel]="theme.modeLabel() + ' mode'"
+        ></p-button>
       </div>
     </div>
   </div>

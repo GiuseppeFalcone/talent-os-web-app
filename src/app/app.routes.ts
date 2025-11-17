@@ -3,13 +3,19 @@ import { Routes } from '@angular/router';
 export const routes: Routes = [
   {
     path: 'login',
-    // Usiamo il lazy loading come da istruzioni
-    loadComponent: () => import('./login/login').then((m) => m.LoginComponent),
+    loadComponent: () => import('./auth/login/login').then((m) => m.Login),
   },
   {
     path: 'forgot-password',
-    // Aggiungiamo la nuova rotta con lazy loading
     loadComponent: () =>
-      import('./forgot-password/forgot-password').then((m) => m.ForgotPasswordComponent),
+      import('./auth/forgot-password/forgot-password').then((m) => m.Forgotpassword),
+  },
+  {
+    path: 'dashboard',
+    loadComponent: () => import('./dashboard/dashboard').then((m) => m.Dashboard),
+  },
+  {
+    path: 'cv',
+    loadComponent: () => import('./your-cv/your-cv').then((m) => m.YourCv),
   },
 ];

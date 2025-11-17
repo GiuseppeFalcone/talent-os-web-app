@@ -1,0 +1,93 @@
+<p-toast></p-toast>
+<div class="relative min-h-[calc(100vh-3.5rem)] flex items-center justify-center px-4 py-10">
+  <p-card
+    class="w-full max-w-md bg-white/80 dark:bg-neutral-900/80 backdrop-blur-md border border-black/10 dark:border-white/10 rounded-xl shadow-[0_10px_30px_-12px_rgba(0,0,0,0.15)] dark:shadow-[0_4px_16px_-4px_rgba(0,0,0,0.7)] text-neutral-900 dark:text-neutral-100 overflow-hidden"
+  >
+    <ng-template pTemplate="header">
+      <div class="flex items-center gap-3 p-4 border-b border-black/10 dark:border-white/10">
+        <span
+          class="inline-flex h-10 w-10 items-center justify-center rounded-lg bg-fuchsia-600/15 dark:bg-fuchsia-600/25 text-fuchsia-600 dark:text-fuchsia-300 ring-1 ring-inset ring-fuchsia-500/20 dark:ring-fuchsia-500/30"
+          aria-hidden="true"
+        >
+          <i class="pi pi-user text-lg"></i>
+        </span>
+        <span class="font-semibold text-lg tracking-tight">Login</span>
+      </div>
+    </ng-template>
+
+    <form [formGroup]="loginForm" (ngSubmit)="onSubmit()" novalidate>
+      <div class="flex flex-col gap-5 p-5">
+        <p-floatLabel variant="on">
+          <input
+            pInputText
+            id="username"
+            formControlName="username"
+            class="w-full bg-fuchsia-100 dark:bg-fuchsia-900/30 text-neutral-900 dark:text-neutral-100 placeholder:text-fuchsia-700/70 dark:placeholder:text-fuchsia-200/60 border border-fuchsia-200 dark:border-fuchsia-800 focus:outline-none focus:ring-2 focus:ring-fuchsia-500/60 focus:border-fuchsia-500/60"
+            autocomplete="username"
+            [class.ng-invalid]="usernameInvalid()"
+            [class.ng-dirty]="usernameInvalid()"
+            aria-invalid="{{ usernameInvalid() }}"
+            aria-describedby="username-error"
+          />
+          <label
+            for="username"
+            class="text-neutral-600 dark:text-neutral-300 bg-fuchsia-50 dark:bg-fuchsia-900/30"
+            >Username</label
+          >
+        </p-floatLabel>
+        @if (usernameInvalid()) {
+        <small id="username-error" class="text-red-600 dark:text-red-500">
+          A valid username is required.
+        </small>
+        }
+
+        <p-floatLabel variant="on">
+          <p-password
+            id="password"
+            formControlName="password"
+            [feedback]="false"
+            [toggleMask]="true"
+            class="w-full"
+            inputStyleClass="w-full bg-fuchsia-100 dark:bg-fuchsia-900/30 text-neutral-900 dark:text-neutral-100 placeholder:text-fuchsia-700/70 dark:placeholder:text-fuchsia-200/60 border border-fuchsia-200 dark:border-fuchsia-800 focus:outline-none focus:ring-2 focus:ring-fuchsia-500/60 focus:border-fuchsia-500/60"
+            autocomplete="current-password"
+            [class.ng-invalid]="passwordInvalid()"
+            [class.ng-dirty]="passwordInvalid()"
+            aria-invalid="{{ passwordInvalid() }}"
+            aria-describedby="password-error"
+          ></p-password>
+          <label
+            for="password"
+            class="text-neutral-600 dark:text-neutral-300 bg-fuchsia-50 dark:bg-fuchsia-900/30"
+            >Password</label
+          >
+        </p-floatLabel>
+        @if (passwordInvalid()) {
+        <small id="password-error" class="text-red-600 dark:text-red-500">
+          Password is required.
+        </small>
+        }
+
+        <div class="flex justify-center">
+          <p-button
+            label="Log In"
+            type="submit"
+            [disabled]="loginForm.invalid || isSubmitting()"
+            [loading]="isSubmitting()"
+            styleClass="bg-fuchsia-600 hover:bg-fuchsia-500 text-white border-0
+                              shadow-[0_2px_6px_-1px_rgba(0,0,0,0.12)] dark:shadow-[0_2px_6px_-1px_rgba(0,0,0,0.6)]"
+            aria-label="Submit login form"
+          ></p-button>
+        </div>
+
+        <div class="flex justify-end">
+          <a
+            routerLink="/forgot-password"
+            class="text-xs text-fuchsia-700 hover:text-fuchsia-800 dark:text-fuchsia-300 dark:hover:text-fuchsia-200 transition-colors"
+          >
+            Forgot password?
+          </a>
+        </div>
+      </div>
+    </form>
+  </p-card>
+</div>

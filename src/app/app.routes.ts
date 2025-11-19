@@ -8,7 +8,7 @@ export const routes: Routes = [
   {
     path: 'forgot-password',
     loadComponent: () =>
-      import('./auth/forgot-password/forgot-password').then((m) => m.Forgotpassword),
+      import('./auth/forgot-password/forgot-password').then((m) => m.ForgotPassword),
   },
   {
     path: 'dashboard',
@@ -17,5 +17,9 @@ export const routes: Routes = [
   {
     path: 'cv',
     loadComponent: () => import('./your-cv/your-cv').then((m) => m.YourCv),
+  },
+  {
+    path: 'domains',
+    loadComponent: () => import('./manage-domain/manage-domain').then((m) => m.ManageDomain),
   },
 ];

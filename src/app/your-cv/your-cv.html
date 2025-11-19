@@ -1,306 +1,283 @@
-@if (curriculum(); as cv) {
-<div class="your-cv-container p-4 md:p-6 max-w-7xl mx-auto">
-  <div class="flex justify-content-end mb-4">
-    <p-button [label]="isEditMode() ? 'Cancel Edit' : 'Edit CV'" [icon]="isEditMode() ? 'pi pi-times' : 'pi pi-pencil'"
-      [severity]="isEditMode() ? 'secondary' : 'primary'" (onClick)="toggleEditMode()" />
-  </div>
+<p-toast />
 
-  @if (cvForm(); as form) {
-  <form [formGroup]="form">
-    <div class="grid grid-nogutter md:grid-gutter-4">
-      <div class="col-12 lg:col-4">
-        <p-card class="h-full">
-          @if (user(); as userInfo) {
-          <div class="flex flex-column align-items-center mb-4">
-            <p-avatar [label]="userInfo.firstName.charAt(0) + userInfo.lastName.charAt(0)" size="xlarge"
-              styleClass="bg-primary" shape="circle" />
-            <h2 class="mt-3 mb-1 text-color">{{ userInfo.firstName }} {{ userInfo.lastName }}</h2>
-            <p class="text-color-secondary m-0">{{ userInfo.email }}</p>
-          </div>
-          }
+<div class="surface-ground min-h-screen p-4">
+  <div class="mx-auto max-w-5xl">
+    <div class="mb-6 flex items-center justify-between">
+      <h1 class="text-3xl font-bold text-primary-500">Your CV</h1>
+      <p-button [label]="isEditMode() ? 'Done' : 'Edit'" [icon]="isEditMode() ? 'pi pi-check' : 'pi pi-pencil'"
+        severity="secondary" [text]="true" (onClick)="toggleEditMode()" />
+    </div>
 
-          <p-divider />
-
-          <div class="flex flex-column gap-4 mt-4">
-            @if (isEditMode()) {
-            <div>
-              <label for="mobilePhone" class="block mb-2 font-semibold text-sm">
-                <i class="pi pi-phone mr-2"></i>Mobile Phone
-              </label>
-              <input id="mobilePhone" pInputText formControlName="mobilePhone" class="w-full"
-                placeholder="Enter mobile phone" />
-            </div>
-            } @else {
-            <div class="flex items-center justify-between">
-              <span class="font-semibold text-sm flex items-center gap-2 text-color">
-                <i class="pi pi-phone mr-2"></i>
-                <span>Mobile Phone</span>
-              </span>
-              <span class="text-color-secondary">{{ cv.mobilePhone ?? 'N/A' }}</span>
-            </div>
-            }
-
-            @if (isEditMode()) {
-            <div>
-              <label for="homeAddress" class="block mb-2 font-semibold text-sm">
-                <i class="pi pi-home mr-2"></i>Home Address
-              </label>
-              <textarea id="homeAddress" pTextarea formControlName="homeAddress" class="w-full" rows="3"
-                placeholder="Enter home address"></textarea>
-            </div>
-            } @else {
-            <div>
-              <span class="font-semibold text-sm flex items-center gap-2 text-color mb-2">
-                <i class="pi pi-home mr-2"></i>
-                <span>Home Address</span>
-              </span>
-              <p class="text-color-secondary m-0 pl-7">{{ cv.homeAddress ?? 'N/A' }}</p>
-            </div>
-            }
-
-            @if (isEditMode()) {
-            <div>
-              <label for="workAddress" class="block mb-2 font-semibold text-sm">
-                <i class="pi pi-building mr-2"></i>Work Address
-              </label>
-              <textarea id="workAddress" pTextarea formControlName="workAddress" class="w-full" rows="3"
-                placeholder="Enter work address"></textarea>
-            </div>
-            } @else {
-            <div>
-              <span class="font-semibold text-sm flex items-center gap-2 text-color mb-2">
-                <i class="pi pi-building mr-2"></i>
-                <span>Work Address</span>
-              </span>
-              <p class="text-color-secondary m-0 pl-7">{{ cv.workAddress ?? 'N/A' }}</p>
-            </div>
-            }
-          </div>
-
-          <p-divider />
-
-          <div class="flex flex-column gap-3 mt-4">
-            @if (isEditMode()) {
-            <div class="flex items-center">
-              <p-checkbox formControlName="maritalStatus" [binary]="true" inputId="maritalStatus" />
-              <label for="maritalStatus" class="ml-2 font-semibold text-sm">Married</label>
-            </div>
-            } @else {
-            <div class="flex items-center justify-between">
-              <span class="font-semibold text-sm flex items-center gap-2 text-color">
-                <i class="pi pi-heart mr-2"></i>
-                <span>Marital Status</span>
-              </span>
-              <span class="text-color-secondary">{{ cv.maritalStatus ? 'Married' : 'Single' }}</span>
-            </div>
-            }
-
-            @if (isEditMode()) {
-            <div>
-              <label for="drivingLicense" class="block mb-2 font-semibold text-sm">
-                <i class="pi pi-id-card mr-2"></i>Driving License
-              </label>
-              <input id="drivingLicense" pInputText formControlName="drivingLicense" class="w-full"
-                placeholder="Enter driving license" />
-            </div>
-            } @else {
-            <div class="flex items-center justify-between">
-              <span class="font-semibold text-sm flex items-center gap-2 text-color">
-                <i class="pi pi-id-card mr-2"></i>
-                <span>Driving License</span>
-              </span>
-              <span class="text-color-secondary">{{ cv.drivingLicense ?? 'N/A' }}</span>
-            </div>
-            }
-
-            @if (isEditMode()) {
-            <div class="flex items-center gap-4">
-              <div class="flex items-center gap-2">
-                <p-checkbox formControlName="hasCar" [binary]="true" inputId="hasCar" />
-                <label for="hasCar" class="font-semibold text-sm">Has Car</label>
-              </div>
-              <div class="flex items-center gap-2">
-                <p-checkbox formControlName="openForTravel" [binary]="true" inputId="openForTravel" />
-                <label for="openForTravel" class="font-semibold text-sm">Open for Travel</label>
-              </div>
-            </div>
-            } @else {
-            <div class="flex flex-col gap-3">
-              <div class="flex items-center justify-between">
-                <span class="font-semibold text-sm flex items-center gap-2 text-color">
-                  <i class="pi pi-car mr-2"></i>
-                  <span>Has Car</span>
-                </span>
-                <i [class]="cv.hasCar ? 'pi pi-check text-green-500' : 'pi pi-times text-red-500'"></i>
-              </div>
-              <div class="flex items-center justify-between">
-                <span class="font-semibold text-sm flex items-center gap-2 text-color">
-                  <i class="pi pi-globe mr-2"></i>
-                  <span>Open for Travel</span>
-                </span>
-                <i [class]="
-                    cv.openForTravel ? 'pi pi-check text-green-500' : 'pi pi-times text-red-500'
-                  "></i>
-              </div>
-            </div>
-            }
-          </div>
-        </p-card>
+    @if (!curriculum()) {
+    <p-card>
+      <div class="flex items-center justify-center gap-3 p-6">
+        <i class="pi pi-spin pi-spinner text-2xl text-primary-500" aria-hidden="true"></i>
+        <span class="text-base">Loading curriculum…</span>
       </div>
-
-      <div class="col-12 lg:col-8">
-        <div class="flex flex-column gap-4">
-          <p-card>
-            <ng-template pTemplate="header">
-              <div class="p-3">
-                <h3 class="m-0 flex align-items-center gap-2">
-                  <i class="pi pi-user text-primary"></i>
-                  <span>Professional Summary</span>
-                </h3>
+    </p-card>
+    } @else {
+    <div class="flex flex-col gap-4" [formGroup]="cvForm">
+      <!-- User Header + details -->
+      <p-card>
+        <ng-template pTemplate="header">
+          <div class="flex items-center gap-4 border-b border-surface-200 px-4 pb-3 pt-4 dark:border-surface-700">
+            <span class="text-4xl text-primary-500">
+              <i class="pi pi-id-card" aria-hidden="true"></i>
+            </span>
+            <div class="flex flex-col gap-2">
+              <div class="text-2xl font-semibold text-surface-900 dark:text-surface-50">
+                {{ user()?.firstName }} {{ user()?.lastName }}
               </div>
-            </ng-template>
-            @if (isEditMode()) {
-            <textarea pTextarea formControlName="summary" class="w-full" rows="6"
-              placeholder="Enter professional summary"></textarea>
-            } @else {
-            <p class="line-height-3 m-0 text-color-secondary">
-              {{ cv.summary ?? 'No summary provided.' }}
-            </p>
-            }
-          </p-card>
-
-          <p-card>
-            <ng-template pTemplate="header">
-              <div class="p-3 flex justify-content-between align-items-center">
-                <h3 class="m-0 flex align-items-center gap-2">
-                  <i class="pi pi-briefcase text-primary"></i>
-                  <span>Projects</span>
-                </h3>
-                @if (isEditMode()) {
-                <p-button label="Add Project" icon="pi pi-plus" severity="secondary" size="small" />
+              <div class="flex flex-wrap items-center gap-2">
+                @if (user()?.username) {
+                <p-tag [value]="user()!.username" severity="info" icon="pi pi-at" />
                 }
-              </div>
-            </ng-template>
-            @if (projects().length > 0) {
-            @for (project of projects(); track project.projectId; let isLast = $last) {
-            <div [attr.data-project-id]="project.projectId"
-              [class]="!isLast ? 'mb-4 pb-4 border-bottom-1 surface-border' : 'mb-0'">
-              <div class="flex justify-content-between align-items-start mb-2">
-                <h4 class="m-0 text-color">Project</h4>
-                <span class="text-sm text-color-secondary">
-                  {{ project.startDate | date: 'MMM yyyy' }} -
-                  {{ project.endDate ? (project.endDate | date: 'MMM yyyy') : 'Present' }}
-                </span>
-              </div>
-              <p class="line-height-3 mb-3 text-color-secondary">{{ project.description }}</p>
-              <div class="flex flex-wrap gap-2">
-                @for (domain of project.domainOptions; track domain.projectDomainId) {
-                <p-chip [attr.data-domain-id]="domain.domainId" [attr.data-option-id]="domain.domainOptionId">
-                  <ng-template pTemplate="content">
-                    <span class="flex align-items-center gap-2 text-sm">
-                      <i class="pi pi-code"></i>
-                      <span class="font-medium">{{ getDomainName(domain.domainId) }}</span>
-                      @if (getDomainOptionName(domain.domainId, domain.domainOptionId)) {
-                      <span>- {{ getDomainOptionName(domain.domainId, domain.domainOptionId) }}</span>
-                      }
-                      <span class="font-semibold ml-2">Grade: {{ domain.grade }}</span>
-                    </span>
-                  </ng-template>
-                </p-chip>
+                @if (user()?.email) {
+                <p-tag [value]="user()!.email" severity="info" icon="pi pi-envelope" />
                 }
               </div>
             </div>
-            }
-            } @else {
-            <p class="text-color-secondary m-0">No projects listed.</p>
-            }
-          </p-card>
+          </div>
+        </ng-template>
+        <div class="p-4">
+          <div class="grid grid-cols-1 gap-4 md:grid-cols-2">
+            <div class="flex flex-col gap-1">
+              <span class="text-sm text-surface-500">Last Modified</span>
+              <span class="font-medium">{{ curriculum()?.lastModifiedAt }}</span>
+            </div>
+          </div>
+        </div>
+      </p-card>
 
-          <p-card>
-            <ng-template pTemplate="header">
-              <div class="p-3 flex justify-content-between align-items-center">
-                <h3 class="m-0 flex align-items-center gap-2">
-                  <i class="pi pi-graduation-cap text-primary"></i>
-                  <span>Education</span>
-                </h3>
-                @if (isEditMode()) {
-                <p-button label="Add Education" icon="pi pi-plus" severity="secondary" size="small" />
-                }
-              </div>
-            </ng-template>
-            @if (educationHistory().length > 0) {
-            <p-timeline [value]="educationHistory()" layout="vertical">
-              <ng-template pTemplate="marker" let-event>
-                <div [attr.data-education-id]="event.educationHistoryId"
-                  class="flex align-items-center justify-content-center border-circle surface-border border-2 bg-surface-0"
-                  style="width: 2.5rem; height: 2.5rem">
-                  <i class="pi pi-graduation-cap text-primary"></i>
-                </div>
-              </ng-template>
-              <ng-template pTemplate="content" let-event>
-                <div class="mb-3">
-                  <h4 class="mt-0 mb-1 text-color">{{ getDegreeName(event.degreeNameId) }}</h4>
-                  <p class="text-color-secondary mb-2">{{ getSchoolName(event.schoolNameId) }}</p>
-                  <small class="text-color-secondary">
-                    {{ event.startDate | date: 'MMM yyyy' }} -
-                    {{ event.endDate ? (event.endDate | date: 'MMM yyyy') : 'Present' }}
-                  </small>
-                </div>
-              </ng-template>
-            </p-timeline>
-            } @else {
-            <p class="text-color-secondary m-0">No education history listed.</p>
-            }
-          </p-card>
+      <!-- Summary -->
+      <p-card>
+        <ng-template pTemplate="header">
+          <div class="flex items-center gap-3 border-b border-surface-200 px-4 pb-3 pt-4 dark:border-surface-700">
+            <span class="text-xl text-primary-500">
+              <i class="pi pi-align-left" aria-hidden="true"></i>
+            </span>
+            <span class="font-semibold text-surface-900 dark:text-surface-50">Summary</span>
+          </div>
+        </ng-template>
+        <div class="p-4">
+          @if (isEditMode()) {
+          <textarea pInputTextarea formControlName="summary" rows="5" class="w-full"
+            placeholder="Write a short professional summary"></textarea>
+          } @else {
+          <p class="m-0 leading-7 text-surface-700 dark:text-surface-300">
+            {{ curriculum()?.summary || 'No summary provided.' }}
+          </p>
+          }
+        </div>
+      </p-card>
 
-          <p-card>
-            <ng-template pTemplate="header">
-              <div class="p-3 flex justify-content-between align-items-center">
-                <h3 class="m-0 flex align-items-center gap-2">
-                  <i class="pi pi-star text-primary"></i>
-                  <span>Skills & Expertise</span>
-                </h3>
-                @if (isEditMode()) {
-                <p-button label="Add Skill" icon="pi pi-plus" severity="secondary" size="small" />
-                }
-              </div>
-            </ng-template>
-            @if (personalSkills().length > 0) {
-            <div class="flex flex-wrap gap-2">
-              @for (skill of personalSkills(); track skill.projectDomainId) {
-              <p-chip [attr.data-domain-id]="skill.domainId" [attr.data-option-id]="skill.domainOptionId">
-                <ng-template pTemplate="content">
-                  <span class="flex align-items-center gap-2 text-sm">
-                    <i class="pi pi-bookmark"></i>
-                    <span class="font-medium">{{ getDomainName(skill.domainId) }}</span>
-                    @if (getDomainOptionName(skill.domainId, skill.domainOptionId)) {
-                    <span>- {{ getDomainOptionName(skill.domainId, skill.domainOptionId) }}</span>
-                    }
-                    <span class="font-semibold ml-2">Grade: {{ skill.grade }}</span>
-                  </span>
-                </ng-template>
-              </p-chip>
+      <!-- Personal Details -->
+      <p-card>
+        <ng-template pTemplate="header">
+          <div class="flex items-center gap-3 border-b border-surface-200 px-4 pb-3 pt-4 dark:border-surface-700">
+            <span class="text-xl text-primary-500">
+              <i class="pi pi-user" aria-hidden="true"></i>
+            </span>
+            <span class="font-semibold text-surface-900 dark:text-surface-50">Personal Details</span>
+          </div>
+        </ng-template>
+        <div class="p-4">
+          <div class="grid grid-cols-1 gap-4 md:grid-cols-2">
+            <div class="flex flex-col gap-2">
+              <span class="text-sm text-surface-500">Mobile Phone</span>
+              @if (isEditMode()) {
+              <input pInputText type="text" formControlName="mobilePhone" placeholder="Enter mobile phone" />
+              } @else {
+              <span class="font-medium text-surface-900 dark:text-surface-50">
+                {{ curriculum()?.mobilePhone || 'N/A' }}
+              </span>
               }
             </div>
-            } @else {
-            <p class="text-color-secondary m-0">No skills listed.</p>
-            }
-          </p-card>
-        </div>
-      </div>
-    </div>
 
-    @if (isEditMode()) {
-    <div class="flex justify-content-center mt-4 pb-4">
-      <p-button label="Save All Changes" icon="pi pi-save" severity="success" size="large" (onClick)="saveChanges()" />
+            <div class="flex flex-col gap-2">
+              <span class="text-sm text-surface-500">Home Address</span>
+              @if (isEditMode()) {
+              <input pInputText type="text" formControlName="homeAddress" placeholder="Enter home address" />
+              } @else {
+              <span class="font-medium text-surface-900 dark:text-surface-50">
+                {{ curriculum()?.homeAddress || 'N/A' }}
+              </span>
+              }
+            </div>
+
+            <div class="flex flex-col gap-2">
+              <span class="text-sm text-surface-500">Work Address</span>
+              @if (isEditMode()) {
+              <input pInputText type="text" formControlName="workAddress" placeholder="Enter work address" />
+              } @else {
+              <span class="font-medium text-surface-900 dark:text-surface-50">
+                {{ curriculum()?.workAddress || 'N/A' }}
+              </span>
+              }
+            </div>
+
+            <div class="flex flex-col gap-2">
+              <span class="text-sm text-surface-500">Marital Status</span>
+              @if (isEditMode()) {
+              <div class="flex items-center gap-3">
+                <p-inputSwitch formControlName="maritalStatus" />
+                <span class="text-sm">{{ cvForm.controls.maritalStatus.value ? 'Married' : 'Single' }}</span>
+              </div>
+              } @else {
+              <span class="font-medium text-surface-900 dark:text-surface-50">
+                {{ curriculum()?.maritalStatus ? 'Married' : 'Single' }}
+              </span>
+              }
+            </div>
+
+            <div class="flex flex-col justify-start w-fit gap-2">
+              <span class="text-sm text-surface-500">Driving License</span>
+              @if (isEditMode()) {
+              <p-inputNumber formControlName="drivingLicense" [min]="0" [useGrouping]="false" inputId="dl" />
+              } @else {
+              <p-tag [value]="drivingLicenseLabel()" severity="info" icon="pi pi-id-card" />
+              }
+            </div>
+
+            <div class="flex gap-8">
+              <div class="flex flex-col gap-2">
+                <span class="text-sm text-surface-500">Has Car</span>
+                @if (isEditMode()) {
+                <div class="flex items-center gap-3">
+                  <p-inputSwitch formControlName="hasCar" />
+                  <span class="text-sm">{{ cvForm.controls.hasCar.value ? 'Yes' : 'No' }}</span>
+                </div>
+                } @else {
+                <p-tag [value]="curriculum()?.hasCar ? 'Yes' : 'No'"
+                  [severity]="curriculum()?.hasCar ? 'success' : 'danger'"
+                  [icon]="curriculum()?.hasCar ? 'pi pi-car' : 'pi pi-times'" />
+                }
+              </div>
+              <div class="flex flex-col gap-2">
+                <span class="text-sm text-surface-500">Open for Travel</span>
+                @if (isEditMode()) {
+                <div class="flex items-center gap-3">
+                  <p-inputSwitch formControlName="openForTravel" />
+                  <span class="text-sm">{{ cvForm.controls.openForTravel.value ? 'Yes' : 'No' }}</span>
+                </div>
+                } @else {
+                <p-tag [value]="curriculum()?.openForTravel ? 'Yes' : 'No'"
+                  [severity]="curriculum()?.openForTravel ? 'success' : 'danger'"
+                  [icon]="curriculum()?.openForTravel ? 'pi pi-send' : 'pi pi-ban'" />
+                }
+              </div>
+            </div>
+          </div>
+        </div>
+      </p-card>
+
+      <!-- Education -->
+      <p-card>
+        <ng-template pTemplate="header">
+          <div class="flex items-center gap-3 border-b border-surface-200 px-4 pb-3 pt-4 dark:border-surface-700">
+            <span class="text-xl text-primary-500">
+              <i class="pi pi-book" aria-hidden="true"></i>
+            </span>
+            <span class="font-semibold text-surface-900 dark:text-surface-50">Education</span>
+          </div>
+        </ng-template>
+        <div class="p-4">
+          @if (educationHistory().length === 0) {
+          <p class="m-0 text-surface-500">No education history.</p>
+          } @else {
+          <div class="flex flex-col gap-4">
+            @for (edu of educationHistory(); track edu.educationId) {
+            <div class="border-l-2 border-primary-500 pl-4">
+              <div class="text-lg font-semibold text-surface-900 dark:text-surface-50">
+                {{ getDegreeName(edu.degreeNameId) }}
+                @if (edu.schoolNameId !== undefined) {
+                <span class="font-normal text-surface-600 dark:text-surface-400">
+                  at {{ getSchoolName(edu.schoolNameId) }}
+                </span>
+                }
+              </div>
+              <div class="mt-2 flex items-center gap-2 text-sm text-surface-500">
+                <i class="pi pi-calendar" aria-hidden="true"></i>
+                <span>{{ edu.startDate }} - {{ edu.endDate || 'Present' }}</span>
+              </div>
+              @if (edu.grade !== undefined && edu.maxGrade !== undefined) {
+              <div class="mt-2 flex items-center gap-2 text-sm text-surface-500">
+                <i class="pi pi-chart-bar" aria-hidden="true"></i>
+                <span>Grade: {{ edu.grade }}/{{ edu.maxGrade }}</span>
+              </div>
+              }
+            </div>
+            }
+          </div>
+          }
+        </div>
+      </p-card>
+
+      <!-- Projects -->
+      <p-card>
+        <ng-template pTemplate="header">
+          <div class="flex items-center gap-3 border-b border-surface-200 px-4 pb-3 pt-4 dark:border-surface-700">
+            <span class="text-xl text-primary-500">
+              <i class="pi pi-briefcase" aria-hidden="true"></i>
+            </span>
+            <span class="font-semibold text-surface-900 dark:text-surface-50">Projects</span>
+          </div>
+        </ng-template>
+        <div class="p-4">
+          @if (projects().length === 0) {
+          <p class="m-0 text-surface-500">No projects.</p>
+          } @else {
+          <div class="flex flex-col gap-6">
+            @for (project of projects(); track project.projectId; let last = $last) {
+            <div>
+              <div class="flex items-center gap-2 text-lg font-semibold text-surface-900 dark:text-surface-50">
+                <i class="pi pi-folder text-primary-500" aria-hidden="true"></i>
+                <span>{{ project.description }}</span>
+              </div>
+              <div class="mt-2 flex items-center gap-2 text-sm text-surface-500">
+                <i class="pi pi-calendar" aria-hidden="true"></i>
+                <span>{{ project.startDate }} - {{ project.endDate || 'Present' }}</span>
+              </div>
+              @if (project.domainOptions && project.domainOptions.length > 0) {
+              <div class="mt-3 flex flex-wrap gap-2">
+                @for (skill of getProjectSkillChips(project.domainOptions); track skill.label) {
+                <p-chip [label]="skill.label + ' (' + skill.grade + '/' + maxSkillGrade() + ')'" icon="pi pi-tag" />
+                }
+              </div>
+              }
+              @if (!last) {
+              <p-divider />
+              }
+            </div>
+            }
+          </div>
+          }
+        </div>
+      </p-card>
+
+      <!-- All Skills (aggregated) -->
+      <p-card>
+        <ng-template pTemplate="header">
+          <div class="flex items-center gap-3 border-b border-surface-200 px-4 pb-3 pt-4 dark:border-surface-700">
+            <span class="text-xl text-primary-500">
+              <i class="pi pi-tags" aria-hidden="true"></i>
+            </span>
+            <span class="font-semibold text-surface-900 dark:text-surface-50">All Skills</span>
+          </div>
+        </ng-template>
+        <div class="p-4">
+          @if (allSkills().length === 0) {
+          <p class="m-0 text-surface-500">No skills added.</p>
+          } @else {
+          <div class="flex flex-wrap gap-2">
+            @for (s of allSkills(); track s.label) {
+            <p-chip [label]="s.label + ' (' + s.grade + '/' + maxSkillGrade() + ')'" icon="pi pi-tag" />
+            }
+          </div>
+          }
+        </div>
+      </p-card>
     </div>
     }
-  </form>
-  }
+  </div>
 </div>
-} @else {
-<div class="p-4 flex align-items-center justify-content-center" style="min-height: 400px">
-  <i class="pi pi-spin pi-spinner text-4xl text-primary"></i>
-  <p class="text-color-secondary ml-3">Loading CV...</p>
-</div>
-}

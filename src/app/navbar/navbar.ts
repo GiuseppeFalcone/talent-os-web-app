@@ -1,44 +1,46 @@
-import { CommonModule } from '@angular/common';
-import { ChangeDetectionStrategy, Component, computed, inject } from '@angular/core';
+import { Component, ChangeDetectionStrategy, computed, inject } from '@angular/core';
 import { Router, RouterLink } from '@angular/router';
-import { MenuItem } from 'primeng/api';
 import { ButtonModule } from 'primeng/button';
 import { SplitButtonModule } from 'primeng/splitbutton';
-import { AuthService } from '../auth/service/auth-service';
-import { AppHasRole } from '../rbac/directive/app-has-role';
+import { MenuItem } from 'primeng/api';
 import { Theme } from '../theme/theme';
+import { HasRoleDirective } from '../rbac/directive/has-role-directive';
+import { AuthService } from '../auth/service/auth-service';
 
 @Component({
   selector: 'app-navbar',
-  imports: [RouterLink, ButtonModule, CommonModule, AppHasRole, SplitButtonModule],
   templateUrl: './navbar.html',
-  styleUrl: './navbar.css',
   changeDetection: ChangeDetectionStrategy.OnPush,
-  host: {
-    class: 'block',
-    role: 'navigation',
-    'aria-label': 'Main',
-  },
+  imports: [RouterLink, ButtonModule, SplitButtonModule, HasRoleDirective],
 })
 export class Navbar {
   private readonly router = inject(Router);
+  private readonly auth = inject(AuthService);
   readonly theme = inject(Theme);
-  private readonly authService = inject(AuthService);
 
-  readonly isLoggedIn = computed(() => this.authService.isLoggedIn());
-  readonly currentUser = computed(() => this.authService.currentUser());
+  readonly isLoggedIn = computed(() => this.auth.isLoggedIn());
+  readonly currentUser = computed(() => this.auth.currentUser());
 
   readonly userMenuItems = computed<MenuItem[]>(() => [
     {
+      label: 'Profile',
+      icon: 'pi pi-user',
+      command: () => this.navigateToProfile(),
+    },
+    {
+      label: 'Settings',
+      icon: 'pi pi-cog',
+      command: () => this.router.navigate(['/settings']),
+    },
+    {
+      separator: true,
+    },
+    {
       label: 'Logout',
       icon: 'pi pi-sign-out',
-      command: () => this.onLogoutClick(),
+      command: () => this.auth.logout(),
     },
   ]);
-
-  onLogoutClick(): void {
-    this.authService.logout();
-  }
 
   navigateToLogin(): void {
     this.router.navigate(['/login']);

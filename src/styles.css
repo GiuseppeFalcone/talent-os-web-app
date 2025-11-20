@@ -1,16 +1,4 @@
-@config "../tailwind.config.ts";
+@import 'primeicons/primeicons.css';
 @import 'tailwindcss';
 @import 'tailwindcss-primeui';
-@import 'primeicons/primeicons.css';
-
-.p-password-strength-weak {
-  @apply bg-red-500!;
-}
-
-.p-password-strength-medium {
-  @apply bg-amber-500!;
-}
-
-.p-password-strength-strong {
-  @apply bg-green-500!;
-}
+@custom-variant dark (&:where(.dark, .dark *));

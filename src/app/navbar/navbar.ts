@@ -1,25 +1,52 @@
-import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
+import { Component, ChangeDetectionStrategy, computed, inject } from '@angular/core';
 import { Router, RouterLink } from '@angular/router';
 import { ButtonModule } from 'primeng/button';
-import { ThemeService } from '../../service/theme/theme';
+import { SplitButtonModule } from 'primeng/splitbutton';
+import { MenuItem } from 'primeng/api';
+import { Theme } from '../theme/theme';
+import { HasRoleDirective } from '../rbac/directive/has-role-directive';
+import { AuthService } from '../auth/service/auth-service';
 
 @Component({
   selector: 'app-navbar',
-  imports: [RouterLink, ButtonModule],
   templateUrl: './navbar.html',
-  styleUrl: './navbar.css',
   changeDetection: ChangeDetectionStrategy.OnPush,
-  host: {
-    class: 'block',
-    role: 'navigation',
-    'aria-label': 'Main',
-  },
+  imports: [RouterLink, ButtonModule, SplitButtonModule, HasRoleDirective],
 })
-export class NavbarComponent {
-  private router = inject(Router);
-  readonly theme = inject(ThemeService);
+export class Navbar {
+  private readonly router = inject(Router);
+  private readonly auth = inject(AuthService);
+  readonly theme = inject(Theme);
+
+  readonly isLoggedIn = computed(() => this.auth.isLoggedIn());
+  readonly currentUser = computed(() => this.auth.currentUser());
+
+  readonly userMenuItems = computed<MenuItem[]>(() => [
+    {
+      label: 'Profile',
+      icon: 'pi pi-user',
+      command: () => this.navigateToProfile(),
+    },
+    {
+      label: 'Settings',
+      icon: 'pi pi-cog',
+      command: () => this.router.navigate(['/settings']),
+    },
+    {
+      separator: true,
+    },
+    {
+      label: 'Logout',
+      icon: 'pi pi-sign-out',
+      command: () => this.auth.logout(),
+    },
+  ]);
 
   navigateToLogin(): void {
     this.router.navigate(['/login']);
+  }
+
+  navigateToProfile(): void {
+    this.router.navigate(['/profile']);
   }
 }

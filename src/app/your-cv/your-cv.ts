@@ -5,7 +5,6 @@ import {
   inject,
   signal,
   computed,
-  effect,
 } from '@angular/core';
 import { FormControl, FormGroup, ReactiveFormsModule, Validators, FormArray } from '@angular/forms';
 import { HttpErrorResponse } from '@angular/common/http';
@@ -27,6 +26,7 @@ import { CurriculumDetailDto } from './model/curriculum-detail-dto';
 import { ProjectDomainOptionDto } from './model/project-domain-option-dto';
 import { DomainDto } from '../manage-domain/model/domain-dto';
 import { DrivingLicenseEnum, DRIVING_LICENSE_OPTIONS } from './enum/driving-license-enum';
+import { forkJoin } from 'rxjs';
 import { MultiSelectModule } from 'primeng/multiselect';
 import { ProjectDto } from './model/project-dto';
 import { DomainOptionDto } from '../manage-domain/model/domain-option-dto';
@@ -974,9 +974,13 @@ export class YourCv implements OnInit {
   ngOnInit(): void {
     this.curriculumDetail.set(null);
 
-    this.yourCvService.getCurriculumDetailsForCurrentUser().subscribe({
-      next: (curriculum) => {
+    forkJoin({
+      curriculum: this.yourCvService.getCurriculumDetailsForCurrentUser(),
+      domains: this.yourCvService.getAllDomains(),
+    }).subscribe({
+      next: ({ curriculum, domains }) => {
         this.curriculumDetail.set(curriculum);
+        this.possibleDomains.set(domains);
         this.patchFormFromCurriculum();
       },
       error: (err: HttpErrorResponse | Error) => {
@@ -986,32 +990,10 @@ export class YourCv implements OnInit {
           summary: 'Error Loading Data',
           detail: is404
             ? 'No curriculum found. Please create your CV first.'
-            : 'Failed to load curriculum.',
+            : 'Failed to load data.',
           life: 5000,
         });
       },
-    });
-  }
-
-  constructor() {
-    // Load domains after curriculum is set and rendered
-    effect(() => {
-      const curriculum = this.curriculumDetail();
-      if (curriculum) {
-        this.yourCvService.getAllDomains().subscribe({
-          next: (domains) => {
-            this.possibleDomains.set(domains);
-          },
-          error: (err: HttpErrorResponse | Error) => {
-            this.messageService.add({
-              severity: 'error',
-              summary: 'Error Loading Domains',
-              detail: 'Failed to load domain data.',
-              life: 5000,
-            });
-          },
-        });
-      }
     });
   }
 }

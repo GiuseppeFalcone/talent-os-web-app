@@ -24,7 +24,8 @@
     <div class="flex items-end justify-center gap-1 sm:gap-2">
       <!-- Your CV -->
       <p-button *appHasRole="['ADMIN', 'MANAGER', 'EMPLOYEE', 'SUPERADMIN']" routerLink="/cv" label="Your CV"
-        icon="pi pi-id-card" [raised]="true" styleClass="shadow-2" [attr.aria-label]="'Navigate to your CV'" />
+        icon="pi pi-id-card" [raised]="true" styleClass="inline-flex shadow-2"
+        [attr.aria-label]="'Navigate to your CV'" />
 
       <!-- Employees -->
       <p-button *appHasRole="['MANAGER']" routerLink="/employees" label="Employees" icon="pi pi-users" [raised]="true"

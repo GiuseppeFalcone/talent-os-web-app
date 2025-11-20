@@ -5,6 +5,7 @@ import { PagedResponseDto } from '../../response/paged-model';
 import { CurriculumDetailDto } from '../model/curriculum-detail-dto';
 import { CurriculumDto } from '../model/curriculum-dto';
 import { CurriculumLightDto } from '../model/curriculum-light-dto';
+import { UserDto } from '../../dashboard/model/user-dto';
 
 export interface GetCurriculumsParams {
   page: number;
@@ -53,5 +54,17 @@ export class YourCvClient {
   getCurriculumDetailsById(curriculumId: number): Observable<ApiResponse<CurriculumDetailDto>> {
     const url = `${this.baseUrl}/${curriculumId}/details`;
     return this.http.get<ApiResponse<CurriculumDetailDto>>(url);
+  }
+
+  updateCurriculum(
+    curriculumId: number,
+    curriculumDto: CurriculumDto,
+    userDto: UserDto
+  ): Observable<ApiResponse<CurriculumDetailDto>> {
+    const url = `${this.baseUrl}/${curriculumId}`;
+    return this.http.put<ApiResponse<CurriculumDetailDto>>(url, {
+      curriculum: curriculumDto,
+      user: userDto,
+    });
   }
 }

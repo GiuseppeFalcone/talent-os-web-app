@@ -26,4 +26,8 @@ export const routes: Routes = [
     path: 'domains',
     loadComponent: () => import('./manage-domain/manage-domain').then((m) => m.ManageDomain),
   },
+  {
+    path: 'employees',
+    loadComponent: () => import('./your-employee/your-employee').then((m) => m.YourEmployee),
+  },
 ];

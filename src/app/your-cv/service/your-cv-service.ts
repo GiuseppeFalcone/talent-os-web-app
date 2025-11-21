@@ -72,12 +72,12 @@ export class YourCvService {
       switchMap((response) => {
         const firstPageDomains = response.content;
 
-        if (response.totalPages <= 1) {
+        if (response.page.totalPages <= 1) {
           return of(firstPageDomains);
         }
 
         const remainingPageRequests = [];
-        for (let page = 2; page <= response.totalPages; page++) {
+        for (let page = 2; page <= response.page.totalPages; page++) {
           remainingPageRequests.push(
             this.domainService.getDomains({ page, pageSize: 100 }).pipe(map((res) => res.content))
           );

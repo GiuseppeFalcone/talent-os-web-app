@@ -45,6 +45,28 @@ export class YourCvService {
     );
   }
 
+  getCurriculumDetailsByUserId(userId: number): Observable<CurriculumDetailDto> {
+    const params = {
+      page: 1,
+      pageSize: 1,
+      userIds: [userId],
+    };
+
+    return this.cvClient.getCurriculums(params).pipe(
+      switchMap((pagedResponse) => {
+        const curriculumId = pagedResponse.data.content[0]?.curriculumId;
+
+        if (!curriculumId) {
+          return throwError(() => new Error('No curriculum found for this user.'));
+        }
+        return this.cvClient.getCurriculumDetailsById(curriculumId);
+      }),
+      map((curriculumDetailResponse) => {
+        return curriculumDetailResponse.data;
+      })
+    );
+  }
+
   getAllDomains(): Observable<DomainDto[]> {
     return this.domainService.getDomains({ page: 1, pageSize: 100 }).pipe(
       switchMap((response) => {

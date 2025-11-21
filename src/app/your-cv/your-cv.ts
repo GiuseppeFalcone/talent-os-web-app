@@ -26,7 +26,6 @@ import { CurriculumDetailDto } from './model/curriculum-detail-dto';
 import { ProjectDomainOptionDto } from './model/project-domain-option-dto';
 import { DomainDto } from '../manage-domain/model/domain-dto';
 import { DrivingLicenseEnum, DRIVING_LICENSE_OPTIONS } from './enum/driving-license-enum';
-import { forkJoin } from 'rxjs';
 import { MultiSelectModule } from 'primeng/multiselect';
 import { ProjectDto } from './model/project-dto';
 import { DomainOptionDto } from '../manage-domain/model/domain-option-dto';
@@ -34,6 +33,8 @@ import { EducationDto } from './model/education-dto';
 import { UserDomainOptionDto } from '../dashboard/model/user-domain-option-dto';
 import { UserDto } from '../dashboard/model/user-dto';
 import { CurriculumDto } from './model/curriculum-dto';
+import { ActivatedRoute } from '@angular/router';
+import { AuthService } from '../auth/service/auth-service';
 
 interface EducationFormControls {
   educationId: FormControl<number | undefined>;
@@ -72,8 +73,10 @@ type UserSkillsFormControls = Record<string, FormControl>;
   providers: [MessageService],
 })
 export class YourCv implements OnInit {
+  private readonly authService = inject(AuthService);
   private readonly yourCvService = inject(YourCvService);
   private readonly messageService = inject(MessageService);
+  private readonly route = inject(ActivatedRoute);
 
   private readonly MAX_SKILL_GRADE = 5 as const;
 
@@ -81,6 +84,13 @@ export class YourCv implements OnInit {
 
   readonly user = computed(() => this.curriculumDetail()?.user);
   readonly curriculum = computed(() => this.curriculumDetail()?.curriculum ?? null);
+
+  readonly isOwner = computed(() => {
+    const currentUser = this.authService.currentUser();
+    const cvUser = this.user();
+    return !!(currentUser && cvUser && currentUser.userId === cvUser.userId);
+  });
+
   readonly domains = computed(() => this.curriculumDetail()?.domains ?? []);
   readonly schools = computed(() => this.curriculumDetail()?.schools ?? []);
   readonly degrees = computed(() => this.curriculumDetail()?.degrees ?? []);
@@ -266,6 +276,7 @@ export class YourCv implements OnInit {
   });
 
   readonly isEditMode = signal<boolean>(false);
+  private readonly allDomainsLoaded = signal<boolean>(false);
   readonly editingEducationIndex = signal<number | null>(null);
   readonly editingProjectIndex = signal<number | null>(null);
 
@@ -304,15 +315,39 @@ export class YourCv implements OnInit {
   }
 
   toggleEditMode(): void {
-    this.isEditMode.update((current) => {
-      const next = !current;
-      if (!next) {
-        this.editingEducationIndex.set(null);
-        this.editingProjectIndex.set(null);
-        this.patchFormFromCurriculum();
-      }
-      return next;
-    });
+    const willBeEditMode = !this.isEditMode();
+    if (willBeEditMode && !this.allDomainsLoaded()) {
+      this.yourCvService.getAllDomains().subscribe({
+        next: (domains) => {
+          this.possibleDomains.set(domains);
+          this.allDomainsLoaded.set(true);
+
+          this.patchFormFromCurriculum();
+
+          this.isEditMode.set(true);
+        },
+        error: () => {
+          this.messageService.add({
+            severity: 'error',
+            summary: 'Error',
+            detail: 'Failed to load domain options. Please try again.',
+            life: 3000,
+          });
+        },
+      });
+    } else {
+      // Toggle mode normally
+      this.isEditMode.update((current) => {
+        const next = !current;
+        if (!next) {
+          // Leaving edit mode (Undo)
+          this.editingEducationIndex.set(null);
+          this.editingProjectIndex.set(null);
+          this.patchFormFromCurriculum();
+        }
+        return next;
+      });
+    }
   }
 
   private patchFormFromCurriculum(): void {
@@ -974,23 +1009,46 @@ export class YourCv implements OnInit {
   ngOnInit(): void {
     this.curriculumDetail.set(null);
 
-    forkJoin({
-      curriculum: this.yourCvService.getCurriculumDetailsForCurrentUser(),
-      domains: this.yourCvService.getAllDomains(),
-    }).subscribe({
-      next: ({ curriculum, domains }) => {
+    const userIdParam = this.route.snapshot.paramMap.get('userId');
+    const fetchCv$ = userIdParam
+      ? this.yourCvService.getCurriculumDetailsByUserId(Number(userIdParam))
+      : this.yourCvService.getCurriculumDetailsForCurrentUser();
+
+    fetchCv$.subscribe({
+      next: (curriculum) => {
+        if (!curriculum) {
+          this.messageService.add({
+            severity: 'error',
+            summary: 'Error',
+            detail: 'Received empty curriculum details.',
+          });
+          return;
+        }
+
         this.curriculumDetail.set(curriculum);
-        this.possibleDomains.set(domains);
+
+        // Initialize with the subset of domains returned in the curriculum detail
+        this.possibleDomains.set(curriculum.domains ?? []);
+
         this.patchFormFromCurriculum();
       },
       error: (err: HttpErrorResponse | Error) => {
-        const is404 = err instanceof HttpErrorResponse && err.status === 404;
+        let detail: string = 'Failed to load data.';
+
+        if (err instanceof HttpErrorResponse) {
+          if (err.error.status === 404) {
+            detail = 'Curriculum not found.';
+          } else if (err.error.status === 403) {
+            detail = 'Access denied.';
+          }
+        } else {
+          detail = err.message;
+        }
+
         this.messageService.add({
           severity: 'error',
-          summary: 'Error Loading Data',
-          detail: is404
-            ? 'No curriculum found. Please create your CV first.'
-            : 'Failed to load data.',
+          summary: 'Error Loading Curriculum',
+          detail: detail,
           life: 5000,
         });
       },

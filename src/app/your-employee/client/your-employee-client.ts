@@ -20,7 +20,7 @@ export interface GetEmployeesParams {
 export class YourEmployeeClient {
   private readonly http = inject(HttpClient);
 
-  private readonly baseUrl = 'http://localhost:8080/api/bff-web-app/employees';
+  private readonly baseUrl = 'http://localhost:8080/api/bff-web-app/views/your-employees';
 
   getUsersAndCurriculums(
     params: GetEmployeesParams

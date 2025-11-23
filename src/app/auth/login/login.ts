@@ -45,7 +45,6 @@ export class Login {
   readonly usernameControl = this.loginForm.controls.username;
   readonly passwordControl = this.loginForm.controls.password;
 
-  // Bridge reactive forms to signals (zoneless-friendly)
   private readonly usernameValSig = toSignal(this.usernameControl.valueChanges, {
     initialValue: this.usernameControl.value,
   });

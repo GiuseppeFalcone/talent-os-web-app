@@ -4,9 +4,11 @@
   <div class="mx-auto max-w-5xl">
     <div class="mb-6 flex items-center justify-between">
       <h1 class="text-3xl font-bold text-primary-500">Your CV</h1>
+      @if (isOwner()) {
       <p-button [label]="isEditMode() ? 'Undo' : 'Edit'" [severity]="'primary'"
-        [icon]="isEditMode() ? 'pi pi-undo' : 'pi pi-pencil'" [text]="true" (onClick)="toggleEditMode()" [raised]="true"
-        styleClass="inline-flex shadow-2 " [attr.aria-label]="'Edit'" />
+        [icon]="isEditMode() ? 'pi pi-undo' : 'pi pi-pencil'" (onClick)="toggleEditMode()" [raised]="true"
+        class="w-fit inline-flex shadow-2 " [attr.aria-label]="'Edit'" />
+      }
     </div>
 
     @if (!curriculum()) {
@@ -59,7 +61,7 @@
           </div>
         </ng-template>
         <div class="p-4">
-          @if (isEditMode()) {
+          @if (isOwner() && isEditMode()) {
           <textarea pInputTextarea formControlName="summary" id="summary" rows="5" variant="filled"
             class="w-full p-3 bg-surface-50 dark:bg-surface-800"
             placeholder="Write a short professional summary"></textarea>
@@ -85,7 +87,7 @@
           <div class="grid grid-cols-1 gap-4 md:grid-cols-2">
             <div class="flex flex-col gap-2">
               <span class="text-sm text-surface-650">Mobile Phone</span>
-              @if (isEditMode()) {
+              @if (isOwner() && isEditMode()) {
               <input pInputText type="text" formControlName="mobilePhone" placeholder="Enter mobile phone"
                 variant="filled" class="p-3 bg-surface-50 dark:bg-surface-800" />
               } @else {
@@ -97,7 +99,7 @@
 
             <div class="flex flex-col gap-2">
               <span class="text-sm text-surface-650">Home Address</span>
-              @if (isEditMode()) {
+              @if (isOwner() && isEditMode()) {
               <input pInputText type="text" formControlName="homeAddress" placeholder="Enter home address"
                 variant="filled" class="p-3 bg-surface-50 dark:bg-surface-800" />
               } @else {
@@ -109,7 +111,7 @@
 
             <div class="flex flex-col gap-2">
               <span class="text-sm text-surface-650">Work Address</span>
-              @if (isEditMode()) {
+              @if (isOwner() && isEditMode()) {
               <input pInputText type="text" formControlName="workAddress" placeholder="Enter work address"
                 variant="filled" class="p-3 bg-surface-50 dark:bg-surface-800" />
               } @else {
@@ -121,7 +123,7 @@
 
             <div class="flex flex-col gap-2">
               <span class="text-sm text-surface-650">Marital Status</span>
-              @if (isEditMode()) {
+              @if (isOwner() && isEditMode()) {
               <p-toggleswitch formControlName="maritalStatus" />
               } @else {
               <span class="font-medium text-surface-900 dark:text-surface-50">
@@ -132,7 +134,7 @@
 
             <div class="flex flex-col justify-start w-fit gap-2">
               <span class="text-sm text-surface-650">Driving License</span>
-              @if (isEditMode()) {
+              @if (isOwner() && isEditMode()) {
               <p-select [options]="possibleDrivingLicenses" formControlName="drivingLicense" optionLabel="label"
                 optionValue="value" placeholder="Select a driving license" inputId="dl" [checkmark]="true"
                 variant="filled" class="bg-surface-50 dark:bg-surface-800" />
@@ -144,7 +146,7 @@
             <div class="flex gap-8">
               <div class="flex flex-col gap-2">
                 <span class="text-sm text-surface-650">Has Car</span>
-                @if (isEditMode()) {
+                @if (isOwner() && isEditMode()) {
                 <p-toggleswitch formControlName="hasCar" />
                 } @else {
                 <p-tag [value]="curriculum()?.hasCar ? 'Yes' : 'No'"
@@ -154,7 +156,7 @@
               </div>
               <div class="flex flex-col gap-2">
                 <span class="text-sm text-surface-650">Open for Travel</span>
-                @if (isEditMode()) {
+                @if (isOwner() && isEditMode()) {
                 <p-toggleswitch formControlName="openForTravel" />
                 } @else {
                 <p-tag [value]="curriculum()?.openForTravel ? 'Yes' : 'No'"
@@ -178,7 +180,7 @@
               </span>
               <span class="font-semibold text-surface-900 dark:text-surface-50">Education</span>
             </div>
-            @if (isEditMode()) {
+            @if (isOwner() && isEditMode()) {
             <p-button label="Add Education" icon="pi pi-plus" size="small" (onClick)="addEducation()"
               [outlined]="true" />
             }
@@ -193,7 +195,7 @@
             @let edu = $any(eduControl).value;
             @let isEditing = editingEducationIndex() === $index;
             <div class="border-l-2 border-primary-500 pl-4" [formGroup]="$any(eduControl)">
-              @if (isEditMode() && isEditing) {
+              @if (isOwner() && isEditMode() && isEditing) {
               <!-- Edit Mode -->
               <div class="flex flex-col gap-4">
                 <div class="grid grid-cols-1 gap-4 md:grid-cols-2">
@@ -286,7 +288,7 @@
                     }
                   </div>
                 </div>
-                @if (isEditMode()) {
+                @if (isOwner() && isEditMode()) {
                 <div class="flex gap-2">
                   <p-button icon="pi pi-pencil" severity="secondary" [text]="true" [rounded]="true" size="small"
                     (onClick)="editEducation($index)" [attr.aria-label]="'Edit education'" />
@@ -314,7 +316,7 @@
               </span>
               <span class="font-semibold text-surface-900 dark:text-surface-50">Projects</span>
             </div>
-            @if (isEditMode()) {
+            @if (isOwner() && isEditMode()) {
             <p-button label="Add Project" icon="pi pi-plus" size="small" (onClick)="addProject()" [outlined]="true" />
             }
           </div>
@@ -328,7 +330,7 @@
             @let project = $any(projectControl).value;
             @let isEditing = editingProjectIndex() === $index;
             <div class="border-l-2 border-primary-500 pl-4" [formGroup]="$any(projectControl)">
-              @if (isEditMode() && isEditing) {
+              @if (isOwner() && isEditMode() && isEditing) {
               <!-- Edit Mode -->
               <div class="flex flex-col gap-4">
                 <div class="flex flex-col gap-2">
@@ -431,7 +433,7 @@
                   </div>
                   }
                 </div>
-                @if (isEditMode()) {
+                @if (isOwner() && isEditMode()) {
                 <div class="flex gap-2">
                   <p-button icon="pi pi-pencil" severity="secondary" [text]="true" [rounded]="true" size="small"
                     (onClick)="editProject($index)" [attr.aria-label]="'Edit project'" />
@@ -457,7 +459,7 @@
               <i class="pi pi-star-fill text-xl text-primary-500" aria-hidden="true"></i>
               <h2 class="text-xl font-semibold">All Skills</h2>
             </div>
-            @if (isEditMode()) {
+            @if (isOwner() && isEditMode()) {
             @if (editingUserSkills()) {
             <div class="flex gap-2">
               <p-button label="Save" icon="pi pi-check" [outlined]="true" severity="success" size="small"
@@ -544,7 +546,7 @@
           }
         </div>
       </p-card>
-      @if (isEditMode()) {
+      @if (isOwner() && isEditMode()) {
       <div class="flex justify-end">
         <button pButton class="w-fit" (click)="saveCurriculum()">
           <i class="pi pi-save" pButtonIcon></i>

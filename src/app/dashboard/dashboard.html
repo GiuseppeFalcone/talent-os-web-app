@@ -1,5 +1,72 @@
-<div class="p-6">
-  <h2 class="text-2xl font-semibold text-gray-800 dark:text-gray-100">
-    Welcome, {{ currentUser()?.firstName | titlecase }}
-  </h2>
+<div class="flex flex-col gap-6">
+  <div class="relative overflow-hidden rounded-xl bg-primary-600 p-8 text-white shadow-lg dark:bg-primary-900">
+    <div class="relative z-10">
+      <h1 class="text-3xl font-bold">Welcome back, {{ currentUser()?.firstName | titlecase }}!</h1>
+      <p class="mt-2 text-primary-100">Here is what's happening with your profile today.</p>
+    </div>
+    <i class="pi pi-user absolute -bottom-4 -right-4 text-9xl text-primary-500/30 opacity-50"></i>
+  </div>
+
+  <div class="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
+
+    <p-card styleClass="h-full shadow-md hover:shadow-lg transition-shadow duration-300">
+      <ng-template pTemplate="header">
+        <div class="flex items-center gap-3 px-6 pt-6">
+          <span
+            class="flex h-10 w-10 items-center justify-center rounded-lg bg-blue-100 text-blue-600 dark:bg-blue-900/30 dark:text-blue-400">
+            <i class="pi pi-id-card text-xl"></i>
+          </span>
+          <span class="text-lg font-semibold">My CV</span>
+        </div>
+      </ng-template>
+      <p class="mt-0 mb-4 text-surface-600 dark:text-surface-300">
+        Keep your professional profile and skills up to date.
+      </p>
+      <ng-template pTemplate="footer">
+        <p-button label="View CV" icon="pi pi-arrow-right" [text]="true" routerLink="/cv"></p-button>
+      </ng-template>
+    </p-card>
+
+    @if (isManager()) {
+    <p-card styleClass="h-full shadow-md hover:shadow-lg transition-shadow duration-300">
+      <ng-template pTemplate="header">
+        <div class="flex items-center gap-3 px-6 pt-6">
+          <span
+            class="flex h-10 w-10 items-center justify-center rounded-lg bg-purple-100 text-purple-600 dark:bg-purple-900/30 dark:text-purple-400">
+            <i class="pi pi-users text-xl"></i>
+          </span>
+          <span class="text-lg font-semibold">Team</span>
+        </div>
+      </ng-template>
+      <p class="mt-0 mb-4 text-surface-600 dark:text-surface-300">
+        Manage your team members and view their profiles.
+      </p>
+      <ng-template pTemplate="footer">
+        <p-button label="Manage Employees" icon="pi pi-arrow-right" [text]="true" routerLink="/employees"
+          severity="help"></p-button>
+      </ng-template>
+    </p-card>
+    }
+
+    @if (isAdmin()) {
+    <p-card styleClass="h-full shadow-md hover:shadow-lg transition-shadow duration-300">
+      <ng-template pTemplate="header">
+        <div class="flex items-center gap-3 px-6 pt-6">
+          <span
+            class="flex h-10 w-10 items-center justify-center rounded-lg bg-orange-100 text-orange-600 dark:bg-orange-900/30 dark:text-orange-400">
+            <i class="pi pi-shield text-xl"></i>
+          </span>
+          <span class="text-lg font-semibold">System Domains</span>
+        </div>
+      </ng-template>
+      <p class="mt-0 mb-4 text-surface-600 dark:text-surface-300">
+        Configure system-wide skills, schools, and degrees.
+      </p>
+      <ng-template pTemplate="footer">
+        <p-button label="Configure" icon="pi pi-arrow-right" [text]="true" routerLink="/domains"
+          severity="warn"></p-button>
+      </ng-template>
+    </p-card>
+    }
+  </div>
 </div>

@@ -19,7 +19,15 @@ export const routes: Routes = [
     loadComponent: () => import('./your-cv/your-cv').then((m) => m.YourCv),
   },
   {
+    path: 'cv/:userId',
+    loadComponent: () => import('./your-cv/your-cv').then((m) => m.YourCv),
+  },
+  {
     path: 'domains',
     loadComponent: () => import('./manage-domain/manage-domain').then((m) => m.ManageDomain),
+  },
+  {
+    path: 'employees',
+    loadComponent: () => import('./your-employee/your-employee').then((m) => m.YourEmployee),
   },
 ];

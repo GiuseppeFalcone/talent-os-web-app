@@ -20,7 +20,7 @@ export interface GetCurriculumsParams {
 })
 export class YourCvClient {
   private readonly http = inject(HttpClient);
-  private readonly baseUrl = 'http://localhost:8080/api/bff-web-app/curriculums';
+  private readonly baseUrl = 'http://localhost:8080/api/bff-web-app';
 
   getCurriculums(
     params: GetCurriculumsParams
@@ -41,18 +41,16 @@ export class YourCvClient {
       httpParams = httpParams.set('domainOptionId', params.domainOptionId.toString());
     }
 
-    return this.http.get<ApiResponse<PagedResponseDto<CurriculumLightDto>>>(this.baseUrl, {
-      params: httpParams,
-    });
-  }
-
-  getCurriculumById(curriculumId: number): Observable<ApiResponse<CurriculumDto>> {
-    const url = `${this.baseUrl}/${curriculumId}`;
-    return this.http.get<ApiResponse<CurriculumDto>>(url);
+    return this.http.get<ApiResponse<PagedResponseDto<CurriculumLightDto>>>(
+      this.baseUrl.concat('/curriculums'),
+      {
+        params: httpParams,
+      }
+    );
   }
 
   getCurriculumDetailsById(curriculumId: number): Observable<ApiResponse<CurriculumDetailDto>> {
-    const url = `${this.baseUrl}/${curriculumId}/details`;
+    const url = `${this.baseUrl.concat('/views/your-cv')}/${curriculumId}`;
     return this.http.get<ApiResponse<CurriculumDetailDto>>(url);
   }
 
@@ -61,7 +59,7 @@ export class YourCvClient {
     curriculumDto: CurriculumDto,
     userDto: UserDto
   ): Observable<ApiResponse<CurriculumDetailDto>> {
-    const url = `${this.baseUrl}/${curriculumId}`;
+    const url = `${this.baseUrl.concat('/views/your-cv')}/${curriculumId}`;
     return this.http.put<ApiResponse<CurriculumDetailDto>>(url, {
       curriculum: curriculumDto,
       user: userDto,

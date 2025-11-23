@@ -96,7 +96,7 @@ export class Login {
             detail: 'You have successfully logged in.',
             life: 3000,
           });
-          this.router.navigate(['/']);
+          this.router.navigate(['/dashboard']);
         },
         error: (err: HttpErrorResponse) => {
           const errorMsg =

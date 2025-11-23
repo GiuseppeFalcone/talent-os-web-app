@@ -6,8 +6,8 @@
       <h1 class="text-3xl font-bold text-primary-500">Your CV</h1>
       @if (isOwner()) {
       <p-button [label]="isEditMode() ? 'Undo' : 'Edit'" [severity]="'primary'"
-        [icon]="isEditMode() ? 'pi pi-undo' : 'pi pi-pencil'" [text]="true" (onClick)="toggleEditMode()" [raised]="true"
-        styleClass="inline-flex shadow-2 " [attr.aria-label]="'Edit'" />
+        [icon]="isEditMode() ? 'pi pi-undo' : 'pi pi-pencil'" (onClick)="toggleEditMode()" [raised]="true"
+        class="w-fit inline-flex shadow-2 " [attr.aria-label]="'Edit'" />
       }
     </div>
 

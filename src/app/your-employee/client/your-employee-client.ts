@@ -8,10 +8,9 @@ import { UserRoleEnum } from '../../enumeration/user-role-enum';
 export interface GetEmployeesParams {
   page: number;
   pageSize: number;
-  queryUsername?: string;
+  searchString?: string;
   queryRole?: UserRoleEnum;
-  domainId?: number;
-  domainOptionId?: number;
+  domainOptionIds?: number[];
 }
 
 @Injectable({
@@ -29,17 +28,14 @@ export class YourEmployeeClient {
       .set('page', params.page.toString())
       .set('pageSize', params.pageSize.toString());
 
-    if (params.queryUsername) {
-      httpParams = httpParams.set('queryUsername', params.queryUsername);
+    if (params.searchString) {
+      httpParams = httpParams.set('searchString', params.searchString);
     }
     if (params.queryRole) {
       httpParams = httpParams.set('queryRole', params.queryRole.toString());
     }
-    if (params.domainId) {
-      httpParams = httpParams.set('domainId', params.domainId.toString());
-    }
-    if (params.domainOptionId) {
-      httpParams = httpParams.set('domainOptionId', params.domainOptionId.toString());
+    if (params.domainOptionIds && params.domainOptionIds.length > 0) {
+      httpParams = httpParams.set('domainOptionIds', params.domainOptionIds.join(','));
     }
 
     return this.http.get<ApiResponse<PagedResponseDto<CurriculumAndUserLightDto>>>(this.baseUrl, {

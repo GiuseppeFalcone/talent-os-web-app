@@ -3,6 +3,7 @@ import { inject, Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { PagedResponseDto } from '../../response/paged-model';
 import { DomainDto } from '../model/domain-dto';
+import { CreateDomainDto } from '../model/create-domain-dto';
 
 export interface GetDomainsParams {
   page: number;
@@ -39,5 +40,19 @@ export class ManageDomainClient {
   getDomainById(domainId: number): Observable<ApiResponse<DomainDto>> {
     const url = `${this.baseUrl}/${domainId}`;
     return this.http.get<ApiResponse<DomainDto>>(url);
+  }
+
+  createDomain(dto: CreateDomainDto): Observable<ApiResponse<DomainDto>> {
+    return this.http.post<ApiResponse<DomainDto>>(this.baseUrl, dto);
+  }
+
+  updateDomain(domainId: number, dto: DomainDto): Observable<ApiResponse<DomainDto>> {
+    const url = `${this.baseUrl}/${domainId}`;
+    return this.http.put<ApiResponse<DomainDto>>(url, dto);
+  }
+
+  deleteDomain(domainId: number): Observable<ApiResponse<void>> {
+    const url = `${this.baseUrl}/${domainId}`;
+    return this.http.delete<ApiResponse<void>>(url);
   }
 }

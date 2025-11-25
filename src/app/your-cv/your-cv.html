@@ -1,26 +1,49 @@
 <p-toast />
+<p-confirmdialog />
 
 <div class="surface-ground min-h-screen p-4">
   <div class="mx-auto max-w-5xl">
     <div class="mb-6 flex items-center justify-between">
       <h1 class="text-3xl font-bold text-primary-500">Your CV</h1>
-      @if (isOwner()) {
-      <p-button [label]="isEditMode() ? 'Undo' : 'Edit'" [severity]="'primary'"
-        [icon]="isEditMode() ? 'pi pi-undo' : 'pi pi-pencil'" (onClick)="toggleEditMode()" [raised]="true"
-        class="w-fit inline-flex shadow-2 " [attr.aria-label]="'Edit'" />
+      @if (!loading() && !notFound() && isOwner()) {
+      <div class="flex gap-2">
+        @if (isEditMode() && !isCreating()) {
+        <p-button label="Delete CV" severity="danger" icon="pi pi-trash" [outlined]="true"
+          (onClick)="deleteCurriculum()" [attr.aria-label]="'Delete Curriculum'" />
+        }
+        <p-button [label]="isEditMode() ? 'Undo' : 'Edit'" [severity]="'primary'"
+          [icon]="isEditMode() ? 'pi pi-undo' : 'pi pi-pencil'" (onClick)="toggleEditMode()" [raised]="true"
+          class="w-fit inline-flex shadow-2 " [attr.aria-label]="'Edit'" />
+      </div>
       }
     </div>
 
-    @if (!curriculum()) {
+    @if (loading()) {
     <p-card>
       <div class="flex items-center justify-center gap-3 p-6">
         <i class="pi pi-spin pi-spinner text-2xl text-primary-500" aria-hidden="true"></i>
         <span class="text-base">Loading curriculum…</span>
       </div>
     </p-card>
-    } @else {
+    }
+
+    @else if (notFound()) {
+    <p-card>
+      <div class="flex flex-col items-center justify-center gap-4 p-8 text-center">
+        <i class="pi pi-file-excel text-5xl text-surface-400" aria-hidden="true"></i>
+        <h2 class="text-xl font-semibold text-surface-700">No CV Available</h2>
+        @if (isOwner()) {
+        <p class="text-surface-500">You haven't created a curriculum yet.</p>
+        <p-button label="Create Curriculum" icon="pi pi-plus" (onClick)="initCreation()" [raised]="true" />
+        } @else {
+        <p class="text-surface-500">This user has not created a curriculum vitae yet.</p>
+        }
+      </div>
+    </p-card>
+    }
+
+    @else {
     <div class="flex flex-col gap-4" [formGroup]="cvForm">
-      <!-- User Header + details -->
       <p-card>
         <ng-template pTemplate="header">
           <div class="flex items-center gap-4 border-b border-surface-200 px-4 pb-3 pt-4 dark:border-surface-700">
@@ -42,15 +65,16 @@
                 </div>
               </div>
             </div>
+            @if (!isCreating()) {
             <div class="justify-items-end gap-1">
               <span class="text-sm text-surface-650">Last Modified </span>
               <span class="font-medium">{{ curriculum()?.lastModifiedAt | date }}</span>
             </div>
+            }
           </div>
         </ng-template>
       </p-card>
 
-      <!-- Summary -->
       <p-card>
         <ng-template pTemplate="header">
           <div class="flex items-center gap-3 border-b border-surface-200 px-4 pb-3 pt-4 dark:border-surface-700">
@@ -73,7 +97,6 @@
         </div>
       </p-card>
 
-      <!-- Personal Details -->
       <p-card>
         <ng-template pTemplate="header">
           <div class="flex items-center gap-3 border-b border-surface-200 px-4 pb-3 pt-4 dark:border-surface-700">
@@ -169,7 +192,6 @@
         </div>
       </p-card>
 
-      <!-- Education -->
       <p-card>
         <ng-template pTemplate="header">
           <div
@@ -196,7 +218,6 @@
             @let isEditing = editingEducationIndex() === $index;
             <div class="border-l-2 border-primary-500 pl-4" [formGroup]="$any(eduControl)">
               @if (isOwner() && isEditMode() && isEditing) {
-              <!-- Edit Mode -->
               <div class="flex flex-col gap-4">
                 <div class="grid grid-cols-1 gap-4 md:grid-cols-2">
                   <div class="flex flex-col gap-2">
@@ -259,7 +280,6 @@
                 </div>
               </div>
               } @else {
-              <!-- View Mode -->
               <div class="flex items-start justify-between gap-4">
                 <div class="flex-1">
                   <div class="mb-2 flex items-center gap-2">
@@ -305,7 +325,6 @@
         </div>
       </p-card>
 
-      <!-- Projects -->
       <p-card>
         <ng-template pTemplate="header">
           <div
@@ -331,7 +350,6 @@
             @let isEditing = editingProjectIndex() === $index;
             <div class="border-l-2 border-primary-500 pl-4" [formGroup]="$any(projectControl)">
               @if (isOwner() && isEditMode() && isEditing) {
-              <!-- Edit Mode -->
               <div class="flex flex-col gap-4">
                 <div class="flex flex-col gap-2">
                   <label for="proj-desc-{{$index}}" class="text-sm font-medium text-surface-700 dark:text-surface-300">
@@ -361,7 +379,6 @@
                   </div>
                 </div>
 
-                <!-- Skills Selection -->
                 <div class="flex flex-col gap-4">
                   <h4 class="text-sm font-semibold text-surface-900 dark:text-surface-50">Skills Used</h4>
                   @for (domain of allProjectSkills(); track domain.domainId) {
@@ -375,7 +392,6 @@
                       [placeholder]="'Select ' + domain.domainName.replace('_', ' ') | titlecase"
                       [showToggleAll]="false" variant="filled" class="w-full" />
 
-                    <!-- Grade selectors for selected skills -->
                     @let selectedSkills = getSelectedSkillsForDomain($any(projectControl), domain.domainId);
                     @if (selectedSkills.length > 0) {
                     <div class="ml-4 flex flex-col gap-2">
@@ -406,7 +422,6 @@
                 </div>
               </div>
               } @else {
-              <!-- View Mode -->
               <div class="flex items-start justify-between gap-4">
                 <div class="flex-1">
                   <p class="mb-3 text-base leading-7 text-surface-700 dark:text-surface-300">
@@ -450,7 +465,6 @@
         </div>
       </p-card>
 
-      <!-- All Skills (aggregated by domain) -->
       <p-card>
         <ng-template pTemplate="header">
           <div
@@ -477,7 +491,6 @@
 
         <div class="p-4">
           @if (editingUserSkills()) {
-          <!-- Edit Mode: Form for managing global skills -->
           <div [formGroup]="userSkillsForm" class="space-y-6">
             @for (domain of allProjectSkills(); track domain.domainId) {
             <div class="rounded-lg border border-surface-200 p-4 dark:border-surface-700">
@@ -523,7 +536,6 @@
             }
           </div>
           } @else {
-          <!-- View Mode: Display skills grouped by domain -->
           @if (skillsByDomain().length === 0) {
           <p class="text-surface-500">No skills recorded yet.</p>
           } @else {

@@ -16,14 +16,14 @@
             class="flex h-10 w-10 items-center justify-center rounded-lg bg-blue-100 text-blue-600 dark:bg-blue-900/30 dark:text-blue-400">
             <i class="pi pi-id-card text-xl"></i>
           </span>
-          <span class="text-lg font-semibold">My CV</span>
+          <span class="text-lg font-semibold">Your CV</span>
         </div>
       </ng-template>
       <p class="mt-0 mb-4 text-surface-600 dark:text-surface-300">
         Keep your professional profile and skills up to date.
       </p>
       <ng-template pTemplate="footer">
-        <p-button label="View CV" icon="pi pi-arrow-right" [text]="true" routerLink="/cv"></p-button>
+        <p-button label="View CV" icon="pi pi-arrow-right" [text]="true" routerLink="/cv" severity="info"></p-button>
       </ng-template>
     </p-card>
 
@@ -65,6 +65,24 @@
       <ng-template pTemplate="footer">
         <p-button label="Configure" icon="pi pi-arrow-right" [text]="true" routerLink="/domains"
           severity="warn"></p-button>
+      </ng-template>
+    </p-card>
+    <p-card styleClass="h-full shadow-md hover:shadow-lg transition-shadow duration-300">
+      <ng-template pTemplate="header">
+        <div class="flex items-center gap-3 px-6 pt-6">
+          <span
+            class="flex h-10 w-10 items-center justify-center rounded-lg bg-purple-100 text-purple-600 dark:bg-purple-900/30 dark:text-purple-400">
+            <i class="pi pi-shield text-xl"></i>
+          </span>
+          <span class="text-lg font-semibold">Manage Users</span>
+        </div>
+      </ng-template>
+      <p class="mt-0 mb-4 text-surface-600 dark:text-surface-300">
+        Manage all users of the application.
+      </p>
+      <ng-template pTemplate="footer">
+        <p-button label="Configure" icon="pi pi-arrow-right" [text]="true" routerLink="/manage-users"
+          severity="help"></p-button>
       </ng-template>
     </p-card>
     }

@@ -8,6 +8,8 @@ import type { CurriculumDetailDto } from '../model/curriculum-detail-dto';
 import { ManageDomainService } from '../../manage-domain/service/manage-domain-service';
 import { CurriculumDto } from '../model/curriculum-dto';
 import { UserDto } from '../../dashboard/model/user-dto';
+import { CreateCurriculumDto } from '../model/create/create-curriculum-dto';
+import { CreateCurriculumDetailDto } from '../model/create/create-curriculum-detail-dto';
 
 @Injectable({
   providedIn: 'root',
@@ -93,15 +95,30 @@ export class YourCvService {
   }
 
   updateCurriculum(
-    curriculumId: number,
     curriculumDto: CurriculumDto,
     userDto: UserDto
   ): Observable<CurriculumDetailDto> {
-    return this.cvClient.updateCurriculum(curriculumId, curriculumDto, userDto).pipe(
+    return this.cvClient.updateCurriculum({ curriculum: curriculumDto, user: userDto }).pipe(
       map((response) => response.data),
       catchError((error) => {
         return throwError(() => new Error('Failed to update curriculum'));
       })
+    );
+  }
+
+  createCurriculum(dto: CreateCurriculumDetailDto): Observable<CurriculumDto> {
+    return this.cvClient.createCurriculum(dto).pipe(
+      map((response) => response.data),
+      catchError((error) => {
+        return throwError(() => new Error('Failed to create curriculum'));
+      })
+    );
+  }
+
+  deleteCurriculum(curriculumId: number): Observable<void> {
+    return this.cvClient.deleteCurriculum(curriculumId).pipe(
+      map(() => void 0),
+      catchError(() => throwError(() => new Error('Failed to delete curriculum')))
     );
   }
 }

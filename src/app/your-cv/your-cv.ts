@@ -19,22 +19,27 @@ import { InputNumberModule } from 'primeng/inputnumber';
 import { ToggleSwitchModule } from 'primeng/toggleswitch';
 import { SelectModule } from 'primeng/select';
 import { DatePickerModule } from 'primeng/datepicker';
-import { MessageService } from 'primeng/api';
+import { ConfirmationService, MessageService } from 'primeng/api';
 import { DatePipe, TitleCasePipe } from '@angular/common';
+import { ConfirmDialogModule } from 'primeng/confirmdialog';
+import { MultiSelectModule } from 'primeng/multiselect';
+import { ActivatedRoute } from '@angular/router';
+
 import { YourCvService } from './service/your-cv-service';
+import { AuthService } from '../auth/service/auth-service';
+import { ManageUserService } from '../manage-user/service/manage-user-service';
+
 import { CurriculumDetailDto } from './model/curriculum-detail-dto';
 import { ProjectDomainOptionDto } from './model/project-domain-option-dto';
 import { DomainDto } from '../manage-domain/model/domain-dto';
 import { DrivingLicenseEnum, DRIVING_LICENSE_OPTIONS } from './enum/driving-license-enum';
-import { MultiSelectModule } from 'primeng/multiselect';
 import { ProjectDto } from './model/project-dto';
 import { DomainOptionDto } from '../manage-domain/model/domain-option-dto';
 import { EducationDto } from './model/education-dto';
 import { UserDomainOptionDto } from '../dashboard/model/user-domain-option-dto';
 import { UserDto } from '../dashboard/model/user-dto';
+import { CreateCurriculumDto } from './model/create/create-curriculum-dto';
 import { CurriculumDto } from './model/curriculum-dto';
-import { ActivatedRoute } from '@angular/router';
-import { AuthService } from '../auth/service/auth-service';
 
 interface EducationFormControls {
   educationId: FormControl<number | undefined>;
@@ -69,26 +74,36 @@ type UserSkillsFormControls = Record<string, FormControl>;
     DatePipe,
     MultiSelectModule,
     TitleCasePipe,
+    ConfirmDialogModule,
   ],
-  providers: [MessageService],
+  providers: [MessageService, ConfirmationService],
 })
 export class YourCv implements OnInit {
   private readonly authService = inject(AuthService);
   private readonly yourCvService = inject(YourCvService);
+  private readonly manageUserService = inject(ManageUserService);
   private readonly messageService = inject(MessageService);
+  private readonly confirmationService = inject(ConfirmationService);
   private readonly route = inject(ActivatedRoute);
 
   private readonly MAX_SKILL_GRADE = 5 as const;
 
+  // State Signals
+  readonly loading = signal<boolean>(true);
+  readonly notFound = signal<boolean>(false);
+  readonly isCreating = signal<boolean>(false);
   readonly curriculumDetail = signal<CurriculumDetailDto | null>(null);
 
+  // Track if the profile being viewed belongs to the logged-in user
+  private readonly isCurrentUserProfile = signal<boolean>(false);
+
+  // Derived Signals
   readonly user = computed(() => this.curriculumDetail()?.user);
   readonly curriculum = computed(() => this.curriculumDetail()?.curriculum ?? null);
 
+  // Determines if we have edit rights.
   readonly isOwner = computed(() => {
-    const currentUser = this.authService.currentUser();
-    const cvUser = this.user();
-    return !!(currentUser && cvUser && currentUser.userId === cvUser.userId);
+    return this.isCreating() || this.isCurrentUserProfile();
   });
 
   readonly domains = computed(() => this.curriculumDetail()?.domains ?? []);
@@ -104,7 +119,6 @@ export class YourCv implements OnInit {
     const idx = this.domainOptionIndex();
     const domainMap = new Map<string, Map<number, { label: string; grade: number }>>();
 
-    // Helper function to add skill to domain map
     const addSkill = (domainName: string, optionId: number, grade: number) => {
       const label = idx.get(optionId);
       if (!label) return;
@@ -120,7 +134,6 @@ export class YourCv implements OnInit {
       }
     };
 
-    // Add skills from curriculum.domainOptions
     for (const raw of this.curriculumSkillItems()) {
       const domain = this.findDomainByOptionId(raw.domainOptionId);
       if (domain) {
@@ -128,7 +141,6 @@ export class YourCv implements OnInit {
       }
     }
 
-    // Add skills from all projects
     for (const project of this.projects()) {
       if (!project.domainOptions) continue;
 
@@ -140,7 +152,6 @@ export class YourCv implements OnInit {
       }
     }
 
-    // Add skills from user.userDomainOptions
     for (const udo of this.user()?.userDomainOptions ?? []) {
       const domain = this.findDomainByOptionId(udo.domainOptionId);
       if (domain) {
@@ -148,7 +159,6 @@ export class YourCv implements OnInit {
       }
     }
 
-    // Convert to sorted array structure
     return Array.from(domainMap.entries())
       .map(([domainName, skillsMap]) => ({
         domainName,
@@ -216,7 +226,6 @@ export class YourCv implements OnInit {
     const idx = this.domainOptionIndex();
     const best = new Map<number, { label: string; grade: number }>();
 
-    // Add skills from curriculum.domainOptions
     for (const raw of this.curriculumSkillItems()) {
       const id = raw.domainOptionId;
       const grade = raw.grade ?? 0;
@@ -230,7 +239,6 @@ export class YourCv implements OnInit {
       }
     }
 
-    // Add skills from all projects
     for (const project of this.projects()) {
       if (!project.domainOptions) {
         continue;
@@ -250,7 +258,6 @@ export class YourCv implements OnInit {
       }
     }
 
-    // Add skills from user.userDomainOptions
     for (const udo of this.user()?.userDomainOptions ?? []) {
       const id = udo.domainOptionId;
       const grade = udo.grade ?? 0;
@@ -314,16 +321,153 @@ export class YourCv implements OnInit {
     return this.cvForm.get('userSkills') as FormGroup<UserSkillsFormControls>;
   }
 
+  ngOnInit(): void {
+    this.loadData();
+  }
+
+  private loadData(): void {
+    this.loading.set(true);
+    this.notFound.set(false);
+    this.isCreating.set(false);
+    this.curriculumDetail.set(null);
+
+    const userIdParam = this.route.snapshot.paramMap.get('userId');
+    const currentUserId = this.authService.currentUser()?.userId;
+
+    // Determine if we are viewing our own profile
+    const isSelf = !userIdParam || (!!currentUserId && Number(userIdParam) === currentUserId);
+    this.isCurrentUserProfile.set(isSelf);
+
+    const targetUserId = userIdParam ? Number(userIdParam) : currentUserId;
+
+    const fetchCv$ = userIdParam
+      ? this.yourCvService.getCurriculumDetailsByUserId(Number(userIdParam))
+      : this.yourCvService.getCurriculumDetailsForCurrentUser();
+
+    fetchCv$.subscribe({
+      next: (curriculum) => {
+        this.loading.set(false);
+        if (!curriculum) {
+          this.notFound.set(true);
+          return;
+        }
+
+        this.curriculumDetail.set(curriculum);
+        this.possibleDomains.set(curriculum.domains ?? []);
+        this.patchFormFromCurriculum();
+      },
+      error: (err: HttpErrorResponse | any) => {
+        this.loading.set(false);
+
+        if (err.status === 404 || (err.message && err.message.includes('No curriculum found'))) {
+          if (targetUserId) {
+            this.manageUserService.getUserById(targetUserId).subscribe({
+              next: (userDto) => {
+                this.curriculumDetail.set({
+                  user: userDto,
+                  curriculum: { curriculumId: 0, userId: userDto.userId },
+                  domains: [],
+                  schools: [],
+                  degrees: [],
+                });
+                this.notFound.set(true);
+              },
+              error: () => this.notFound.set(true),
+            });
+          } else {
+            this.notFound.set(true);
+          }
+          return;
+        }
+
+        let detail: string = 'Failed to load data.';
+        if (err instanceof HttpErrorResponse && err.status === 403) {
+          detail = 'Access denied.';
+        } else if (err.message) {
+          detail = err.message;
+        }
+
+        this.messageService.add({
+          severity: 'error',
+          summary: 'Error Loading Curriculum',
+          detail: detail,
+          life: 5000,
+        });
+      },
+    });
+  }
+
+  initCreation(): void {
+    const existingUser = this.user();
+    const currentUser = existingUser || this.authService.currentUser();
+
+    if (!currentUser) return;
+
+    this.yourCvService.getAllDomains().subscribe({
+      next: (domains) => {
+        this.possibleDomains.set(domains);
+        this.allDomainsLoaded.set(true);
+
+        const newDetail: CurriculumDetailDto = {
+          user:
+            'userDomainOptions' in currentUser
+              ? (currentUser as UserDto)
+              : {
+                  userId: currentUser.userId,
+                  username: currentUser.username,
+                  firstName: currentUser.firstName,
+                  lastName: currentUser.lastName,
+                  role: currentUser.role,
+                  email: '',
+                  employeeIds: [],
+                  userDomainOptions: [],
+                  managerId: 0,
+                },
+          curriculum: {
+            curriculumId: 0,
+            userId: currentUser.userId,
+            educationHistory: [],
+            projects: [],
+            domainOptions: [],
+          },
+          domains: [],
+          schools: [],
+          degrees: [],
+        };
+
+        this.curriculumDetail.set(newDetail);
+        this.patchFormFromCurriculum();
+
+        this.isCreating.set(true);
+        this.isEditMode.set(true);
+        this.notFound.set(false);
+      },
+      error: () => {
+        this.messageService.add({
+          severity: 'error',
+          summary: 'Error',
+          detail: 'Could not initialize form.',
+        });
+      },
+    });
+  }
+
   toggleEditMode(): void {
+    if (this.isCreating() && this.isEditMode()) {
+      // Cancel creation -> go back to "Not Found"
+      this.isCreating.set(false);
+      this.isEditMode.set(false);
+      this.notFound.set(true);
+      return;
+    }
+
     const willBeEditMode = !this.isEditMode();
     if (willBeEditMode && !this.allDomainsLoaded()) {
       this.yourCvService.getAllDomains().subscribe({
         next: (domains) => {
           this.possibleDomains.set(domains);
           this.allDomainsLoaded.set(true);
-
           this.patchFormFromCurriculum();
-
           this.isEditMode.set(true);
         },
         error: () => {
@@ -336,11 +480,9 @@ export class YourCv implements OnInit {
         },
       });
     } else {
-      // Toggle mode normally
       this.isEditMode.update((current) => {
         const next = !current;
         if (!next) {
-          // Leaving edit mode (Undo)
           this.editingEducationIndex.set(null);
           this.editingProjectIndex.set(null);
           this.patchFormFromCurriculum();
@@ -348,6 +490,123 @@ export class YourCv implements OnInit {
         return next;
       });
     }
+  }
+
+  saveCurriculum(): void {
+    if (!this.cvForm.valid) {
+      this.messageService.add({
+        severity: 'error',
+        summary: 'Validation Error',
+        detail: 'Please fix all validation errors before saving.',
+        life: 3000,
+      });
+      return;
+    }
+
+    const formValue = this.cvForm.value;
+    const current = this.curriculumDetail()!;
+
+    // FIX: Include curriculumId and userId so Update works correctly
+    const curriculumDto: any = {
+      curriculumId: current.curriculum.curriculumId,
+      userId: current.curriculum.userId,
+      summary: formValue.summary ?? '',
+      mobilePhone: formValue.mobilePhone ?? '',
+      homeAddress: formValue.homeAddress ?? '',
+      workAddress: formValue.workAddress ?? '',
+      maritalStatus: formValue.maritalStatus ?? false,
+      drivingLicense: formValue.drivingLicense ?? undefined,
+      hasCar: formValue.hasCar ?? false,
+      openForTravel: formValue.openForTravel ?? false,
+      educationHistory: current.curriculum.educationHistory as any,
+      projects: current.curriculum.projects as any,
+      domainOptions: current.curriculum.domainOptions as any,
+    };
+
+    const userDto: UserDto = {
+      ...current.user!,
+      userDomainOptions: current.user!.userDomainOptions ?? [],
+    };
+
+    if (this.isCreating()) {
+      this.yourCvService
+        .createCurriculum({ createCurriculumDto: curriculumDto, userDto })
+        .subscribe({
+          next: () => {
+            this.isCreating.set(false);
+            this.loadData();
+            this.messageService.add({
+              severity: 'success',
+              summary: 'Created',
+              detail: 'Curriculum created successfully.',
+              life: 3000,
+            });
+          },
+          error: () => {
+            this.messageService.add({
+              severity: 'error',
+              summary: 'Error',
+              detail: 'Failed to create curriculum.',
+            });
+          },
+        });
+    } else {
+      this.yourCvService.updateCurriculum(curriculumDto, userDto).subscribe({
+        next: (updatedCurriculum) => {
+          this.curriculumDetail.set(updatedCurriculum);
+          this.isEditMode.set(false);
+          this.messageService.add({
+            severity: 'success',
+            summary: 'Success',
+            detail: 'Curriculum updated successfully.',
+            life: 3000,
+          });
+        },
+        error: (error: HttpErrorResponse) => {
+          this.messageService.add({
+            severity: 'error',
+            summary: 'Error',
+            detail: error.error?.message ?? 'Failed to update curriculum.',
+            life: 3000,
+          });
+        },
+      });
+    }
+  }
+
+  deleteCurriculum(): void {
+    const id = this.curriculum()?.curriculumId;
+    if (!id) return;
+
+    this.confirmationService.confirm({
+      message: 'Are you sure you want to delete your curriculum? This action cannot be undone.',
+      header: 'Delete Curriculum',
+      icon: 'pi pi-exclamation-triangle',
+      acceptButtonStyleClass: 'p-button-danger',
+      accept: () => {
+        this.yourCvService.deleteCurriculum(id).subscribe({
+          next: () => {
+            this.messageService.add({
+              severity: 'success',
+              summary: 'Deleted',
+              detail: 'Curriculum deleted.',
+            });
+            this.curriculumDetail.set(null);
+            this.isEditMode.set(false);
+            this.isCreating.set(false);
+            this.notFound.set(true);
+            this.loadData();
+          },
+          error: () => {
+            this.messageService.add({
+              severity: 'error',
+              summary: 'Error',
+              detail: 'Failed to delete curriculum.',
+            });
+          },
+        });
+      },
+    });
   }
 
   private patchFormFromCurriculum(): void {
@@ -465,7 +724,6 @@ export class YourCv implements OnInit {
       return;
     }
 
-    // Extract form values and build ProjectDto
     const formValue = formGroup.value;
     const domainOptions: ProjectDomainOptionDto[] = [];
 
@@ -495,7 +753,7 @@ export class YourCv implements OnInit {
       endDate: formValue['endDate'] ? this.formatDate(formValue['endDate'] as Date) : undefined,
       domainOptions,
     };
-    // Update the curriculum signal
+
     this.curriculumDetail.update((detail) => {
       if (!detail?.curriculum) return detail;
 
@@ -523,7 +781,6 @@ export class YourCv implements OnInit {
   addProject(): void {
     this.projectsArray.push(this.createProjectFormGroup());
 
-    // Add empty project to signal
     this.curriculumDetail.update((detail) => {
       if (!detail?.curriculum) return detail;
 
@@ -554,7 +811,6 @@ export class YourCv implements OnInit {
     const currentEditing = this.editingProjectIndex();
     this.projectsArray.removeAt(index);
 
-    // Remove from signal
     this.curriculumDetail.update((detail) => {
       if (!detail?.curriculum) return detail;
 
@@ -589,7 +845,6 @@ export class YourCv implements OnInit {
     } else {
       this.projectsArray.removeAt(index);
 
-      // Remove from signal if it was a new project
       this.curriculumDetail.update((detail) => {
         if (!detail?.curriculum) return detail;
 
@@ -635,7 +890,6 @@ export class YourCv implements OnInit {
   addEducation(): void {
     this.educationHistoryArray.push(this.createEducationFormGroup());
 
-    // Add empty education to signal
     this.curriculumDetail.update((detail) => {
       if (!detail?.curriculum) return detail;
 
@@ -664,7 +918,6 @@ export class YourCv implements OnInit {
     const currentEditing = this.editingEducationIndex();
     this.educationHistoryArray.removeAt(index);
 
-    // Remove from signal
     this.curriculumDetail.update((detail) => {
       if (!detail?.curriculum) return detail;
 
@@ -699,7 +952,6 @@ export class YourCv implements OnInit {
       return;
     }
 
-    // Extract form values and build EducationDto
     const formValue = formGroup.value;
     const updatedEducation: EducationDto = {
       educationId: formValue.educationId,
@@ -711,7 +963,6 @@ export class YourCv implements OnInit {
       maxGrade: formValue.maxGrade ?? undefined,
     };
 
-    // Update the curriculum signal
     this.curriculumDetail.update((detail) => {
       if (!detail?.curriculum) return detail;
 
@@ -751,7 +1002,6 @@ export class YourCv implements OnInit {
     } else {
       this.educationHistoryArray.removeAt(index);
 
-      // Remove from signal if it was a new education
       this.curriculumDetail.update((detail) => {
         if (!detail?.curriculum) return detail;
 
@@ -913,7 +1163,6 @@ export class YourCv implements OnInit {
       }
     }
 
-    // Force a new object reference to trigger reactivity
     this.curriculumDetail.update((detail) => {
       if (!detail?.user) return detail;
 
@@ -940,118 +1189,5 @@ export class YourCv implements OnInit {
   cancelEditUserSkills(): void {
     this.editingUserSkills.set(false);
     this.patchUserSkillsForm();
-  }
-
-  saveCurriculum(): void {
-    const curriculumId = this.curriculumDetail()?.curriculum?.curriculumId;
-    if (!curriculumId) {
-      this.messageService.add({
-        severity: 'error',
-        summary: 'Error',
-        detail: 'Curriculum ID not found.',
-        life: 3000,
-      });
-      return;
-    }
-
-    if (!this.cvForm.valid) {
-      this.messageService.add({
-        severity: 'error',
-        summary: 'Validation Error',
-        detail: 'Please fix all validation errors before saving.',
-        life: 3000,
-      });
-      return;
-    }
-
-    const formValue = this.cvForm.value;
-    const current = this.curriculumDetail()!;
-
-    const curriculumDto: CurriculumDto = {
-      ...current.curriculum!,
-      summary: formValue.summary ?? '',
-      mobilePhone: formValue.mobilePhone ?? '',
-      homeAddress: formValue.homeAddress ?? '',
-      workAddress: formValue.workAddress ?? '',
-      maritalStatus: formValue.maritalStatus ?? false,
-      drivingLicense: formValue.drivingLicense ?? undefined,
-      hasCar: formValue.hasCar ?? false,
-      openForTravel: formValue.openForTravel ?? false,
-    };
-
-    const userDto: UserDto = {
-      ...current.user!,
-      userDomainOptions: current.user!.userDomainOptions ?? [],
-    };
-
-    this.yourCvService.updateCurriculum(curriculumId, curriculumDto, userDto).subscribe({
-      next: (updatedCurriculum) => {
-        this.curriculumDetail.set(updatedCurriculum);
-        this.isEditMode.set(false);
-        this.messageService.add({
-          severity: 'success',
-          summary: 'Success',
-          detail: 'Curriculum updated successfully.',
-          life: 3000,
-        });
-      },
-      error: (error: HttpErrorResponse) => {
-        this.messageService.add({
-          severity: 'error',
-          summary: 'Error',
-          detail: error.error?.message ?? 'Failed to update curriculum.',
-          life: 3000,
-        });
-      },
-    });
-  }
-
-  ngOnInit(): void {
-    this.curriculumDetail.set(null);
-
-    const userIdParam = this.route.snapshot.paramMap.get('userId');
-    const fetchCv$ = userIdParam
-      ? this.yourCvService.getCurriculumDetailsByUserId(Number(userIdParam))
-      : this.yourCvService.getCurriculumDetailsForCurrentUser();
-
-    fetchCv$.subscribe({
-      next: (curriculum) => {
-        if (!curriculum) {
-          this.messageService.add({
-            severity: 'error',
-            summary: 'Error',
-            detail: 'Received empty curriculum details.',
-          });
-          return;
-        }
-
-        this.curriculumDetail.set(curriculum);
-
-        // Initialize with the subset of domains returned in the curriculum detail
-        this.possibleDomains.set(curriculum.domains ?? []);
-
-        this.patchFormFromCurriculum();
-      },
-      error: (err: HttpErrorResponse | Error) => {
-        let detail: string = 'Failed to load data.';
-
-        if (err instanceof HttpErrorResponse) {
-          if (err.error.status === 404) {
-            detail = 'Curriculum not found.';
-          } else if (err.error.status === 403) {
-            detail = 'Access denied.';
-          }
-        } else {
-          detail = err.message;
-        }
-
-        this.messageService.add({
-          severity: 'error',
-          summary: 'Error Loading Curriculum',
-          detail: detail,
-          life: 5000,
-        });
-      },
-    });
   }
 }

@@ -30,4 +30,13 @@ export const routes: Routes = [
     path: 'employees',
     loadComponent: () => import('./your-employee/your-employee').then((m) => m.YourEmployee),
   },
+  {
+    path: 'manage-users',
+    loadComponent: () => import('./manage-user/manage-user').then((m) => m.ManageUser),
+  },
+  {
+    path: '',
+    redirectTo: 'dashboard',
+    pathMatch: 'full',
+  },
 ];

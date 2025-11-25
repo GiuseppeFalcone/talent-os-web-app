@@ -6,6 +6,9 @@ import { CurriculumDetailDto } from '../model/curriculum-detail-dto';
 import { CurriculumDto } from '../model/curriculum-dto';
 import { CurriculumLightDto } from '../model/curriculum-light-dto';
 import { UserDto } from '../../dashboard/model/user-dto';
+import { CreateCurriculumDto } from '../model/create/create-curriculum-dto';
+import { CreateCurriculumDetailDto } from '../model/create/create-curriculum-detail-dto';
+import { UpdateCurriculumDto } from '../model/updateCurriculum-dto';
 
 export interface GetCurriculumsParams {
   page: number;
@@ -54,15 +57,19 @@ export class YourCvClient {
     return this.http.get<ApiResponse<CurriculumDetailDto>>(url);
   }
 
-  updateCurriculum(
-    curriculumId: number,
-    curriculumDto: CurriculumDto,
-    userDto: UserDto
-  ): Observable<ApiResponse<CurriculumDetailDto>> {
-    const url = `${this.baseUrl.concat('/views/your-cv')}/${curriculumId}`;
-    return this.http.put<ApiResponse<CurriculumDetailDto>>(url, {
-      curriculum: curriculumDto,
-      user: userDto,
-    });
+  updateCurriculum(dto: UpdateCurriculumDto): Observable<ApiResponse<CurriculumDetailDto>> {
+    const url = `${this.baseUrl.concat('/views/your-cv')}/${dto.curriculum.curriculumId}`;
+    return this.http.put<ApiResponse<CurriculumDetailDto>>(url, dto);
+  }
+
+  createCurriculum(curriculum: CreateCurriculumDetailDto): Observable<ApiResponse<CurriculumDto>> {
+    return this.http.post<ApiResponse<CurriculumDto>>(
+      this.baseUrl.concat('/views/your-cv'),
+      curriculum
+    );
+  }
+
+  deleteCurriculum(curriculumId: number): Observable<ApiResponse<void>> {
+    return this.http.delete<ApiResponse<void>>(`${this.baseUrl}/curriculums/${curriculumId}`);
   }
 }

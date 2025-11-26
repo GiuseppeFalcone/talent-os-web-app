@@ -29,8 +29,7 @@
             <div class="px-1 shrink-0">
               <p-iconfield iconPosition="left" class="w-full">
                 <p-inputicon styleClass="pi pi-search" />
-                <input pInputText type="text" [ngModel]="domainSearchQuery()"
-                  (ngModelChange)="domainSearchQuery.set($event); onDomainSearch()" placeholder="Search domains..."
+                <input pInputText type="text" [formControl]="searchControl" placeholder="Search domains..."
                   class="w-full" aria-label="Search domains" />
               </p-iconfield>
             </div>
@@ -98,8 +97,7 @@
               <div class="flex gap-2 w-full sm:w-auto">
                 <p-iconfield iconPosition="left" class="w-full sm:w-auto">
                   <p-inputicon styleClass="pi pi-filter" />
-                  <input pInputText type="text" [ngModel]="localOptionFilterQuery()"
-                    (ngModelChange)="localOptionFilterQuery.set($event)" placeholder="Filter options..."
+                  <input pInputText type="text" [formControl]="optionSearchControl" placeholder="Filter options..."
                     class="w-full sm:w-64" aria-label="Filter options" />
                 </p-iconfield>
 
@@ -112,7 +110,7 @@
           @if (selectedDomain(); as domain) {
 
           <p-table [value]="filteredOptions()" [paginator]="true" [rows]="10" [rowsPerPageOptions]="[10, 25, 50]"
-            styleClass="p-datatable-striped" [scrollable]="true" scrollHeight="flex"
+            [loading]="loadingOptions()" styleClass="p-datatable-striped" [scrollable]="true" scrollHeight="flex"
             class="flex-1 flex flex-col h-full w-full" [tableStyle]="{'min-width': '100%'}">
             <ng-template pTemplate="header">
               <tr>
@@ -140,7 +138,7 @@
                 <td colspan="2" class="text-center p-8">
                   <div class="flex flex-col items-center gap-2 text-surface-500">
                     <i class="pi pi-filter-slash text-2xl"></i>
-                    @if (localOptionFilterQuery()) {
+                    @if (optionSearchControl.value) {
                     <span>No options match your filter.</span>
                     } @else {
                     <span>No options found for this domain.</span>

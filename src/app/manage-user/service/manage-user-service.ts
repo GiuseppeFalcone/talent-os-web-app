@@ -29,6 +29,10 @@ export class ManageUserService {
     return this.client.updateUser(userId, userDto).pipe(map((res) => res.data));
   }
 
+  patchUser(userId: number, userLightDto: Partial<UserLightDto>): Observable<UserDto> {
+    return this.client.patchUser(userId, userLightDto).pipe(map((res) => res.data));
+  }
+
   deleteUser(userId: number): Observable<void> {
     return this.client.deleteUser(userId).pipe(map((res) => res.data));
   }

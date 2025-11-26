@@ -6,5 +6,6 @@ export interface UserLightDto {
   firstName: string;
   lastName: string;
   role: UserRoleEnum;
+  email: string;
   refreshToken: string;
 }

@@ -79,8 +79,8 @@
       <div class="md:col-span-8 lg:col-span-9">
         <p-card styleClass="h-[750px] flex flex-col shadow-2"
           contentStyle="{'flex': '1', 'overflow': 'hidden', 'display': 'flex', 'flex-direction': 'column'}">
-          @if (selectedDomain(); as domain) {
           <ng-template pTemplate="header">
+            @if (selectedDomain(); as domain) {
             <div
               class="p-4 border-b border-surface-200 dark:border-surface-700 flex flex-col sm:flex-row justify-between items-center gap-4 bg-surface-50 dark:bg-surface-900 rounded-t-lg shrink-0">
               <div class="flex items-center gap-3">
@@ -107,7 +107,9 @@
                   [raised]="true"></p-button>
               </div>
             </div>
+            }
           </ng-template>
+          @if (selectedDomain(); as domain) {
 
           <p-table [value]="filteredOptions()" [paginator]="true" [rows]="10" [rowsPerPageOptions]="[10, 25, 50]"
             styleClass="p-datatable-striped" [scrollable]="true" scrollHeight="flex"

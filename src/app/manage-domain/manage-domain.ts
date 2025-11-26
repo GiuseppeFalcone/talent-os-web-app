@@ -146,7 +146,7 @@ export class ManageDomain implements OnInit {
 
   onSelectDomain(domain: DomainDto) {
     this.selectedDomain.set(domain);
-    this.localOptionFilterQuery.set(''); // Reset right-side filter when switching domains
+    this.localOptionFilterQuery.set('');
   }
 
   openNewDomainDialog() {

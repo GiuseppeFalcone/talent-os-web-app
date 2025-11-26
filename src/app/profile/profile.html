@@ -1,0 +1,180 @@
+<p-toast />
+
+<div class="surface-ground min-h-screen p-4">
+  <div class="mx-auto max-w-4xl">
+
+    <div class="mb-6 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+      <div>
+        <h1 class="text-3xl font-bold text-primary-500">My Profile</h1>
+        <p class="text-surface-600 dark:text-surface-300">
+          Manage your personal information and security settings.
+        </p>
+      </div>
+      <p-button [label]="isEditMode() ? 'Cancel' : 'Edit Profile'"
+        [icon]="isEditMode() ? 'pi pi-times' : 'pi pi-pencil'" (onClick)="toggleEditMode()"
+        [severity]="isEditMode() ? 'secondary' : 'primary'" [outlined]="isEditMode()" [raised]="!isEditMode()" />
+    </div>
+
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+
+      <div class="md:col-span-1">
+        <p-card styleClass="h-full shadow-2 text-center">
+          <div class="flex flex-col items-center gap-4 py-6">
+            <div
+              class="w-24 h-24 rounded-full bg-primary-100 dark:bg-primary-900 flex items-center justify-center text-primary-600 dark:text-primary-300 text-4xl font-bold">
+              {{ currentUser()?.firstName?.charAt(0) }}{{ currentUser()?.lastName?.charAt(0) }}
+            </div>
+            <div>
+              <h2 class="text-xl font-semibold m-0">
+                {{ currentUser()?.firstName }} {{ currentUser()?.lastName }}
+              </h2>
+              <p class="text-surface-500 m-0 mt-1">{{ currentUser()?.role | titlecase }}</p>
+            </div>
+            <p-button label="Change Password" icon="pi pi-lock" severity="secondary" [outlined]="true"
+              class="w-full mt-4" (onClick)="openChangePasswordDialog()" />
+          </div>
+        </p-card>
+      </div>
+
+      <div class="md:col-span-2">
+        <p-card header="Personal Details" styleClass="shadow-2 h-full">
+          <form [formGroup]="profileForm" (ngSubmit)="saveProfile()" class="flex flex-col gap-6 mt-2">
+
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+
+              <div class="flex flex-col gap-1">
+                @if (isEditMode()) {
+                <p-floatLabel variant="on">
+                  <input pInputText id="firstName" formControlName="firstName" class="w-full" />
+                  <label for="firstName">First Name</label>
+                </p-floatLabel>
+                @if (profileForm.controls.firstName.dirty || profileForm.controls.firstName.touched) {
+                @if (profileForm.controls.firstName.hasError('required')) {
+                <small class="text-red-500">First name is required.</small>
+                }
+                }
+                } @else {
+                <label class="text-sm font-medium text-surface-500 dark:text-surface-400">First Name</label>
+                <div
+                  class="text-lg font-medium text-surface-900 dark:text-surface-50 pb-2 border-b border-surface-200 dark:border-surface-700">
+                  {{ currentUser()?.firstName }}
+                </div>
+                }
+              </div>
+
+              <div class="flex flex-col gap-1">
+                @if (isEditMode()) {
+                <p-floatLabel variant="on">
+                  <input pInputText id="lastName" formControlName="lastName" class="w-full" />
+                  <label for="lastName">Last Name</label>
+                </p-floatLabel>
+                @if (profileForm.controls.lastName.dirty || profileForm.controls.lastName.touched) {
+                @if (profileForm.controls.lastName.hasError('required')) {
+                <small class="text-red-500">Last name is required.</small>
+                }
+                }
+                } @else {
+                <label class="text-sm font-medium text-surface-500 dark:text-surface-400">Last Name</label>
+                <div
+                  class="text-lg font-medium text-surface-900 dark:text-surface-50 pb-2 border-b border-surface-200 dark:border-surface-700">
+                  {{ currentUser()?.lastName }}
+                </div>
+                }
+              </div>
+            </div>
+
+            <div class="flex flex-col gap-1">
+              @if (isEditMode()) {
+              <p-floatLabel variant="on">
+                <input pInputText id="username" formControlName="username" class="w-full"
+                  [ngClass]="{'ng-invalid ng-dirty': profileForm.controls.username.hasError('notUnique')}" />
+                <label for="username">Username</label>
+                @if (profileForm.controls.username.pending) {
+                <i class="pi pi-spin pi-spinner absolute right-3 top-3 text-surface-500"></i>
+                }
+              </p-floatLabel>
+
+              @if (profileForm.controls.username.dirty || profileForm.controls.username.touched ||
+              profileForm.controls.username.hasError('notUnique')) {
+              <div class="flex flex-col gap-1">
+                @if (profileForm.controls.username.hasError('required')) {
+                <small class="text-red-500">Username is required.</small>
+                }
+                @if (profileForm.controls.username.hasError('minlength')) {
+                <small class="text-red-500">Username must be at least 3 characters.</small>
+                }
+                @if (profileForm.controls.username.hasError('notUnique')) {
+                <small class="text-red-500 font-semibold">Username is already taken.</small>
+                }
+              </div>
+              }
+              } @else {
+              <label class="text-sm font-medium text-surface-500 dark:text-surface-400">Username</label>
+              <div
+                class="text-lg font-medium text-surface-900 dark:text-surface-50 pb-2 border-b border-surface-200 dark:border-surface-700">
+                {{ currentUser()?.username }}
+              </div>
+              }
+            </div>
+            <div class="flex flex-col gap-1">
+              @if (isEditMode()) {
+              <p-floatLabel variant="on">
+                <input pInputText id="email" formControlName="email" type="email" class="w-full" />
+                <label for="email">Email Address</label>
+              </p-floatLabel>
+
+              @if (profileForm.controls.email.dirty || profileForm.controls.email.touched) {
+              @if (profileForm.controls.email.hasError('required')) {
+              <small class="text-red-500">Email is required.</small>
+              }
+              @if (profileForm.controls.email.hasError('email')) {
+              <small class="text-red-500">Please enter a valid email.</small>
+              }
+              }
+              } @else {
+              <label class="text-sm font-medium text-surface-500 dark:text-surface-400">Email Address</label>
+              <div
+                class="text-lg font-medium text-surface-900 dark:text-surface-50 pb-2 border-b border-surface-200 dark:border-surface-700">
+                {{ currentUser()?.email }}
+              </div>
+              }
+            </div>
+            @if (isEditMode()) {
+            <div class="flex justify-end pt-4 animate-fade-in">
+              <p-button label="Save Changes" icon="pi pi-save" type="submit" [loading]="isSaving()"
+                [disabled]="profileForm.invalid || profileForm.controls.username.pending" />
+            </div>
+            }
+
+          </form>
+        </p-card>
+      </div>
+    </div>
+  </div>
+</div>
+
+<p-dialog [(visible)]="passwordDialogVisible" header="Change Password" [modal]="true" [style]="{ width: '450px' }"
+  [draggable]="false" [resizable]="false">
+
+  <form [formGroup]="passwordForm" class="flex flex-col gap-4 mt-2">
+    <div class="flex flex-col gap-2">
+      <label for="newPassword" class="font-medium">New Password</label>
+      <p-password id="newPassword" formControlName="newPassword" [toggleMask]="true" [feedback]="true" appendTo="body"
+        styleClass="w-full" inputStyleClass="w-full" promptLabel="Enter a strong password" weakLabel="Weak"
+        mediumLabel="Medium" strongLabel="Strong" />
+    </div>
+
+    <div class="flex flex-col gap-2">
+      <label for="confirmPassword" class="font-medium">Confirm Password</label>
+      <p-password id="confirmPassword" formControlName="confirmPassword" [toggleMask]="true" [feedback]="false"
+        appendTo="body" styleClass="w-full" inputStyleClass="w-full" />
+    </div>
+  </form>
+
+  <ng-template pTemplate="footer">
+    <p-button label="Cancel" icon="pi pi-times" [text]="true" (onClick)="passwordDialogVisible.set(false)"
+      severity="secondary" />
+    <p-button label="Update Password" icon="pi pi-check" [text]="true" (onClick)="savePassword()"
+      [disabled]="passwordForm.invalid" />
+  </ng-template>
+</p-dialog>

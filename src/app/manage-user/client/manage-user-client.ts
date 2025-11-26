@@ -13,6 +13,7 @@ export interface GetUsersParams {
   pageSize: number;
   searchString?: string;
   queryRole?: UserRoleEnum;
+  matchUsername?: string;
 }
 
 @Injectable({
@@ -30,8 +31,13 @@ export class ManageUserClient {
     if (params.searchString) {
       httpParams = httpParams.set('searchString', params.searchString);
     }
+
     if (params.queryRole !== undefined && params.queryRole !== null) {
       httpParams = httpParams.set('queryRole', params.queryRole.toString());
+    }
+
+    if (params.matchUsername) {
+      httpParams = httpParams.set('matchUsername', params.matchUsername);
     }
 
     return this.http.get<ApiResponse<PagedResponseDto<UserLightDto>>>(this.baseUrl, {
@@ -49,6 +55,10 @@ export class ManageUserClient {
 
   updateUser(userId: number, userDto: UserDto): Observable<ApiResponse<UserDto>> {
     return this.http.put<ApiResponse<UserDto>>(`${this.baseUrl}/${userId}`, userDto);
+  }
+
+  patchUser(userId: number, userLightDto: Partial<UserLightDto>): Observable<ApiResponse<UserDto>> {
+    return this.http.patch<ApiResponse<UserDto>>(`${this.baseUrl}/${userId}`, userLightDto);
   }
 
   deleteUser(userId: number): Observable<ApiResponse<void>> {

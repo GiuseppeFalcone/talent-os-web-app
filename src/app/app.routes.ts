@@ -11,6 +11,10 @@ export const routes: Routes = [
       import('./auth/forgot-password/forgot-password').then((m) => m.ForgotPassword),
   },
   {
+    path: 'profile',
+    loadComponent: () => import('./profile/profile').then((m) => m.Profile),
+  },
+  {
     path: 'dashboard',
     loadComponent: () => import('./dashboard/dashboard').then((m) => m.Dashboard),
   },
@@ -33,10 +37,5 @@ export const routes: Routes = [
   {
     path: 'manage-users',
     loadComponent: () => import('./manage-user/manage-user').then((m) => m.ManageUser),
-  },
-  {
-    path: '',
-    redirectTo: 'dashboard',
-    pathMatch: 'full',
   },
 ];

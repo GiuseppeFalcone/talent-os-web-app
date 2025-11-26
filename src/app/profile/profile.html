@@ -87,7 +87,7 @@
               @if (isEditMode()) {
               <p-floatLabel variant="on">
                 <input pInputText id="username" formControlName="username" class="w-full"
-                  [ngClass]="{'ng-invalid ng-dirty': profileForm.controls.username.hasError('notUnique')}" />
+                  [class]="{'ng-invalid ng-dirty': profileForm.controls.username.hasError('notUnique')}" />
                 <label for="username">Username</label>
                 @if (profileForm.controls.username.pending) {
                 <i class="pi pi-spin pi-spinner absolute right-3 top-3 text-surface-500"></i>

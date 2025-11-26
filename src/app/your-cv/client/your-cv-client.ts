@@ -5,8 +5,6 @@ import { PagedResponseDto } from '../../response/paged-model';
 import { CurriculumDetailDto } from '../model/curriculum-detail-dto';
 import { CurriculumDto } from '../model/curriculum-dto';
 import { CurriculumLightDto } from '../model/curriculum-light-dto';
-import { UserDto } from '../../dashboard/model/user-dto';
-import { CreateCurriculumDto } from '../model/create/create-curriculum-dto';
 import { CreateCurriculumDetailDto } from '../model/create/create-curriculum-detail-dto';
 import { UpdateCurriculumDto } from '../model/updateCurriculum-dto';
 
@@ -53,13 +51,18 @@ export class YourCvClient {
   }
 
   getCurriculumDetailsById(curriculumId: number): Observable<ApiResponse<CurriculumDetailDto>> {
-    const url = `${this.baseUrl.concat('/views/your-cv')}/${curriculumId}`;
-    return this.http.get<ApiResponse<CurriculumDetailDto>>(url);
+    let httpParams = new HttpParams().set('curriculumId', curriculumId.toString());
+    return this.http.get<ApiResponse<CurriculumDetailDto>>(this.baseUrl.concat('/views/your-cv'), {
+      params: httpParams,
+    });
   }
 
   updateCurriculum(dto: UpdateCurriculumDto): Observable<ApiResponse<CurriculumDetailDto>> {
-    const url = `${this.baseUrl.concat('/views/your-cv')}/${dto.curriculum.curriculumId}`;
-    return this.http.put<ApiResponse<CurriculumDetailDto>>(url, dto);
+    let httpParams = new HttpParams().set('curriculumId', dto.curriculum.curriculumId.toString());
+    return this.http.put<ApiResponse<CurriculumDetailDto>>(this.baseUrl.concat('/views/your-cv'), {
+      params: httpParams,
+      body: dto,
+    });
   }
 
   createCurriculum(curriculum: CreateCurriculumDetailDto): Observable<ApiResponse<CurriculumDto>> {

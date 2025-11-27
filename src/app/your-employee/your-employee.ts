@@ -5,9 +5,10 @@ import {
   ChangeDetectionStrategy,
   ViewChild,
   OnInit,
+  OnDestroy,
 } from '@angular/core';
 import { Router } from '@angular/router';
-import { FormsModule } from '@angular/forms';
+import { FormsModule, ReactiveFormsModule, FormControl } from '@angular/forms';
 import { TableLazyLoadEvent, TableModule, Table } from 'primeng/table';
 import { ButtonModule } from 'primeng/button';
 import { TagModule } from 'primeng/tag';
@@ -26,6 +27,8 @@ import { HttpErrorResponse } from '@angular/common/http';
 import { DomainDto } from '../manage-domain/model/domain-dto';
 import { AccordionModule } from 'primeng/accordion';
 import { Divider } from 'primeng/divider';
+import { Subscription } from 'rxjs';
+import { debounceTime, distinctUntilChanged } from 'rxjs/operators';
 
 @Component({
   selector: 'app-your-employee',
@@ -41,6 +44,7 @@ import { Divider } from 'primeng/divider';
     ToastModule,
     TitleCasePipe,
     FormsModule,
+    ReactiveFormsModule,
     InputTextModule,
     SelectModule,
     IconFieldModule,
@@ -50,7 +54,7 @@ import { Divider } from 'primeng/divider';
   ],
   providers: [MessageService],
 })
-export class YourEmployee implements OnInit {
+export class YourEmployee implements OnInit, OnDestroy {
   private readonly yourEmployeeService = inject(YourEmployeeService);
   private readonly router = inject(Router);
   private readonly messageService = inject(MessageService);
@@ -62,6 +66,9 @@ export class YourEmployee implements OnInit {
   readonly loading = signal<boolean>(true);
 
   readonly searchQuery = signal<string>('');
+  readonly searchControl = new FormControl('');
+  private searchSub?: Subscription;
+
   readonly selectedRole = signal<UserRoleEnum | null>(null);
 
   readonly domains = signal<DomainDto[]>([]);
@@ -79,6 +86,20 @@ export class YourEmployee implements OnInit {
 
   ngOnInit(): void {
     this.loadDomains();
+    this.setupSearchSubscription();
+  }
+
+  ngOnDestroy(): void {
+    this.searchSub?.unsubscribe();
+  }
+
+  private setupSearchSubscription(): void {
+    this.searchSub = this.searchControl.valueChanges
+      .pipe(debounceTime(300), distinctUntilChanged())
+      .subscribe((value) => {
+        this.searchQuery.set(value || '');
+        this.onFilter();
+      });
   }
 
   private loadDomains(): void {
@@ -146,6 +167,7 @@ export class YourEmployee implements OnInit {
   }
 
   clearFilters(): void {
+    this.searchControl.setValue('', { emitEvent: false });
     this.searchQuery.set('');
     this.selectedRole.set(null);
     this.selectedDomainOptionIds.set([]);

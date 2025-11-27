@@ -38,4 +38,8 @@ export const routes: Routes = [
     path: 'manage-users',
     loadComponent: () => import('./manage-user/manage-user').then((m) => m.ManageUser),
   },
+  {
+    path: '',
+    loadComponent: () => import('./homepage/homepage').then((m) => m.Homepage),
+  },
 ];

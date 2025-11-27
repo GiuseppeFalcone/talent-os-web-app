@@ -28,11 +28,6 @@ export class Navbar {
       command: () => this.navigateToProfile(),
     },
     {
-      label: 'Settings',
-      icon: 'pi pi-cog',
-      command: () => this.router.navigate(['/settings']),
-    },
-    {
       separator: true,
     },
     {

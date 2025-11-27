@@ -1,0 +1,80 @@
+<footer class="mt-auto border-t border-surface-200 bg-surface-0 pt-12 pb-8 dark:border-surface-700 dark:bg-surface-900">
+  <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+    <div class="grid grid-cols-1 gap-8 md:grid-cols-2 lg:grid-cols-4">
+
+      <div class="flex flex-col gap-4">
+        <div class="flex items-center gap-2">
+          <i class="pi pi-sparkles text-2xl text-primary-500"></i>
+          <span class="text-xl font-bold text-surface-900 dark:text-surface-50">EasyCV</span>
+        </div>
+        <p class="text-sm text-surface-600 dark:text-surface-400 leading-relaxed">
+          Streamlining career growth and team management with intuitive CV tools and powerful analytics.
+        </p>
+      </div>
+
+      <div>
+        <h3 class="mb-4 text-sm font-semibold uppercase tracking-wider text-surface-900 dark:text-surface-50">Site Map
+        </h3>
+        <ul class="flex flex-col gap-3 text-sm text-surface-600 dark:text-surface-400">
+          <li>
+            <a routerLink="/dashboard" class="hover:text-primary-500 transition-colors cursor-pointer">Dashboard</a>
+          </li>
+          <li>
+            <a routerLink="/cv" class="hover:text-primary-500 transition-colors cursor-pointer">CV Builder</a>
+          </li>
+          <li>
+            <a routerLink="/employees" class="hover:text-primary-500 transition-colors cursor-pointer">Team
+              Management</a>
+          </li>
+          <li>
+            <a routerLink="/domains" class="hover:text-primary-500 transition-colors cursor-pointer">System Domains</a>
+          </li>
+        </ul>
+      </div>
+
+      <div>
+        <h3 class="mb-4 text-sm font-semibold uppercase tracking-wider text-surface-900 dark:text-surface-50">Company
+        </h3>
+        <ul class="flex flex-col gap-3 text-sm text-surface-600 dark:text-surface-400">
+          <li><a class="hover:text-primary-500 transition-colors cursor-pointer">About Us</a></li>
+          <li><a class="hover:text-primary-500 transition-colors cursor-pointer">Careers</a></li>
+          <li><a class="hover:text-primary-500 transition-colors cursor-pointer">Privacy Policy</a></li>
+          <li><a class="hover:text-primary-500 transition-colors cursor-pointer">Terms of Service</a></li>
+        </ul>
+      </div>
+
+      <div>
+        <h3 class="mb-4 text-sm font-semibold uppercase tracking-wider text-surface-900 dark:text-surface-50">Connect
+        </h3>
+        <ul class="flex flex-col gap-3 text-sm text-surface-600 dark:text-surface-400">
+          <li class="flex items-center gap-2">
+            <i class="pi pi-envelope text-primary-500"></i>
+            <span>contact@easycv.com</span>
+          </li>
+          <li class="flex items-center gap-2">
+            <i class="pi pi-map-marker text-primary-500"></i>
+            <span>Lungo Dora Colletta, 75, Torino, TO</span>
+          </li>
+        </ul>
+        <div class="mt-6 flex gap-4">
+          <a class="text-surface-500 hover:text-primary-500 transition-colors cursor-pointer" aria-label="Twitter">
+            <i class="pi pi-twitter text-xl"></i>
+          </a>
+          <a class="text-surface-500 hover:text-primary-500 transition-colors cursor-pointer" aria-label="LinkedIn">
+            <i class="pi pi-linkedin text-xl"></i>
+          </a>
+          <a class="text-surface-500 hover:text-primary-500 transition-colors cursor-pointer" aria-label="GitHub">
+            <i class="pi pi-github text-xl"></i>
+          </a>
+        </div>
+      </div>
+
+    </div>
+
+    <div class="mt-12 border-t border-surface-200 pt-8 dark:border-surface-700">
+      <p class="text-center text-sm text-surface-500">
+        &copy; {{ currentYear | date:'yyyy' }} EasyCV. All rights reserved.
+      </p>
+    </div>
+  </div>
+</footer>

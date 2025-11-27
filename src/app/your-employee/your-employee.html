@@ -42,13 +42,24 @@
                   class="min-w-2xs text-sm font-medium text-surface-700 dark:text-surface-300 whitespace-pre-line leading-tight">
                   {{domain.domainName.replaceAll('_', '\n') | titlecase}}
                 </span>
-                <div class="flex flex-wrap gap-2">
-                  @for (option of domain.domainOptions; track option.domainOptionId) {
-                  <p-button [label]="option.value"
-                    [severity]="selectedDomainOptionIds().includes(option.domainOptionId) ? 'primary' : 'secondary'"
-                    [outlined]="!selectedDomainOptionIds().includes(option.domainOptionId)" size="small"
-                    [rounded]="true" (onClick)="toggleDomainOption(option.domainOptionId)" />
-                  }
+
+                <div class="flex items-center gap-2 flex-1 min-w-0">
+                  <p-button icon="pi pi-chevron-left" [rounded]="true" [text]="true" size="small"
+                    (onClick)="scrollLeft(skillsContainer)" styleClass="shrink-0 text-surface-500" />
+
+                  <div #skillsContainer class="flex gap-2 overflow-x-auto scroll-smooth pb-1"
+                    style="scrollbar-width: none; -ms-overflow-style: none;">
+                    @for (option of domain.domainOptions; track option.domainOptionId) {
+                    <p-button [label]="option.value"
+                      [severity]="selectedDomainOptionIds().includes(option.domainOptionId) ? 'primary' : 'secondary'"
+                      [outlined]="!selectedDomainOptionIds().includes(option.domainOptionId)" size="small"
+                      [rounded]="true" (onClick)="toggleDomainOption(option.domainOptionId)"
+                      styleClass="whitespace-nowrap" />
+                    }
+                  </div>
+
+                  <p-button icon="pi pi-chevron-right" [rounded]="true" [text]="true" size="small"
+                    (onClick)="scrollRight(skillsContainer)" styleClass="shrink-0 text-surface-500" />
                 </div>
               </div>
               <p-divider></p-divider>

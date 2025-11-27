@@ -177,4 +177,12 @@ export class YourEmployee implements OnInit, OnDestroy {
   navigateToCv(userId: number): void {
     this.router.navigate(['/cv', userId]);
   }
+
+  scrollLeft(container: HTMLElement): void {
+    container.scrollBy({ left: -300, behavior: 'smooth' });
+  }
+
+  scrollRight(container: HTMLElement): void {
+    container.scrollBy({ left: 300, behavior: 'smooth' });
+  }
 }

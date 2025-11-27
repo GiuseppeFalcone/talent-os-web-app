@@ -23,8 +23,8 @@
           <div class="flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
             <p-iconfield iconPosition="left">
               <p-inputicon styleClass="pi pi-search" />
-              <input pInputText type="text" [(ngModel)]="searchQuery" (ngModelChange)="onFilter()"
-                placeholder="Search by name or username..." class="w-full md:w-64" />
+              <input pInputText type="text" [formControl]="searchControl" placeholder="Search by name or username..."
+                class="w-full md:w-64" />
             </p-iconfield>
 
             <p-select [options]="roleOptions" [(ngModel)]="selectedRoleFilter" (onChange)="onFilter()"
@@ -47,7 +47,7 @@
             <td>
               <div class="flex flex-col">
                 <span class="font-medium text-surface-900 dark:text-surface-50">
-                  {{ user.firstName }} {{ user.lastName }}
+                  {{ user.firstName | titlecase}} {{ user.lastName | titlecase}}
                 </span>
                 <span class="text-sm text-surface-500">{{ user.email }}</span>
               </div>

@@ -81,15 +81,13 @@ export class ManageDomain implements OnInit, OnDestroy {
 
   // Search Controls
   searchControl = new FormControl('');
-  optionSearchControl = new FormControl(''); // New control for option search
+  optionSearchControl = new FormControl('');
 
   private searchSub?: Subscription;
   private optionSearchSub?: Subscription;
 
-  // Track currently editing option
   editingOptionId = signal<number | null>(null);
 
-  // Options are now filtered by the API and stored in selectedDomain
   filteredOptions = computed(() => {
     const domain = this.selectedDomain();
     if (!domain || !domain.domainOptions) return [];
@@ -125,7 +123,7 @@ export class ManageDomain implements OnInit, OnDestroy {
         this.loadDomains();
       });
 
-    // Option Search (API)
+    // Option Search
     this.optionSearchSub = this.optionSearchControl.valueChanges
       .pipe(debounceTime(300), distinctUntilChanged())
       .subscribe((value) => {
@@ -149,15 +147,12 @@ export class ManageDomain implements OnInit, OnDestroy {
 
           const current = this.selectedDomain();
           if (current) {
-            // Try to find the currently selected domain in the new list to keep selection
             const found = response.content.find((d) => d.domainId === current.domainId);
             if (found) {
-              // If we are not currently searching options, update the selected domain from the list
               if (!this.optionSearchControl.value) {
                 this.selectedDomain.set(found);
               }
             } else {
-              // If the domain is no longer in the list (filtered out), deselect it
               this.selectedDomain.set(null);
             }
           }
@@ -180,7 +175,6 @@ export class ManageDomain implements OnInit, OnDestroy {
     this.loadingOptions.set(true);
 
     if (!query) {
-      // If search is cleared, reload the full domain to get all options
       this.domainService.getDomainById(currentDomain.domainId).subscribe({
         next: (domain) => {
           this.selectedDomain.set(domain);
@@ -198,23 +192,18 @@ export class ManageDomain implements OnInit, OnDestroy {
       return;
     }
 
-    // Call API to search options
     this.domainService
       .getDomains({
         page: 1,
         pageSize: 1,
-        domainName: currentDomain.domainName, // Restrict to current domain name
-        domainOptionValue: query, // Filter by option value
+        domainName: currentDomain.domainName,
+        domainOptionValue: query,
       })
       .subscribe({
         next: (response) => {
           if (response.content.length > 0) {
-            // Update selected domain with the filtered result
-            // We assume the API filters the options within the domain DTO
             this.selectedDomain.set(response.content[0]);
           } else {
-            // If no domain found (weird if we just had it, but implies no options matched)
-            // We can set options to empty but keep the domain info
             this.selectedDomain.update((d) => (d ? { ...d, domainOptions: [] } : null));
           }
           this.loadingOptions.set(false);
@@ -236,7 +225,6 @@ export class ManageDomain implements OnInit, OnDestroy {
 
   onSelectDomain(domain: DomainDto) {
     this.selectedDomain.set(domain);
-    // Reset option search when switching domains
     this.optionSearchControl.setValue('', { emitEvent: false });
   }
 
@@ -341,8 +329,6 @@ export class ManageDomain implements OnInit, OnDestroy {
     });
   }
 
-  // --- Option Logic ---
-
   openNewOptionDialog() {
     if (!this.selectedDomain()) return;
     this.isEditMode.set(false);
@@ -392,16 +378,11 @@ export class ManageDomain implements OnInit, OnDestroy {
           detail: 'Options updated',
         });
         this.optionDialogVisible.set(false);
-        // Refresh the options by searching or reloading
-        // If we are filtering, we might want to reload based on filter,
-        // but simplest is to just update local state or reload full if no filter.
         if (this.optionSearchControl.value) {
           this.onOptionSearch(this.optionSearchControl.value);
         } else {
           this.selectedDomain.set(res);
         }
-
-        // Also update the domains list on the left to reflect changes
         this.domains.update((ds) => ds.map((d) => (d.domainId === res.domainId ? res : d)));
       },
       error: () =>

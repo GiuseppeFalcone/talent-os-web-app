@@ -1,4 +1,4 @@
-import { Component, inject, OnInit, signal, ViewChild } from '@angular/core';
+import { Component, inject, OnInit, signal, ViewChild, OnDestroy } from '@angular/core';
 import { CommonModule, TitleCasePipe } from '@angular/common';
 import {
   FormBuilder,
@@ -6,6 +6,7 @@ import {
   FormsModule,
   ReactiveFormsModule,
   Validators,
+  FormControl,
 } from '@angular/forms';
 import { Table, TableLazyLoadEvent, TableModule } from 'primeng/table';
 import { ButtonModule } from 'primeng/button';
@@ -25,6 +26,8 @@ import { UserDto } from '../dashboard/model/user-dto';
 import { IconFieldModule } from 'primeng/iconfield';
 import { InputIconModule } from 'primeng/inputicon';
 import { TooltipModule } from 'primeng/tooltip';
+import { Subscription } from 'rxjs';
+import { debounceTime, distinctUntilChanged } from 'rxjs/operators';
 
 @Component({
   selector: 'app-manage-user',
@@ -51,7 +54,7 @@ import { TooltipModule } from 'primeng/tooltip';
   styleUrl: './manage-user.css',
   providers: [MessageService, ConfirmationService],
 })
-export class ManageUser implements OnInit {
+export class ManageUser implements OnInit, OnDestroy {
   private readonly userService = inject(ManageUserService);
   private readonly messageService = inject(MessageService);
   private readonly confirmationService = inject(ConfirmationService);
@@ -72,7 +75,10 @@ export class ManageUser implements OnInit {
 
   // Filters
   searchQuery = signal('');
+  searchControl = new FormControl('');
   selectedRoleFilter = signal<UserRoleEnum | null>(null);
+
+  private searchSub?: Subscription;
 
   // Forms
   userForm: FormGroup;
@@ -111,7 +117,18 @@ export class ManageUser implements OnInit {
     });
   }
 
-  ngOnInit() {}
+  ngOnInit() {
+    this.searchSub = this.searchControl.valueChanges
+      .pipe(debounceTime(300), distinctUntilChanged())
+      .subscribe((value) => {
+        this.searchQuery.set(value || '');
+        this.onFilter();
+      });
+  }
+
+  ngOnDestroy() {
+    this.searchSub?.unsubscribe();
+  }
 
   loadManagers() {
     this.userService

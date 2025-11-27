@@ -108,7 +108,17 @@ export class YourEmployee implements OnInit, OnDestroy {
         this.domains.set(data);
       },
       error: (err) => {
-        console.error('Failed to load domains', err);
+        this.loading.set(false);
+        if (err.status === 404) {
+          this.employees.set([]);
+          this.totalRecords.set(0);
+        } else {
+          this.messageService.add({
+            severity: 'error',
+            summary: 'Error',
+            detail: 'Failed to load domains.',
+          });
+        }
       },
     });
   }
@@ -145,7 +155,6 @@ export class YourEmployee implements OnInit, OnDestroy {
               summary: 'Error',
               detail: 'Failed to load employees.',
             });
-            console.error(err);
           }
         },
       });

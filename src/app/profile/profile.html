@@ -12,13 +12,13 @@
       </div>
       <p-button [label]="isEditMode() ? 'Cancel' : 'Edit Profile'"
         [icon]="isEditMode() ? 'pi pi-times' : 'pi pi-pencil'" (onClick)="toggleEditMode()"
-        [severity]="isEditMode() ? 'secondary' : 'primary'" [outlined]="isEditMode()" [raised]="!isEditMode()" />
+        [severity]="isEditMode() ? 'danger' : 'primary'" [raised]="!isEditMode()" />
     </div>
 
     <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
 
       <div class="md:col-span-1">
-        <p-card styleClass="h-full shadow-2 text-center">
+        <p-card styleClass="h-full text-center">
           <div class="flex flex-col items-center gap-4 py-6">
             <div
               class="w-24 h-24 rounded-full bg-primary-100 dark:bg-primary-900 flex items-center justify-center text-primary-600 dark:text-primary-300 text-4xl font-bold">
@@ -30,14 +30,14 @@
               </h2>
               <p class="text-surface-500 m-0 mt-1">{{ currentUser()?.role | titlecase }}</p>
             </div>
-            <p-button label="Change Password" icon="pi pi-lock" severity="secondary" [outlined]="true"
-              class="w-full mt-4" (onClick)="openChangePasswordDialog()" />
+            <p-button label="Change Password" icon="pi pi-lock" severity="primary" styleClass="w-full mt-4"
+              (onClick)="openChangePasswordDialog()" />
           </div>
         </p-card>
       </div>
 
       <div class="md:col-span-2">
-        <p-card header="Personal Details" styleClass="shadow-2 h-full">
+        <p-card header="Personal Details" styleClass="h-full">
           <form [formGroup]="profileForm" (ngSubmit)="saveProfile()" class="flex flex-col gap-6 mt-2">
 
             <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
@@ -167,14 +167,19 @@
     <div class="flex flex-col gap-2">
       <label for="confirmPassword" class="font-medium">Confirm Password</label>
       <p-password id="confirmPassword" formControlName="confirmPassword" [toggleMask]="true" [feedback]="false"
-        appendTo="body" styleClass="w-full" inputStyleClass="w-full" />
+        appendTo="body" styleClass="w-full" inputStyleClass="w-full"
+        [class.ng-invalid]="passwordForm.controls.confirmPassword.invalid && passwordForm.controls.confirmPassword.touched" />
+
+      @if (passwordForm.controls.confirmPassword.hasError('passwordMismatch') &&
+      (passwordForm.controls.confirmPassword.dirty || passwordForm.controls.confirmPassword.touched)) {
+      <small class="text-red-500">Passwords do not match.</small>
+      }
     </div>
   </form>
 
   <ng-template pTemplate="footer">
-    <p-button label="Cancel" icon="pi pi-times" [text]="true" (onClick)="passwordDialogVisible.set(false)"
-      severity="secondary" />
-    <p-button label="Update Password" icon="pi pi-check" [text]="true" (onClick)="savePassword()"
-      [disabled]="passwordForm.invalid" />
+    <p-button label="Cancel" icon="pi pi-times" (onClick)="passwordDialogVisible.set(false)" severity="danger" />
+    <p-button label="Update Password" icon="pi pi-check" (onClick)="savePassword()" [disabled]="passwordForm.invalid"
+      severity="primary" />
   </ng-template>
 </p-dialog>

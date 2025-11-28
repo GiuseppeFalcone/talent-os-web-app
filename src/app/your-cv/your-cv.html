@@ -8,12 +8,12 @@
       @if (!loading() && !notFound() && isOwner()) {
       <div class="flex gap-2">
         @if (isEditMode() && !isCreating()) {
-        <p-button label="Delete CV" severity="danger" icon="pi pi-trash" [outlined]="true"
-          (onClick)="deleteCurriculum()" [attr.aria-label]="'Delete Curriculum'" />
+        <p-button label="Delete CV" severity="danger" icon="pi pi-trash" (onClick)="deleteCurriculum()"
+          [attr.aria-label]="'Delete Curriculum'" />
         }
         <p-button [label]="isEditMode() ? 'Undo' : 'Edit'" [severity]="'primary'"
           [icon]="isEditMode() ? 'pi pi-undo' : 'pi pi-pencil'" (onClick)="toggleEditMode()" [raised]="true"
-          class="w-fit inline-flex shadow-2 " [attr.aria-label]="'Edit'" />
+          styleClass="w-fit" [attr.aria-label]="'Edit'" />
       </div>
       }
     </div>
@@ -31,9 +31,9 @@
     <p-card>
       <div class="flex flex-col items-center justify-center gap-4 p-8 text-center">
         <i class="pi pi-file-excel text-5xl text-surface-400" aria-hidden="true"></i>
-        <h2 class="text-xl font-semibold text-surface-700">No CV Available</h2>
+        <h2 class="text-xl font-semibold text-surface-400">No CV Available</h2>
         @if (isOwner()) {
-        <p class="text-surface-500">You haven't created a curriculum yet.</p>
+        <p class="text-surface-400">You haven't created a curriculum yet.</p>
         <p-button label="Create Curriculum" icon="pi pi-plus" (onClick)="initCreation()" [raised]="true" />
         } @else {
         <p class="text-surface-500">This user has not created a curriculum vitae yet.</p>
@@ -45,15 +45,15 @@
     @else {
     <div class="flex flex-col gap-4" [formGroup]="cvForm">
       <p-card>
-        <ng-template pTemplate="header">
-          <div class="flex items-center gap-4 border-b border-surface-200 px-4 pb-3 pt-4 dark:border-surface-700">
-            <span class="text-4xl text-primary-500">
-              <i class="pi pi-id-card" aria-hidden="true"></i>
-            </span>
+        <div class="flex gap-4 border-surface-200 px-4 dark:border-surface-700">
+          <div class="items-start justify-baseline">
             <div class="justify-items-start">
               <div class="flex flex-col gap-2">
                 <div class="text-2xl font-semibold text-surface-900 dark:text-surface-50">
-                  {{ user()?.firstName }} {{ user()?.lastName }}
+                  <span class="text-4xl">
+                    <i class="pi pi-id-card text-primary-500 text-4xl!" aria-hidden="true"></i>
+                    {{ user()?.firstName }} {{ user()?.lastName }}
+                  </span>
                 </div>
                 <div class="flex flex-wrap items-center gap-2">
                   @if (user()?.username) {
@@ -62,32 +62,33 @@
                   @if (user()?.email) {
                   <p-tag [value]="user()!.email" severity="info" icon="pi pi-envelope" />
                   }
+                  <div class="justify-end">
+                    @if (!isCreating()) {
+                    <p-tag icon="pi pi-history" severity="secondary"
+                      [value]="'Last Modified: ' + (curriculum()?.lastModifiedAt | date)" styleClass="text-sm" />
+                    }
+                  </div>
                 </div>
               </div>
             </div>
-            @if (!isCreating()) {
-            <div class="justify-items-end gap-1">
-              <span class="text-sm text-surface-650">Last Modified </span>
-              <span class="font-medium">{{ curriculum()?.lastModifiedAt | date }}</span>
-            </div>
-            }
           </div>
-        </ng-template>
+        </div>
       </p-card>
 
       <p-card>
         <ng-template pTemplate="header">
-          <div class="flex items-center gap-3 border-b border-surface-200 px-4 pb-3 pt-4 dark:border-surface-700">
+          <div
+            class="flex items-center text-xl gap-3 border-b border-surface-200 px-4 pb-3 pt-4 dark:border-surface-700">
             <span class="text-xl text-primary-500">
-              <i class="pi pi-align-left" aria-hidden="true"></i>
+              <i class="pi pi-align-left text-xl" aria-hidden="true"></i>
             </span>
             <span class="font-semibold text-surface-900 dark:text-surface-50">Summary</span>
           </div>
         </ng-template>
-        <div class="p-4">
+        <div>
           @if (isOwner() && isEditMode()) {
           <textarea pInputTextarea formControlName="summary" id="summary" rows="5" variant="filled"
-            class="w-full p-3 bg-surface-50 dark:bg-surface-800"
+            class="w-full bg-surface-50 dark:bg-surface-800"
             placeholder="Write a short professional summary"></textarea>
           } @else {
           <p class="m-0 leading-7 text-surface-700 dark:text-surface-300">
@@ -99,20 +100,21 @@
 
       <p-card>
         <ng-template pTemplate="header">
-          <div class="flex items-center gap-3 border-b border-surface-200 px-4 pb-3 pt-4 dark:border-surface-700">
+          <div
+            class="flex items-center text-xl gap-3 border-b border-surface-200 px-4 pb-3 pt-4 dark:border-surface-700">
             <span class="text-xl text-primary-500">
-              <i class="pi pi-user" aria-hidden="true"></i>
+              <i class="pi pi-user text-xl" aria-hidden="true"></i>
             </span>
             <span class="font-semibold text-surface-900 dark:text-surface-50">Personal Details</span>
           </div>
         </ng-template>
-        <div class="p-4">
+        <div>
           <div class="grid grid-cols-1 gap-4 md:grid-cols-2">
             <div class="flex flex-col gap-2">
               <span class="text-sm text-surface-650">Mobile Phone</span>
               @if (isOwner() && isEditMode()) {
               <input pInputText type="text" formControlName="mobilePhone" placeholder="Enter mobile phone"
-                variant="filled" class="p-3 bg-surface-50 dark:bg-surface-800" />
+                variant="filled" class="w-full" />
               } @else {
               <span class="font-medium text-surface-900 dark:text-surface-50">
                 {{ curriculum()?.mobilePhone || 'N/A' }}
@@ -124,7 +126,7 @@
               <span class="text-sm text-surface-650">Home Address</span>
               @if (isOwner() && isEditMode()) {
               <input pInputText type="text" formControlName="homeAddress" placeholder="Enter home address"
-                variant="filled" class="p-3 bg-surface-50 dark:bg-surface-800" />
+                variant="filled" class="w-full" />
               } @else {
               <span class="font-medium text-surface-900 dark:text-surface-50">
                 {{ curriculum()?.homeAddress || 'N/A' }}
@@ -136,7 +138,7 @@
               <span class="text-sm text-surface-650">Work Address</span>
               @if (isOwner() && isEditMode()) {
               <input pInputText type="text" formControlName="workAddress" placeholder="Enter work address"
-                variant="filled" class="p-3 bg-surface-50 dark:bg-surface-800" />
+                variant="filled" class="w-full" />
               } @else {
               <span class="font-medium text-surface-900 dark:text-surface-50">
                 {{ curriculum()?.workAddress || 'N/A' }}
@@ -160,9 +162,9 @@
               @if (isOwner() && isEditMode()) {
               <p-select [options]="possibleDrivingLicenses" formControlName="drivingLicense" optionLabel="label"
                 optionValue="value" placeholder="Select a driving license" inputId="dl" [checkmark]="true"
-                variant="filled" class="bg-surface-50 dark:bg-surface-800" />
+                variant="filled" styleClass="w-full" />
               } @else {
-              <p-tag [value]=" drivingLicenseLabel()" severity="info" icon="pi pi-id-card" />
+              <p-tag [value]="drivingLicenseLabel()" severity="info" icon="pi pi-id-card" />
               }
             </div>
 
@@ -173,7 +175,7 @@
                 <p-toggleswitch formControlName="hasCar" />
                 } @else {
                 <p-tag [value]="curriculum()?.hasCar ? 'Yes' : 'No'"
-                  [severity]="curriculum()?.hasCar ? 'success' : 'danger'"
+                  [severity]="curriculum()?.hasCar ? 'info' : 'danger'"
                   [icon]="curriculum()?.hasCar ? 'pi pi-car' : 'pi pi-times'" />
                 }
               </div>
@@ -183,7 +185,7 @@
                 <p-toggleswitch formControlName="openForTravel" />
                 } @else {
                 <p-tag [value]="curriculum()?.openForTravel ? 'Yes' : 'No'"
-                  [severity]="curriculum()?.openForTravel ? 'success' : 'danger'"
+                  [severity]="curriculum()?.openForTravel ? 'info' : 'danger'"
                   [icon]="curriculum()?.openForTravel ? 'pi pi-send' : 'pi pi-ban'" />
                 }
               </div>
@@ -196,19 +198,18 @@
         <ng-template pTemplate="header">
           <div
             class="flex items-center justify-between border-b border-surface-200 px-4 pb-3 pt-4 dark:border-surface-700">
-            <div class="flex items-center gap-3">
-              <span class="text-xl text-primary-500">
-                <i class="pi pi-graduation-cap" aria-hidden="true"></i>
+            <div class="flex items-center gap-3 text-xl">
+              <span class=" text-primary-500">
+                <i class="pi pi-graduation-cap text-xl" aria-hidden="true"></i>
               </span>
               <span class="font-semibold text-surface-900 dark:text-surface-50">Education</span>
             </div>
             @if (isOwner() && isEditMode()) {
-            <p-button label="Add Education" icon="pi pi-plus" size="small" (onClick)="addEducation()"
-              [outlined]="true" />
+            <p-button label="Add Education" icon="pi pi-plus" size="small" (onClick)="addEducation()" />
             }
           </div>
         </ng-template>
-        <div class="p-4">
+        <div>
           @if (educationHistoryArray.length === 0 && !isEditMode()) {
           <p class="m-0 text-surface-650">No education history.</p>
           } @else {
@@ -221,62 +222,50 @@
               <div class="flex flex-col gap-4">
                 <div class="grid grid-cols-1 gap-4 md:grid-cols-2">
                   <div class="flex flex-col gap-2">
-                    <label for="degree-{{$index}}" class="text-sm font-medium text-surface-700 dark:text-surface-300">
-                      Degree <span class="text-red-500">*</span>
-                    </label>
+                    <label for="degree-{{$index}}"
+                      class="text-sm font-medium text-surface-700 dark:text-surface-300">Degree <span
+                        class="text-red-500">*</span></label>
                     <p-select [options]="degreeOptions()" formControlName="degreeNameId" optionLabel="value"
                       optionValue="domainOptionId" placeholder="Select degree" inputId="degree-{{$index}}"
-                      [checkmark]="true" variant="filled" class="w-full" />
+                      [checkmark]="true" variant="filled" styleClass="w-full" />
                   </div>
-
                   <div class="flex flex-col gap-2">
-                    <label for="school-{{$index}}" class="text-sm font-medium text-surface-700 dark:text-surface-300">
-                      School <span class="text-red-500">*</span>
-                    </label>
+                    <label for="school-{{$index}}"
+                      class="text-sm font-medium text-surface-700 dark:text-surface-300">School <span
+                        class="text-red-500">*</span></label>
                     <p-select [options]="schoolOptions()" formControlName="schoolNameId" optionLabel="value"
                       optionValue="domainOptionId" placeholder="Select school" inputId="school-{{$index}}"
-                      [checkmark]="true" variant="filled" class="w-full" />
+                      [checkmark]="true" variant="filled" styleClass="w-full" />
                   </div>
-
                   <div class="flex flex-col gap-2">
                     <label for="start-date-{{$index}}"
-                      class="text-sm font-medium text-surface-700 dark:text-surface-300">
-                      Start Date <span class="text-red-500">*</span>
-                    </label>
+                      class="text-sm font-medium text-surface-700 dark:text-surface-300">Start Date <span
+                        class="text-red-500">*</span></label>
                     <p-datepicker formControlName="startDate" inputId="start-date-{{$index}}" dateFormat="dd/mm/yy"
-                      [showIcon]="true" variant="filled" class="w-full" />
+                      [showIcon]="true" variant="filled" styleClass="w-full" />
                   </div>
-
                   <div class="flex flex-col gap-2">
-                    <label for="end-date-{{$index}}" class="text-sm font-medium text-surface-700 dark:text-surface-300">
-                      End Date
-                    </label>
+                    <label for="end-date-{{$index}}"
+                      class="text-sm font-medium text-surface-700 dark:text-surface-300">End Date</label>
                     <p-datepicker formControlName="endDate" inputId="end-date-{{$index}}" dateFormat="dd/mm/yy"
-                      [showIcon]="true" variant="filled" class="w-full" />
+                      [showIcon]="true" variant="filled" styleClass="w-full" />
                   </div>
-
                   <div class="flex flex-col gap-2">
-                    <label for="grade-{{$index}}" class="text-sm font-medium text-surface-700 dark:text-surface-300">
-                      Grade
-                    </label>
+                    <label for="grade-{{$index}}"
+                      class="text-sm font-medium text-surface-700 dark:text-surface-300">Grade</label>
                     <p-inputnumber formControlName="grade" inputId="grade-{{$index}}" [min]="0" [max]="200"
-                      variant="filled" class="w-full" />
+                      variant="filled" styleClass="w-full" />
                   </div>
-
                   <div class="flex flex-col gap-2">
                     <label for="max-grade-{{$index}}"
-                      class="text-sm font-medium text-surface-700 dark:text-surface-300">
-                      Max Grade
-                    </label>
+                      class="text-sm font-medium text-surface-700 dark:text-surface-300">Max Grade</label>
                     <p-inputnumber formControlName="maxGrade" inputId="max-grade-{{$index}}" [min]="0" [max]="200"
-                      variant="filled" class="w-full" />
+                      variant="filled" styleClass="w-full" />
                   </div>
                 </div>
-
                 <div class="flex justify-end gap-2">
-                  <p-button label="Cancel" severity="secondary" [outlined]="true" size="small"
-                    (onClick)="cancelEditEducation()" />
-                  <p-button label="Save" severity="success" size="small" (onClick)="saveEducation($index)" />
+                  <p-button label="Cancel" severity="danger" size="small" (onClick)="cancelEditEducation()" />
+                  <p-button label="Save" severity="info" size="small" (onClick)="saveEducation($index)" />
                 </div>
               </div>
               } @else {
@@ -287,33 +276,26 @@
                       {{ getDegreeName(edu.degreeNameId) }}
                     </h3>
                   </div>
-                  <p class="mb-2 text-surface-700 dark:text-surface-300">
-                    {{ getSchoolName(edu.schoolNameId) }}
-                  </p>
+                  <p class="mb-2 text-surface-700 dark:text-surface-300">{{ getSchoolName(edu.schoolNameId) }}</p>
                   <div class="flex flex-wrap items-center gap-3 text-sm text-surface-600 dark:text-surface-400">
                     <span class="flex items-center gap-1">
                       <i class="pi pi-calendar" aria-hidden="true"></i>
                       {{ edu.startDate | date:'MMM yyyy' }}
-                      @if (edu.endDate) {
-                      - {{ edu.endDate | date:'MMM yyyy' }}
-                      } @else {
-                      - Present
-                      }
+                      @if (edu.endDate) { - {{ edu.endDate | date:'MMM yyyy' }} } @else { - Present }
                     </span>
                     @if (edu.grade && edu.maxGrade) {
-                    <span class="flex items-center gap-1">
-                      <i class="pi pi-chart-line" aria-hidden="true"></i>
-                      Grade: {{ edu.grade }}/{{ edu.maxGrade }}
-                    </span>
+                    <span class="flex items-center gap-1"><i class="pi pi-chart-line" aria-hidden="true"></i> Grade: {{
+                      edu.grade }}/{{ edu.maxGrade }}</span>
                     }
                   </div>
                 </div>
                 @if (isOwner() && isEditMode()) {
                 <div class="flex gap-2">
-                  <p-button icon="pi pi-pencil" severity="secondary" [text]="true" [rounded]="true" size="small"
-                    (onClick)="editEducation($index)" [attr.aria-label]="'Edit education'" />
-                  <p-button icon="pi pi-trash" severity="danger" [text]="true" [rounded]="true" size="small"
-                    (onClick)="removeEducation($index)" [attr.aria-label]="'Delete education'" />
+                  <p-button icon="pi pi-pencil" severity="primary" [rounded]="true" size="small"
+                    (onClick)="editEducation($index)" [attr.aria-label]="'Edit education'" styleClass="gap-0! px-0!" />
+                  <p-button icon="pi pi-trash" severity="danger" [rounded]="true" size="small"
+                    (onClick)="removeEducation($index)" [attr.aria-label]="'Delete education'"
+                    styleClass="gap-0! px-0!" />
                 </div>
                 }
               </div>
@@ -329,18 +311,18 @@
         <ng-template pTemplate="header">
           <div
             class="flex items-center justify-between border-b border-surface-200 px-4 pb-3 pt-4 dark:border-surface-700">
-            <div class="flex items-center gap-3">
+            <div class="flex items-center text-xl gap-3">
               <span class="text-xl text-primary-500">
-                <i class="pi pi-briefcase" aria-hidden="true"></i>
+                <i class="pi pi-briefcase text-xl" aria-hidden="true"></i>
               </span>
               <span class="font-semibold text-surface-900 dark:text-surface-50">Projects</span>
             </div>
             @if (isOwner() && isEditMode()) {
-            <p-button label="Add Project" icon="pi pi-plus" size="small" (onClick)="addProject()" [outlined]="true" />
+            <p-button label="Add Project" icon="pi pi-plus" size="small" (onClick)="addProject()" />
             }
           </div>
         </ng-template>
-        <div class="p-4">
+        <div>
           @if (projectsArray.length === 0 && !isEditMode()) {
           <p class="m-0 text-surface-650">No projects.</p>
           } @else {
@@ -352,46 +334,39 @@
               @if (isOwner() && isEditMode() && isEditing) {
               <div class="flex flex-col gap-4">
                 <div class="flex flex-col gap-2">
-                  <label for="proj-desc-{{$index}}" class="text-sm font-medium text-surface-700 dark:text-surface-300">
-                    Project Description <span class="text-red-500">*</span>
-                  </label>
+                  <label for="proj-desc-{{$index}}"
+                    class="text-sm font-medium text-surface-700 dark:text-surface-300">Project Description <span
+                      class="text-red-500">*</span></label>
                   <textarea pInputTextarea formControlName="projectDescription" id="proj-desc-{{$index}}" rows="3"
                     variant="filled" class="w-full bg-surface-50 dark:bg-surface-800"
                     placeholder="Describe the project"></textarea>
                 </div>
-
                 <div class="grid grid-cols-1 gap-4 md:grid-cols-2">
                   <div class="flex flex-col gap-2">
                     <label for="proj-start-{{$index}}"
-                      class="text-sm font-medium text-surface-700 dark:text-surface-300">
-                      Start Date <span class="text-red-500">*</span>
-                    </label>
+                      class="text-sm font-medium text-surface-700 dark:text-surface-300">Start Date <span
+                        class="text-red-500">*</span></label>
                     <p-datepicker formControlName="startDate" inputId="proj-start-{{$index}}" dateFormat="dd/mm/yy"
-                      [showIcon]="true" variant="filled" class="w-full" />
+                      [showIcon]="true" variant="filled" styleClass="w-full" />
                   </div>
-
                   <div class="flex flex-col gap-2">
-                    <label for="proj-end-{{$index}}" class="text-sm font-medium text-surface-700 dark:text-surface-300">
-                      End Date
-                    </label>
+                    <label for="proj-end-{{$index}}"
+                      class="text-sm font-medium text-surface-700 dark:text-surface-300">End Date</label>
                     <p-datepicker formControlName="endDate" inputId="proj-end-{{$index}}" dateFormat="dd/mm/yy"
-                      [showIcon]="true" variant="filled" class="w-full" />
+                      [showIcon]="true" variant="filled" styleClass="w-full" />
                   </div>
                 </div>
-
                 <div class="flex flex-col gap-4">
                   <h4 class="text-sm font-semibold text-surface-900 dark:text-surface-50">Skills Used</h4>
                   @for (domain of allProjectSkills(); track domain.domainId) {
                   <div class="mb-4 ml-4 flex flex-col gap-3">
-                    <label class="text-sm font-medium text-surface-700 dark:text-surface-300">
-                      {{ domain.domainName.replace('_', ' ') | titlecase }}
-                    </label>
+                    <label class="text-sm font-medium text-surface-700 dark:text-surface-300">{{
+                      domain.domainName.replace('_', ' ') | titlecase }}</label>
                     <p-multiselect [options]="domain.domainOptions"
                       [formControlName]="getDomainFormControlName(domain.domainId)" optionLabel="value"
                       optionValue="domainOptionId"
-                      [placeholder]="'Select ' + domain.domainName.replace('_', ' ') | titlecase"
-                      [showToggleAll]="false" variant="filled" class="w-full" />
-
+                      [placeholder]="'Select ' + domain.domainName.replace('_', ' ') | titlecase" [showToggleAll]="true"
+                      variant="filled" styleClass="w-full" />
                     @let selectedSkills = getSelectedSkillsForDomain($any(projectControl), domain.domainId);
                     @if (selectedSkills.length > 0) {
                     <div class="ml-4 flex flex-col gap-2">
@@ -399,13 +374,12 @@
                       @let option = getDomainOption(domain.domainOptions, optionId);
                       @if (option) {
                       <div class="flex items-center gap-3">
-                        <span class="min-w-[150px] text-sm text-surface-700 dark:text-surface-300">
-                          {{ option.value }}
-                        </span>
+                        <span class="min-w-[150px] text-sm text-surface-700 dark:text-surface-300">{{ option.value
+                          }}</span>
                         <p-inputnumber [formControlName]="getSkillGradeControlName(optionId)" [min]="1"
                           [max]="maxSkillGrade()" [showButtons]="true" buttonLayout="horizontal"
                           decrementButtonIcon="pi pi-minus" incrementButtonIcon="pi pi-plus" variant="filled"
-                          class="w-32" [suffix]="' / ' + maxSkillGrade()" />
+                          styleClass="w-32" [suffix]="' / ' + maxSkillGrade()" />
                       </div>
                       }
                       }
@@ -414,46 +388,36 @@
                   </div>
                   }
                 </div>
-
                 <div class="flex justify-end gap-2">
-                  <p-button label="Cancel" severity="secondary" [outlined]="true" size="small"
-                    (onClick)="cancelEditProject()" />
-                  <p-button label="Save" severity="success" size="small" (onClick)="saveProject($index)" />
+                  <p-button label="Cancel" severity="danger" size="small" (onClick)="cancelEditProject()" />
+                  <p-button label="Save" severity="info" size="small" (onClick)="saveProject($index)" />
                 </div>
               </div>
               } @else {
               <div class="flex items-start justify-between gap-4">
                 <div class="flex-1">
-                  <p class="mb-3 text-base leading-7 text-surface-700 dark:text-surface-300">
-                    {{ project.projectDescription }}
-                  </p>
+                  <p class="mb-3 text-base leading-7 ">{{
+                    project.projectDescription }}</p>
                   <div class="mb-3 flex items-center gap-2 text-sm text-surface-600 dark:text-surface-400">
                     <i class="pi pi-calendar" aria-hidden="true"></i>
-                    <span>
-                      {{ project.startDate | date:'MMM yyyy' }}
-                      @if (project.endDate) {
-                      - {{ project.endDate | date:'MMM yyyy' }}
-                      } @else {
-                      - Present
-                      }
-                    </span>
+                    <span>{{ project.startDate | date:'MMM yyyy' }} @if (project.endDate) { - {{ project.endDate |
+                      date:'MMM yyyy' }} } @else { - Present }</span>
                   </div>
                   @let skills = getProjectSkillChips(projects()[$index]?.domainOptions);
                   @if (skills.length > 0) {
                   <div class="flex flex-wrap gap-2">
                     @for (skill of skills; track skill.label) {
-                    <p-chip [label]="skill.label + ' (' + skill.grade + '/' + maxSkillGrade() + ')'" icon="pi pi-tag"
-                      class="bg-primary-100 dark:bg-primary-900 text-primary-700 dark:text-primary-100" />
+                    <p-chip [label]="skill.label + ' (' + skill.grade + '/' + maxSkillGrade() + ')'" icon="pi pi-tag" />
                     }
                   </div>
                   }
                 </div>
                 @if (isOwner() && isEditMode()) {
                 <div class="flex gap-2">
-                  <p-button icon="pi pi-pencil" severity="secondary" [text]="true" [rounded]="true" size="small"
-                    (onClick)="editProject($index)" [attr.aria-label]="'Edit project'" />
-                  <p-button icon="pi pi-trash" severity="danger" [text]="true" [rounded]="true" size="small"
-                    (onClick)="removeProject($index)" [attr.aria-label]="'Delete project'" />
+                  <p-button icon="pi pi-pencil" severity="primary" [rounded]="true" size="small"
+                    (onClick)="editProject($index)" [attr.aria-label]="'Edit project'" styleClass="gap-0! px-0!" />
+                  <p-button icon="pi pi-trash" severity="danger" [rounded]="true" size="small"
+                    (onClick)="removeProject($index)" [attr.aria-label]="'Delete project'" styleClass="gap-0! px-0!" />
                 </div>
                 }
               </div>
@@ -476,56 +440,44 @@
             @if (isOwner() && isEditMode()) {
             @if (editingUserSkills()) {
             <div class="flex gap-2">
-              <p-button label="Save" icon="pi pi-check" [outlined]="true" severity="success" size="small"
-                (onClick)="saveUserSkills()" />
-              <p-button label="Cancel" icon="pi pi-times" [outlined]="true" severity="secondary" size="small"
+              <p-button label="Save" icon="pi pi-check" severity="info" size="small" (onClick)="saveUserSkills()" />
+              <p-button label="Cancel" icon="pi pi-times" severity="secondary" size="small"
                 (onClick)="cancelEditUserSkills()" />
             </div>
             } @else {
-            <p-button label="Edit Skills" icon="pi pi-pencil" [outlined]="true" size="small"
-              (onClick)="editingUserSkills.set(true)" />
+            <p-button label="Edit Skills" icon="pi pi-pencil" size="small" (onClick)="editingUserSkills.set(true)" />
             }
             }
           </div>
         </ng-template>
 
-        <div class="p-4">
+        <div>
           @if (editingUserSkills()) {
           <div [formGroup]="userSkillsForm" class="space-y-6">
             @for (domain of allProjectSkills(); track domain.domainId) {
             <div class="rounded-lg border border-surface-200 p-4 dark:border-surface-700">
-              <h3 class="mb-3 text-base font-semibold text-surface-900 dark:text-surface-0">
-                {{ domain.domainName.replace('_', ' ') | titlecase }}
-              </h3>
-
+              <h3 class="mb-3 text-base font-semibold text-surface-900 dark:text-surface-0">{{
+                domain.domainName.replace('_', ' ') | titlecase }}</h3>
               <div class="mb-4 ml-4 flex flex-col gap-2">
-                <label [for]="'user-domain-' + domain.domainId" class="mb-2 block text-sm font-medium">
-                  Select {{ domain.domainName.replace('_', ' ') | titlecase }}
-                </label>
-                <p-multiselect [formControlName]="getDomainFormControlName(domain.domainId)"
-                  [inputId]="'user-domain-' + domain.domainId" [options]="domain.domainOptions" optionLabel="value"
+                <label [for]="'user-domain-' + domain.domainId" class="mb-2 block text-sm font-medium">Select {{
+                  domain.domainName.replace('_', ' ') | titlecase }}</label>
+                <p-multiselect [options]="domain.domainOptions"
+                  [formControlName]="getDomainFormControlName(domain.domainId)" optionLabel="value"
                   optionValue="domainOptionId"
-                  [placeholder]="'Select ' + domain.domainName.replace('_', ' ') | titlecase" [filter]="true"
-                  class="w-full" variant="filled" />
+                  [placeholder]="'Select ' + domain.domainName.replace('_', ' ') | titlecase" [showToggleAll]="true"
+                  variant="filled" styleClass="w-full" />
               </div>
-
               @for (optionId of getSelectedUserSkillsForDomain(domain.domainId); track optionId) {
               @if (getDomainOption(domain.domainOptions, optionId); as option) {
               <div class="mb-3 flex items-center gap-3">
-                <label [for]="'user-grade-' + optionId" class="min-w-40 text-sm">
-                  {{ option.value }}
-                </label>
+                <label [for]="'user-grade-' + optionId" class="min-w-40 text-sm">{{ option.value }}</label>
                 <div class="flex flex-1 items-center gap-2">
                   <p-inputnumber [formControlName]="getSkillGradeControlName(optionId)"
                     [inputId]="'user-grade-' + optionId" [min]="1" [max]="maxSkillGrade()" [showButtons]="true"
-                    buttonLayout="horizontal" variant="filled" class="w-32" decrementButtonClass="p-button-secondary"
-                    incrementButtonClass="p-button-secondary">
-                    <ng-template pTemplate="incrementbuttonicon">
-                      <span class="pi pi-plus"></span>
-                    </ng-template>
-                    <ng-template pTemplate="decrementbuttonicon">
-                      <span class="pi pi-minus"></span>
-                    </ng-template>
+                    buttonLayout="horizontal" variant="filled" styleClass="w-32"
+                    decrementButtonClass="p-button-secondary" incrementButtonClass="p-button-secondary">
+                    <ng-template pTemplate="incrementbuttonicon"><span class="pi pi-plus"></span></ng-template>
+                    <ng-template pTemplate="decrementbuttonicon"><span class="pi pi-minus"></span></ng-template>
                   </p-inputnumber>
                   <span class="text-xs text-surface-500">/ {{ maxSkillGrade() }}</span>
                 </div>
@@ -539,16 +491,14 @@
           @if (skillsByDomain().length === 0) {
           <p class="text-surface-500">No skills recorded yet.</p>
           } @else {
-          <div class="space-y-6 ">
+          <div class="space-y-6">
             @for (domainGroup of skillsByDomain(); track domainGroup.domainName) {
             <div class="rounded-lg border border-surface-200 p-4 dark:border-surface-700">
-              <h3 class="mb-3 text-base font-semibold text-surface-900 dark:text-surface-0">
-                {{ domainGroup.domainName.replace('_', ' ') | titlecase}}
-              </h3>
+              <h3 class="mb-3 text-base font-semibold text-surface-900 dark:text-surface-0">{{
+                domainGroup.domainName.replace('_', ' ') | titlecase}}</h3>
               <div class="flex flex-wrap gap-2">
                 @for (skill of domainGroup.skills; track skill.label) {
-                <p-chip [label]="skill.label + ' (' + skill.grade + '/' + maxSkillGrade() + ')'"
-                  class="bg-primary-100 dark:bg-primary-900 text-primary-700 dark:text-primary-100" />
+                <p-chip [label]="skill.label + ' (' + skill.grade + '/' + maxSkillGrade() + ')'" />
                 }
               </div>
             </div>
@@ -558,12 +508,10 @@
           }
         </div>
       </p-card>
+
       @if (isOwner() && isEditMode()) {
       <div class="flex justify-end">
-        <button pButton class="w-fit" (click)="saveCurriculum()">
-          <i class="pi pi-save" pButtonIcon></i>
-          <span pButtonLabel>Save</span>
-        </button>
+        <p-button class="w-fit" (click)="saveCurriculum()" icon="pi pi-save" label="Save" />
       </div>
       }
     </div>

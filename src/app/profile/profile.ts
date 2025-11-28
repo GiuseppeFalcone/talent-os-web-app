@@ -1,5 +1,11 @@
 import { Component, inject, OnInit, signal, OnDestroy } from '@angular/core';
-import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
+import {
+  AbstractControl,
+  FormBuilder,
+  ReactiveFormsModule,
+  ValidationErrors,
+  Validators,
+} from '@angular/forms';
 import { HttpErrorResponse } from '@angular/common/http';
 import { TitleCasePipe, NgClass, CommonModule } from '@angular/common';
 import { CardModule } from 'primeng/card';
@@ -23,6 +29,20 @@ import {
   map,
 } from 'rxjs/operators';
 import { of, Subscription } from 'rxjs';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+
+function passwordMatchValidator(control: AbstractControl): ValidationErrors | null {
+  const parent = control.parent;
+  if (!parent) return null;
+
+  const newPassword = parent.get('newPassword');
+  const confirmPassword = control;
+
+  if (newPassword && confirmPassword && newPassword.value !== confirmPassword.value) {
+    return { passwordMismatch: true };
+  }
+  return null;
+}
 
 @Component({
   selector: 'app-profile',
@@ -65,8 +85,14 @@ export class Profile implements OnInit, OnDestroy {
 
   readonly passwordForm = this.fb.nonNullable.group({
     newPassword: ['', [Validators.required, Validators.minLength(8)]],
-    confirmPassword: ['', [Validators.required]],
+    confirmPassword: ['', [Validators.required, passwordMatchValidator]],
   });
+
+  constructor() {
+    this.passwordForm.controls.newPassword.valueChanges.pipe(takeUntilDestroyed()).subscribe(() => {
+      this.passwordForm.controls.confirmPassword.updateValueAndValidity();
+    });
+  }
 
   ngOnInit(): void {
     this.loadUserProfile();
@@ -209,18 +235,13 @@ export class Profile implements OnInit, OnDestroy {
   }
 
   savePassword(): void {
+    // If form is invalid (including mismatch), this returns early
     if (this.passwordForm.invalid || !this.currentUser()) return;
 
-    const { newPassword, confirmPassword } = this.passwordForm.getRawValue();
+    const { newPassword } = this.passwordForm.getRawValue();
 
-    if (newPassword !== confirmPassword) {
-      this.messageService.add({
-        severity: 'warn',
-        summary: 'Password Mismatch',
-        detail: 'New password and confirmation do not match.',
-      });
-      return;
-    }
+    // REMOVED: Manual check for newPassword !== confirmPassword
+    // The form validator handles this now.
 
     const credential: Credential = {
       username: this.currentUser()!.username,

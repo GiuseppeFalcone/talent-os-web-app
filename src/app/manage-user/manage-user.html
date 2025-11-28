@@ -13,18 +13,17 @@
       <p-button label="New User" icon="pi pi-plus" (onClick)="openNew()" [raised]="true" />
     </div>
 
-    <div class="card">
+    <p-card>
       <p-table #dt [value]="users()" [lazy]="true" (onLazyLoad)="loadUsers($event)" [paginator]="true" [rows]="10"
         [totalRecords]="totalRecords()" [loading]="loading()" [rowsPerPageOptions]="[10, 25, 50]"
-        [showCurrentPageReport]="true" currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries"
-        styleClass="p-datatable-striped shadow-2 rounded-xl overflow-hidden" responsiveLayout="scroll">
+        [showCurrentPageReport]="true" currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries">
 
         <ng-template pTemplate="caption">
           <div class="flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
             <p-iconfield iconPosition="left">
               <p-inputicon styleClass="pi pi-search" />
-              <input pInputText type="text" [formControl]="searchControl" placeholder="Search by name or username..."
-                class="w-full md:w-64" />
+              <input pInputText type="text" [formControl]="searchControl" placeholder="Search..."
+                class="w-full md:w-64 px-10" />
             </p-iconfield>
 
             <p-select [options]="roleOptions" [(ngModel)]="selectedRoleFilter" (onChange)="onFilter()"
@@ -54,17 +53,17 @@
             </td>
             <td>{{ user.username }}</td>
             <td class="text-center">
-              <p-tag [value]="user.role | titlecase" [severity]="'info'" [rounded]="true" />
+              <p-tag [value]="user.role | titlecase" [severity]="'info'" />
             </td>
             <td class="text-center">
               <div class="flex justify-center gap-2">
-                <p-button icon="pi pi-pencil" [rounded]="true" [text]="true" severity="secondary"
-                  (onClick)="editUser(user)" pTooltip="Edit User" tooltipPosition="top" aria-label="Edit User" />
-                <p-button icon="pi pi-key" [rounded]="true" [text]="true" severity="warn"
-                  (onClick)="openPasswordReset(user)" pTooltip="Reset Password" tooltipPosition="top"
-                  aria-label="Reset Password" />
-                <p-button icon="pi pi-trash" [rounded]="true" [text]="true" severity="danger"
-                  (onClick)="deleteUser(user)" pTooltip="Delete User" tooltipPosition="top" aria-label="Delete User" />
+                <p-button icon="pi pi-pencil" [rounded]="true" severity="info" (onClick)="editUser(user)"
+                  pTooltip="Edit User" tooltipPosition="top" aria-label="Edit User" styleClass="gap-0! p-0!" />
+                <p-button icon="pi pi-key" [rounded]="true" severity="warn" (onClick)="openPasswordReset(user)"
+                  pTooltip="Reset Password" tooltipPosition="top" aria-label="Reset Password"
+                  styleClass="gap-0! p-0!" />
+                <p-button icon="pi pi-trash" [rounded]="true" severity="danger" (onClick)="deleteUser(user)"
+                  pTooltip="Delete User" tooltipPosition="top" aria-label="Delete User" styleClass="gap-0! p-0!" />
               </div>
             </td>
           </tr>
@@ -78,12 +77,12 @@
           </tr>
         </ng-template>
       </p-table>
-    </div>
+    </p-card>
   </div>
 </div>
 
 <p-dialog [(visible)]="userDialog" [style]="{ width: '450px' }" [header]="isEditMode() ? 'Edit User' : 'New User'"
-  [modal]="true" styleClass="p-fluid" [draggable]="false" [resizable]="false">
+  [modal]="true" [draggable]="false" [resizable]="false">
   <ng-template pTemplate="content">
     <form [formGroup]="userForm" class="flex flex-col gap-4 mt-2">
       <div class="flex flex-col gap-2">
@@ -139,19 +138,23 @@
   </ng-template>
 
   <ng-template pTemplate="footer">
-    <p-button label="Cancel" icon="pi pi-times" [text]="true" (onClick)="hideDialog()" severity="secondary" />
-    <p-button label="Save" icon="pi pi-check" [text]="true" (onClick)="saveUser()" severity="primary" />
+    <p-button label="Cancel" icon="pi pi-times" (onClick)="hideDialog()" severity="danger" />
+    <p-button label="Save" icon="pi pi-check" (onClick)="saveUser()" severity="primary" />
   </ng-template>
 </p-dialog>
 
 <p-dialog [(visible)]="passwordDialog" [style]="{ width: '450px' }" header="Reset Password" [modal]="true"
-  styleClass="p-fluid" [draggable]="false" [resizable]="false">
+  [draggable]="false" [resizable]="false">
   <ng-template pTemplate="content">
-    <form [formGroup]="passwordForm" class="flex flex-col gap-4 mt-2">
-      <div class="flex flex-col gap-2">
-        <label for="newPassword" class="font-medium">New Password</label>
-        <p-password id="newPassword" formControlName="newPassword" [toggleMask]="true" [feedback]="true" appendTo="body"
-          [invalid]="passwordForm.controls['newPassword'].invalid && passwordForm.controls['newPassword'].touched" />
+    <form [formGroup]="passwordForm" class="flex flex-col mt-2">
+      <div class="flex flex-col">
+        <p-floatlabel variant="on">
+          <p-password id="newPassword" formControlName="newPassword" [toggleMask]="true" [feedback]="true"
+            [invalid]="passwordForm.controls['newPassword'].invalid && passwordForm.controls['newPassword'].touched"
+            appendTo="body" class="w-full" inputStyleClass="w-full" />
+          <label for="newPassword" class="font-medium bg-surface-100 dark:bg-surface-100">New Password</label>
+        </p-floatlabel>
+
         @if (passwordForm.controls['newPassword'].invalid && (passwordForm.controls['newPassword'].dirty ||
         passwordForm.controls['newPassword'].touched)) {
         <small class="text-red-500">Password must be at least 8 characters.</small>
@@ -161,9 +164,8 @@
   </ng-template>
 
   <ng-template pTemplate="footer">
-    <p-button label="Cancel" icon="pi pi-times" [text]="true" (onClick)="passwordDialog.set(false)"
-      severity="secondary" />
-    <p-button label="Reset" icon="pi pi-check" [text]="true" (onClick)="savePassword()" severity="primary"
+    <p-button label="Cancel" icon="pi pi-times" (onClick)="passwordDialog.set(false)" severity="danger" />
+    <p-button label="Reset" icon="pi pi-check" (onClick)="savePassword()" severity="primary"
       [disabled]="passwordForm.invalid" />
   </ng-template>
 </p-dialog>

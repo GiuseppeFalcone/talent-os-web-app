@@ -24,11 +24,9 @@ import { DatePipe, TitleCasePipe } from '@angular/common';
 import { ConfirmDialogModule } from 'primeng/confirmdialog';
 import { MultiSelectModule } from 'primeng/multiselect';
 import { ActivatedRoute } from '@angular/router';
-
 import { YourCvService } from './service/your-cv-service';
 import { AuthService } from '../auth/service/auth-service';
 import { ManageUserService } from '../manage-user/service/manage-user-service';
-
 import { CurriculumDetailDto } from './model/curriculum-detail-dto';
 import { ProjectDomainOptionDto } from './model/project-domain-option-dto';
 import { DomainDto } from '../manage-domain/model/domain-dto';
@@ -38,8 +36,6 @@ import { DomainOptionDto } from '../manage-domain/model/domain-option-dto';
 import { EducationDto } from './model/education-dto';
 import { UserDomainOptionDto } from '../dashboard/model/user-domain-option-dto';
 import { UserDto } from '../dashboard/model/user-dto';
-import { CreateCurriculumDto } from './model/create/create-curriculum-dto';
-import { CurriculumDto } from './model/curriculum-dto';
 
 interface EducationFormControls {
   educationId: FormControl<number | undefined>;

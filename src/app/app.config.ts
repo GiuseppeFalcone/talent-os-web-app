@@ -9,7 +9,7 @@ import { provideAnimationsAsync } from '@angular/platform-browser/animations/asy
 import { provideHttpClient, withInterceptors } from '@angular/common/http';
 import { authInterceptor } from './auth/middleware/auth-interceptor';
 import { providePrimeNG } from 'primeng/config';
-import Aura from '@primeng/themes/aura';
+import { MyGlobalPT, MyPreset } from './theme/theme';
 
 export const appConfig: ApplicationConfig = {
   providers: [
@@ -20,7 +20,7 @@ export const appConfig: ApplicationConfig = {
     provideAnimationsAsync(),
     providePrimeNG({
       theme: {
-        preset: Aura,
+        preset: MyPreset,
         options: {
           cssLayer: {
             name: 'primeng',
@@ -28,6 +28,7 @@ export const appConfig: ApplicationConfig = {
           },
         },
       },
+      pt: MyGlobalPT,
     }),
   ],
 };

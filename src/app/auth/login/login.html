@@ -2,7 +2,7 @@
 
 <div class="surface-ground flex items-center justify-center min-h-svh p-4">
   <div class="w-full max-w-md">
-    <p-card styleClass="shadow-3">
+    <p-card>
       <ng-template pTemplate="header">
         <div class="flex items-center gap-3 border-bottom-1 surface-border px-4 pt-4 pb-3">
           <span class="text-primary-500 text-2xl">
@@ -14,7 +14,6 @@
 
       <div class="p-4">
         <form [formGroup]="loginForm" (ngSubmit)="onSubmit()" novalidate class="flex flex-col gap-3" autocomplete="on">
-          <!-- Username Field -->
           <div class="flex flex-col gap-2">
             <p-floatLabel variant="on">
               <input pInputText id="username" formControlName="username" class="w-full" autocomplete="username"
@@ -23,16 +22,12 @@
             </p-floatLabel>
             @if (usernameInvalid()) {
             <small class="text-red-500">
-              @if (usernameControl.hasError('required')) {
-              Username is required.
-              } @else if (usernameControl.hasError('minlength')) {
-              Username must be at least 3 characters.
-              }
+              @if (usernameControl.hasError('required')) { Username is required. }
+              @else if (usernameControl.hasError('minlength')) { Username must be at least 3 characters. }
             </small>
             }
           </div>
 
-          <!-- Password Field -->
           <div class="flex flex-col gap-2">
             <p-floatLabel variant="on">
               <p-password id="password" formControlName="password" [feedback]="false" [toggleMask]="true"
@@ -42,20 +37,15 @@
             </p-floatLabel>
             @if (passwordInvalid()) {
             <small class="text-red-500">
-              @if (passwordControl.hasError('required')) {
-              Password is required.
-              } @else if (passwordControl.hasError('minlength')) {
-              Password must be at least 6 characters.
-              }
+              @if (passwordControl.hasError('required')) { Password is required. }
+              @else if (passwordControl.hasError('minlength')) { Password must be at least 6 characters. }
             </small>
             }
           </div>
 
-          <!-- Submit Button -->
           <p-button label="Log In" icon="pi pi-sign-in" type="submit" [disabled]="loginForm.invalid || isSubmitting()"
             [loading]="isSubmitting()" styleClass="w-full mt-2" aria-label="Submit login form" />
 
-          <!-- Forgot Password Link -->
           <div class="text-center mt-2">
             <a routerLink="/forgot-password"
               class="text-primary-600 dark:text-primary-400 text-sm hover:underline transition-colors">

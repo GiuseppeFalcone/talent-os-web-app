@@ -14,14 +14,14 @@
     <div class="grid grid-cols-1 md:grid-cols-12 gap-6 items-start">
 
       <div class="md:col-span-4 lg:col-span-3">
-        <p-card styleClass="h-[750px] flex flex-col shadow-2"
+        <p-card styleClass="h-[750px] flex flex-col"
           contentStyle="{'flex': '1', 'overflow': 'hidden', 'display': 'flex', 'flex-direction': 'column', 'padding-top': '0'}">
           <ng-template pTemplate="header">
             <div
               class="p-4 border-b border-surface-200 dark:border-surface-700 flex justify-between items-center bg-surface-50 dark:bg-surface-900 rounded-t-lg shrink-0">
               <span class="font-semibold text-lg">Domains</span>
-              <p-button icon="pi pi-plus" [rounded]="true" [text]="true" (onClick)="openNewDomainDialog()"
-                pTooltip="New Domain" tooltipPosition="bottom" [attr.aria-label]="'Create New Domain'"></p-button>
+              <p-button icon="pi pi-plus" [rounded]="true" (onClick)="openNewDomainDialog()" pTooltip="New Domain"
+                tooltipPosition="bottom" [attr.aria-label]="'Create New Domain'" styleClass="gap-0! p-0!"></p-button>
             </div>
           </ng-template>
 
@@ -30,11 +30,11 @@
               <p-iconfield iconPosition="left" class="w-full">
                 <p-inputicon styleClass="pi pi-search" />
                 <input pInputText type="text" [formControl]="searchControl" placeholder="Search domains..."
-                  class="w-full" aria-label="Search domains" />
+                  class="w-full pl-10" aria-label="Search domains" />
               </p-iconfield>
             </div>
 
-            <div class="flex-1 overflow-y-auto pr-1 pl-1 pb-2">
+            <div class="flex-1 overflow-y-auto">
               @if (loadingDomains()) {
               <div class="flex flex-col items-center justify-center p-4 gap-2 text-surface-500">
                 <i class="pi pi-spin pi-spinner text-xl"></i>
@@ -62,10 +62,12 @@
 
                 <div class="flex gap-1 opacity-0 group-hover:opacity-100 transition-opacity focus-within:opacity-100"
                   [class.opacity-100]="selectedDomain()?.domainId === domain.domainId">
-                  <p-button icon="pi pi-pencil" [text]="true" severity="secondary" [rounded]="true" size="small"
-                    (onClick)="openEditDomainDialog(domain, $event)" pTooltip="Edit" tooltipPosition="top" />
-                  <p-button icon="pi pi-trash" [text]="true" severity="danger" [rounded]="true" size="small"
-                    (onClick)="deleteDomain(domain, $event)" pTooltip="Delete" tooltipPosition="top" />
+                  <p-button icon="pi pi-pencil" severity="primary" [rounded]="true" size="small"
+                    (onClick)="openEditDomainDialog(domain, $event)" pTooltip="Edit" tooltipPosition="top"
+                    styleClass="gap-0! p-0!" />
+                  <p-button icon="pi pi-trash" severity="danger" [rounded]="true" size="small"
+                    (onClick)="deleteDomain(domain, $event)" pTooltip="Delete" tooltipPosition="top"
+                    styleClass="gap-0! p-0!" />
                 </div>
               </div>
               }
@@ -76,7 +78,7 @@
       </div>
 
       <div class="md:col-span-8 lg:col-span-9">
-        <p-card styleClass="h-[750px] flex flex-col shadow-2"
+        <p-card styleClass="h-[750px] flex flex-col"
           contentStyle="{'flex': '1', 'overflow': 'hidden', 'display': 'flex', 'flex-direction': 'column'}">
           <ng-template pTemplate="header">
             @if (selectedDomain(); as domain) {
@@ -96,9 +98,9 @@
 
               <div class="flex gap-2 w-full sm:w-auto">
                 <p-iconfield iconPosition="left" class="w-full sm:w-auto">
-                  <p-inputicon styleClass="pi pi-filter" />
-                  <input pInputText type="text" [formControl]="optionSearchControl" placeholder="Filter options..."
-                    class="w-full sm:w-64" aria-label="Filter options" />
+                  <p-inputicon styleClass="pi pi-search" />
+                  <input pInputText type="text" [formControl]="optionSearchControl" placeholder="Search options..."
+                    class="w-full sm:w-64 px-10" aria-label="Filter options" />
                 </p-iconfield>
 
                 <p-button label="Add Option" icon="pi pi-plus" (onClick)="openNewOptionDialog()"
@@ -125,15 +127,16 @@
                 </td>
                 <td class="text-center">
                   <div class="flex justify-center gap-2">
-                    <p-button icon="pi pi-pencil" [rounded]="true" [text]="true" severity="secondary"
-                      (onClick)="openEditOptionDialog(option)" pTooltip="Edit Option" tooltipPosition="top" />
-                    <p-button icon="pi pi-trash" [rounded]="true" [text]="true" severity="danger"
-                      (onClick)="deleteOption(option)" pTooltip="Delete Option" tooltipPosition="top" />
+                    <p-button icon="pi pi-pencil" [rounded]="true" severity="primary"
+                      (onClick)="openEditOptionDialog(option)" pTooltip="Edit Option" tooltipPosition="top"
+                      styleClass="gap-0! p-0!" />
+                    <p-button icon=" pi pi-trash" [rounded]="true" severity="danger" (onClick)="deleteOption(option)"
+                      pTooltip="Delete Option" tooltipPosition="top" styleClass="gap-0! p-0! " />
                   </div>
                 </td>
               </tr>
             </ng-template>
-            <ng-template pTemplate="emptymessage">
+            <ng-template pTemplate=" emptymessage">
               <tr>
                 <td colspan="2" class="text-center p-8">
                   <div class="flex flex-col items-center gap-2 text-surface-500">
@@ -167,8 +170,7 @@
 </div>
 
 <p-dialog [(visible)]="domainDialogVisible" [style]="{ width: '450px' }"
-  [header]="isEditMode() ? 'Edit Domain' : 'New Domain'" [modal]="true" [draggable]="false" [resizable]="false"
-  styleClass="p-fluid">
+  [header]="isEditMode() ? 'Edit Domain' : 'New Domain'" [modal]="true" [draggable]="false" [resizable]="false">
   <ng-template pTemplate="content">
     <form [formGroup]="domainForm" class="flex flex-col gap-4 mt-4">
       <div class="flex flex-col gap-2">
@@ -185,15 +187,13 @@
     </form>
   </ng-template>
   <ng-template pTemplate="footer">
-    <p-button label="Cancel" icon="pi pi-times" [text]="true" (onClick)="domainDialogVisible.set(false)"
-      severity="secondary" />
-    <p-button label="Save" icon="pi pi-check" [text]="true" (onClick)="saveDomain()" severity="primary" />
+    <p-button label="Cancel" icon="pi pi-times" (onClick)="domainDialogVisible.set(false)" severity="danger" />
+    <p-button label="Save" icon="pi pi-check" (onClick)="saveDomain()" severity="primary" />
   </ng-template>
 </p-dialog>
 
 <p-dialog [(visible)]="optionDialogVisible" [style]="{ width: '450px' }"
-  [header]="isEditMode() ? 'Edit Option' : 'New Option'" [modal]="true" [draggable]="false" [resizable]="false"
-  styleClass="p-fluid">
+  [header]="isEditMode() ? 'Edit Option' : 'New Option'" [modal]="true" [draggable]="false" [resizable]="false">
   <ng-template pTemplate="content">
     <form [formGroup]="optionForm" class="flex flex-col gap-4 mt-4">
       <div class="flex flex-col gap-2">
@@ -209,8 +209,7 @@
     </form>
   </ng-template>
   <ng-template pTemplate="footer">
-    <p-button label="Cancel" icon="pi pi-times" [text]="true" (onClick)="optionDialogVisible.set(false)"
-      severity="secondary" />
-    <p-button label="Save" icon="pi pi-check" [text]="true" (onClick)="saveOption()" severity="primary" />
+    <p-button label="Cancel" icon="pi pi-times" (onClick)="optionDialogVisible.set(false)" severity="danger" />
+    <p-button label="Save" icon="pi pi-check" (onClick)="saveOption()" severity="primary" />
   </ng-template>
 </p-dialog>

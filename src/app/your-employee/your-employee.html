@@ -1,82 +1,77 @@
-<p-toast />
-
-<div class="surface-ground min-h-screen p-4">
-  <div class="mx-auto max-w-6xl">
-    <div class="mb-6 flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
-      <div>
-        <h1 class="text-3xl font-bold text-primary-500">My Employees</h1>
-        <p class="text-surface-600 dark:text-surface-300">
-          Manage and view details of your team members.
-        </p>
-      </div>
-    </div>
-
-    <div class="mb-6 flex flex-col gap-4">
-      <div class="flex flex-col gap-3 md:flex-row md:items-center">
-        <p-iconfield iconPosition="left" class="w-full md:w-auto">
-          <p-inputicon styleClass="pi pi-search" />
-          <input pInputText type="text" [formControl]="searchControl" placeholder="Search by name or username..."
-            class="w-full md:w-64" />
-        </p-iconfield>
-
-        <p-select [options]="roleOptions" [(ngModel)]="selectedRole" (onChange)="onFilter()" optionLabel="label"
-          optionValue="value" placeholder="Filter by Role" [showClear]="true" class="w-full md:w-48"
-          styleClass="w-full" />
-
-        <p-button label="Clear Filters" icon="pi pi-filter-slash" [outlined]="true" (onClick)="clearFilters()"
-          class="w-full md:w-auto" />
-      </div>
-
-      @if (domains().length > 0) {
-      <p-accordion>
-        <p-accordion-panel value="skills">
-          <p-accordion-header>
-            <span class="font-semibold text-surface-900 dark:text-surface-50">Filter by Skills</span>
-          </p-accordion-header>
-
-          <p-accordion-content>
-            <div class="flex flex-col gap-3">
-              @for (domain of domains(); track domain.domainId) {
-              <div class="flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-4">
-                <span
-                  class="min-w-2xs text-sm font-medium text-surface-700 dark:text-surface-300 whitespace-pre-line leading-tight">
-                  {{domain.domainName.replaceAll('_', '\n') | titlecase}}
-                </span>
-
-                <div class="flex items-center gap-2 flex-1 min-w-0">
-                  <p-button icon="pi pi-chevron-left" [rounded]="true" [text]="true" size="small"
-                    (onClick)="scrollLeft(skillsContainer)" styleClass="shrink-0 text-surface-500" />
-
-                  <div #skillsContainer class="flex gap-2 overflow-x-auto scroll-smooth pb-1"
-                    style="scrollbar-width: none; -ms-overflow-style: none;">
-                    @for (option of domain.domainOptions; track option.domainOptionId) {
-                    <p-button [label]="option.value"
-                      [severity]="selectedDomainOptionIds().includes(option.domainOptionId) ? 'primary' : 'secondary'"
-                      [outlined]="!selectedDomainOptionIds().includes(option.domainOptionId)" size="small"
-                      [rounded]="true" (onClick)="toggleDomainOption(option.domainOptionId)"
-                      styleClass="whitespace-nowrap" />
-                    }
-                  </div>
-
-                  <p-button icon="pi pi-chevron-right" [rounded]="true" [text]="true" size="small"
-                    (onClick)="scrollRight(skillsContainer)" styleClass="shrink-0 text-surface-500" />
-                </div>
-              </div>
-              <p-divider></p-divider>
-              }
-            </div>
-          </p-accordion-content>
-        </p-accordion-panel>
-      </p-accordion>
-      }
+<div class="flex flex-col gap-4" *appHasRole="['MANAGER']">
+  <div class="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
+    <div>
+      <h1 class="text-3xl font-bold text-primary">My Employees</h1>
+      <p class="text-surface-600 dark:text-surface-300">
+        Manage and view details of your team members.
+      </p>
     </div>
   </div>
 
-  <p-card styleClass="shadow-2">
+  <div class="flex flex-col gap-4">
+    <div class="flex flex-col gap-3 md:flex-row md:items-center">
+      <p-iconfield iconPosition="left" class="w-full md:w-auto">
+        <p-inputicon styleClass="pi pi-search" />
+        <input pInputText type="text" [formControl]="searchControl" placeholder="Search..."
+          class="w-full pl-10 md:w-64" />
+      </p-iconfield>
+
+      <p-select [options]="roleOptions" [(ngModel)]="selectedRole" (onChange)="onFilter()" optionLabel="label"
+        optionValue="value" placeholder="Filter by Role" [showClear]="true" styleClass="w-full md:w-48" />
+
+      <p-button label="Clear Filters" icon="pi pi-filter-slash" (onClick)="clearFilters()" [text]="true"
+        severity="secondary" />
+    </div>
+
+    @if (domains().length > 0) {
+    <p-accordion>
+      <p-accordion-panel value="skills">
+        <p-accordion-header>
+          <span class="font-semibold text-surface-900 dark:text-surface-50">Filter by Skills</span>
+        </p-accordion-header>
+
+        <p-accordion-content>
+          <div class="flex flex-col gap-3">
+            @for (domain of domains(); track domain.domainId) {
+            <div class="flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-4">
+              <span
+                class="min-w-2xs text-sm font-medium text-surface-700 dark:text-surface-300 whitespace-pre-line leading-tight">
+                {{domain.domainName.replaceAll('_', '\n') | titlecase}}
+              </span>
+
+              <div class="flex items-center gap-2 flex-1 min-w-0">
+                <p-button icon="pi pi-chevron-left" [rounded]="true" [text]="true" size="small" severity="secondary"
+                  (onClick)="scrollLeft(skillsContainer)" styleClass="shrink-0" />
+
+                <div #skillsContainer class="flex gap-2 overflow-x-auto scroll-smooth pb-1"
+                  style="scrollbar-width: none; -ms-overflow-style: none;">
+                  @for (option of domain.domainOptions; track option.domainOptionId) {
+                  <p-button [label]="option.value"
+                    [severity]="selectedDomainOptionIds().includes(option.domainOptionId) ? 'primary' : 'secondary'"
+                    size="small" [rounded]="true" (onClick)="toggleDomainOption(option.domainOptionId)"
+                    styleClass="whitespace-nowrap"
+                    [outlined]="!selectedDomainOptionIds().includes(option.domainOptionId)" />
+                  }
+                </div>
+
+                <p-button icon="pi pi-chevron-right" [rounded]="true" [text]="true" size="small" severity="secondary"
+                  (onClick)="scrollRight(skillsContainer)" styleClass="shrink-0" />
+              </div>
+            </div>
+            <p-divider styleClass="my-2" />
+            }
+          </div>
+        </p-accordion-content>
+      </p-accordion-panel>
+    </p-accordion>
+    }
+  </div>
+
+  <p-card>
     <p-table #dt [value]="employees()" [lazy]="true" (onLazyLoad)="loadData($event)" [paginator]="true" [rows]="10"
-      [totalRecords]="totalRecords()" [loading]="loading()" [rowsPerPageOptions]="[10, 25, 50]"
-      [showCurrentPageReport]="true" currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries"
-      styleClass="p-datatable-striped" responsiveLayout="scroll">
+      [totalRecords]="totalRecords()" [loading]="loading()" [rowsPerPageOptions]="[10, 25, 50]" [stripedRows]="true"
+      [rowHover]="true" [showCurrentPageReport]="true"
+      currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries" tableStyleClass="w-full">
 
       <ng-template pTemplate="header">
         <tr>
@@ -94,12 +89,13 @@
         <tr>
           <td>
             <div class="flex flex-col">
-              <span class="font-medium">{{ employee.firstName | titlecase }} {{ employee.lastName | titlecase}}</span>
+              <span class="font-medium text-surface-900 dark:text-surface-0">{{ employee.firstName | titlecase }} {{
+                employee.lastName | titlecase}}</span>
               <span class="text-sm text-surface-500">{{ employee.username }}</span>
             </div>
           </td>
           <td class="text-center">
-            <p-tag [value]="employee.role | titlecase" [severity]="'info'" />
+            <p-tag [value]="employee.role | titlecase" severity="info" />
           </td>
           <td class="text-center">
             @if (employee.hasDegree) {
@@ -123,8 +119,10 @@
             }
           </td>
           <td class="text-center">
+            @if (employee.numberOfProjects > 0) {
             <p-tag [value]="employee.numberOfProjects" [severity]="employee.numberOfProjects > 0 ? 'success' : 'warn'"
               [rounded]="true" />
+            }
           </td>
           <td class="text-center">
             <p-button icon="pi pi-file" label="View CV" size="small" [outlined]="true"
@@ -135,7 +133,7 @@
 
       <ng-template pTemplate="emptymessage">
         <tr>
-          <td colspan="7" class="text-center p-4">
+          <td colspan="7" class="text-center p-4 text-surface-500">
             No employees found.
           </td>
         </tr>

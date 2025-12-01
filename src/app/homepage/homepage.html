@@ -1,13 +1,13 @@
 <div class="flex flex-col items-center justify-center p-4 md:p-8">
   <div class="text-center max-w-5xl mx-auto">
 
-    <div class="mb-12 animate-fade-in-down">
+    <div class="mb-12">
       <span class="inline-block p-4 rounded-full bg-primary-50 dark:bg-primary-900/20 mb-6">
-        <i class="pi pi-sparkles text-6xl text-primary-500"></i>
+        <i class="pi pi-sparkles text-6xl text-primary"></i>
       </span>
 
       <h1 class="text-4xl md:text-6xl font-bold text-surface-900 dark:text-surface-50 mb-6 tracking-tight">
-        Welcome to <span class="text-primary-500">EasyCV</span>
+        Welcome to <span class="text-primary">EasyCV</span>
       </h1>
 
       <p class="text-xl md:text-2xl text-surface-600 dark:text-surface-300 mb-10 max-w-3xl mx-auto leading-relaxed">
@@ -21,17 +21,14 @@
         } @else {
         <p-button label="Get Started" icon="pi pi-arrow-right" routerLink="/login" size="large" [raised]="true"
           rounded="true" />
-        <p-button label="Learn More" icon="pi pi-info-circle" severity="secondary" [outlined]="true" size="large"
-          rounded="true" />
         }
       </div>
     </div>
 
     <div class="grid grid-cols-1 md:grid-cols-3 gap-6 text-left">
-      <p-card
-        styleClass="h-full shadow-2 hover:shadow-4 transition-all duration-300 border-none bg-surface-0 dark:bg-surface-900">
+      <p-card styleClass="h-full flex flex-col">
         <ng-template pTemplate="header">
-          <div class="px-6 pt-6 pb-2 text-primary-500">
+          <div class="px-6 pt-6 pb-2 text-primary">
             <i class="pi pi-id-card text-4xl"></i>
           </div>
         </ng-template>
@@ -42,10 +39,9 @@
         </p>
       </p-card>
 
-      <p-card
-        styleClass="h-full shadow-2 hover:shadow-4 transition-all duration-300 border-none bg-surface-0 dark:bg-surface-900">
+      <p-card styleClass="h-full flex flex-col">
         <ng-template pTemplate="header">
-          <div class="px-6 pt-6 pb-2 text-purple-500">
+          <div class="px-6 pt-6 pb-2 text-primary">
             <i class="pi pi-users text-4xl"></i>
           </div>
         </ng-template>
@@ -55,10 +51,9 @@
         </p>
       </p-card>
 
-      <p-card
-        styleClass="h-full shadow-2 hover:shadow-4 transition-all duration-300 border-none bg-surface-0 dark:bg-surface-900">
+      <p-card styleClass="h-full flex flex-col">
         <ng-template pTemplate="header">
-          <div class="px-6 pt-6 pb-2 text-orange-500">
+          <div class="px-6 pt-6 pb-2 text-primary">
             <i class="pi pi-shield text-4xl"></i>
           </div>
         </ng-template>

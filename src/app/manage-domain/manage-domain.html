@@ -1,174 +1,160 @@
-<p-toast />
-<p-confirmdialog />
+<div class="flex flex-col h-[calc(100vh-6rem)] gap-4" *appHasRole="['ADMIN', 'SUPERADMIN']">
+  <div class="flex flex-col gap-1 shrink-0">
+    <h1 class="text-3xl font-bold text-primary">Manage Domains</h1>
+    <p class="text-surface-600 dark:text-surface-300">
+      Configure system domains and their available options.
+    </p>
+  </div>
 
-<div class="surface-ground min-h-screen p-4">
-  <div class="mx-auto max-w-7xl h-full flex flex-col gap-4">
-
-    <div class="flex flex-col gap-1">
-      <h1 class="text-3xl font-bold text-primary-500">Manage Domains</h1>
-      <p class="text-surface-600 dark:text-surface-300">
-        Configure system domains and their available options.
-      </p>
-    </div>
-
-    <div class="grid grid-cols-1 md:grid-cols-12 gap-6 items-start">
-
-      <div class="md:col-span-4 lg:col-span-3">
-        <p-card styleClass="h-[750px] flex flex-col shadow-2"
-          contentStyle="{'flex': '1', 'overflow': 'hidden', 'display': 'flex', 'flex-direction': 'column', 'padding-top': '0'}">
-          <ng-template pTemplate="header">
-            <div
-              class="p-4 border-b border-surface-200 dark:border-surface-700 flex justify-between items-center bg-surface-50 dark:bg-surface-900 rounded-t-lg shrink-0">
-              <span class="font-semibold text-lg">Domains</span>
-              <p-button icon="pi pi-plus" [rounded]="true" [text]="true" (onClick)="openNewDomainDialog()"
-                pTooltip="New Domain" tooltipPosition="bottom" [attr.aria-label]="'Create New Domain'"></p-button>
-            </div>
-          </ng-template>
-
-          <div class="flex flex-col h-full gap-3 pt-3">
-            <div class="px-1 shrink-0">
-              <p-iconfield iconPosition="left" class="w-full">
-                <p-inputicon styleClass="pi pi-search" />
-                <input pInputText type="text" [formControl]="searchControl" placeholder="Search domains..."
-                  class="w-full" aria-label="Search domains" />
-              </p-iconfield>
-            </div>
-
-            <div class="flex-1 overflow-y-auto pr-1 pl-1 pb-2">
-              @if (loadingDomains()) {
-              <div class="flex flex-col items-center justify-center p-4 gap-2 text-surface-500">
-                <i class="pi pi-spin pi-spinner text-xl"></i>
-                <span>Loading...</span>
-              </div>
-              } @else if (domains().length === 0) {
-              <div class="p-4 text-center text-surface-500 italic">No domains found.</div>
-              } @else {
-              @for (domain of domains(); track domain.domainId) {
-              <div
-                class="p-3 mb-1 rounded-lg cursor-pointer transition-all duration-200 flex justify-between items-center group border border-transparent"
-                [class.bg-primary-50]="selectedDomain()?.domainId === domain.domainId"
-                [class.dark:bg-primary-900]="selectedDomain()?.domainId === domain.domainId"
-                [class.border-primary-200]="selectedDomain()?.domainId === domain.domainId"
-                [class.dark:border-primary-700]="selectedDomain()?.domainId === domain.domainId"
-                [class.text-primary-700]="selectedDomain()?.domainId === domain.domainId"
-                [class.dark:text-primary-300]="selectedDomain()?.domainId === domain.domainId"
-                [class.hover:bg-surface-100]="selectedDomain()?.domainId !== domain.domainId"
-                [class.dark:hover:bg-surface-800]="selectedDomain()?.domainId !== domain.domainId"
-                (click)="onSelectDomain(domain)" tabindex="0" (keydown.enter)="onSelectDomain(domain)">
-
-                <span class="font-medium text-wrap flex-1" [pTooltip]="domain.domainName" tooltipPosition="top">
-                  {{ domain.domainName.replaceAll('_', ' ') | titlecase }}
-                </span>
-
-                <div class="flex gap-1 opacity-0 group-hover:opacity-100 transition-opacity focus-within:opacity-100"
-                  [class.opacity-100]="selectedDomain()?.domainId === domain.domainId">
-                  <p-button icon="pi pi-pencil" [text]="true" severity="secondary" [rounded]="true" size="small"
-                    (onClick)="openEditDomainDialog(domain, $event)" pTooltip="Edit" tooltipPosition="top" />
-                  <p-button icon="pi pi-trash" [text]="true" severity="danger" [rounded]="true" size="small"
-                    (onClick)="deleteDomain(domain, $event)" pTooltip="Delete" tooltipPosition="top" />
-                </div>
-              </div>
-              }
-              }
-            </div>
+  <div class="grid grid-cols-1 md:grid-cols-12 gap-6 items-start h-full min-h-0">
+    <div class="md:col-span-4 lg:col-span-3 h-full flex flex-col min-h-0">
+      <p-card styleClass="h-full flex flex-col" contentStyleClass="flex-1 flex flex-col overflow-hidden p-0 gap-3 pt-3">
+        <ng-template pTemplate="header">
+          <div
+            class="p-4 border-b border-surface-200 dark:border-surface-700 flex justify-between items-center bg-surface-50 dark:bg-surface-900 rounded-t-lg shrink-0">
+            <span class="font-semibold text-lg">Domains</span>
+            <p-button icon="pi pi-plus" [text]="true" [rounded]="true" (onClick)="openNewDomainDialog()"
+              pTooltip="New Domain" tooltipPosition="bottom" aria-label="Create New Domain" />
           </div>
-        </p-card>
-      </div>
+        </ng-template>
 
-      <div class="md:col-span-8 lg:col-span-9">
-        <p-card styleClass="h-[750px] flex flex-col shadow-2"
-          contentStyle="{'flex': '1', 'overflow': 'hidden', 'display': 'flex', 'flex-direction': 'column'}">
-          <ng-template pTemplate="header">
-            @if (selectedDomain(); as domain) {
-            <div
-              class="p-4 border-b border-surface-200 dark:border-surface-700 flex flex-col sm:flex-row justify-between items-center gap-4 bg-surface-50 dark:bg-surface-900 rounded-t-lg shrink-0">
-              <div class="flex items-center gap-3">
-                <div
-                  class="flex items-center justify-center w-10 h-10 rounded-full bg-primary-100 dark:bg-primary-900/50 text-primary-600 dark:text-primary-400">
-                  <i class="pi pi-list text-xl"></i>
-                </div>
-                <div class="flex flex-col">
-                  <span
-                    class="text-xl font-bold text-surface-900 dark:text-surface-0">{{ domain.domainName.replaceAll('_', ' ') | titlecase }}</span>
-                  <span class="text-sm text-surface-500">Manage available options</span>
-                </div>
-              </div>
+        <div class="px-3 shrink-0">
+          <p-iconfield iconPosition="left" class="w-full">
+            <p-inputicon styleClass="pi pi-search" />
+            <input pInputText type="text" [formControl]="searchControl" placeholder="Search domains..."
+              class="w-full pl-10" aria-label="Search domains" />
+          </p-iconfield>
+        </div>
 
-              <div class="flex gap-2 w-full sm:w-auto">
-                <p-iconfield iconPosition="left" class="w-full sm:w-auto">
-                  <p-inputicon styleClass="pi pi-filter" />
-                  <input pInputText type="text" [formControl]="optionSearchControl" placeholder="Filter options..."
-                    class="w-full sm:w-64" aria-label="Filter options" />
-                </p-iconfield>
-
-                <p-button label="Add Option" icon="pi pi-plus" (onClick)="openNewOptionDialog()"
-                  [raised]="true"></p-button>
-              </div>
-            </div>
-            }
-          </ng-template>
-          @if (selectedDomain(); as domain) {
-
-          <p-table [value]="filteredOptions()" [paginator]="true" [rows]="10" [rowsPerPageOptions]="[10, 25, 50]"
-            [loading]="loadingOptions()" styleClass="p-datatable-striped" [scrollable]="true" scrollHeight="flex"
-            class="flex-1 flex flex-col h-full w-full" [tableStyle]="{'min-width': '100%'}">
-            <ng-template pTemplate="header">
-              <tr>
-                <th style="width: 70%">Value</th>
-                <th style="width: 30%" class="text-center">Actions</th>
-              </tr>
-            </ng-template>
-            <ng-template pTemplate="body" let-option>
-              <tr>
-                <td>
-                  <span class="font-medium text-surface-700 dark:text-surface-200">{{ option.value }}</span>
-                </td>
-                <td class="text-center">
-                  <div class="flex justify-center gap-2">
-                    <p-button icon="pi pi-pencil" [rounded]="true" [text]="true" severity="secondary"
-                      (onClick)="openEditOptionDialog(option)" pTooltip="Edit Option" tooltipPosition="top" />
-                    <p-button icon="pi pi-trash" [rounded]="true" [text]="true" severity="danger"
-                      (onClick)="deleteOption(option)" pTooltip="Delete Option" tooltipPosition="top" />
-                  </div>
-                </td>
-              </tr>
-            </ng-template>
-            <ng-template pTemplate="emptymessage">
-              <tr>
-                <td colspan="2" class="text-center p-8">
-                  <div class="flex flex-col items-center gap-2 text-surface-500">
-                    <i class="pi pi-filter-slash text-2xl"></i>
-                    @if (optionSearchControl.value) {
-                    <span>No options match your filter.</span>
-                    } @else {
-                    <span>No options found for this domain.</span>
-                    }
-                  </div>
-                </td>
-              </tr>
-            </ng-template>
-          </p-table>
+        <div class="flex-1 overflow-y-auto px-3 pb-3 custom-scrollbar">
+          @if (loadingDomains()) {
+          <div class="flex flex-col items-center justify-center p-4 gap-2 text-surface-500">
+            <i class="pi pi-spin pi-spinner text-xl"></i>
+            <span>Loading...</span>
+          </div>
+          } @else if (domains().length === 0) {
+          <div class="p-4 text-center text-surface-500 italic">No domains found.</div>
           } @else {
-          <div class="flex flex-col items-center justify-center h-full text-surface-400 p-8 text-center">
-            <div
-              class="w-24 h-24 rounded-full bg-surface-100 dark:bg-surface-800 flex items-center justify-center mb-6">
-              <i class="pi pi-arrow-left text-4xl text-surface-400 md:hidden"></i>
-              <i class="pi pi-sliders-h text-5xl text-surface-400 hidden md:block"></i>
+          @for (domain of domains(); track domain.domainId) {
+          <div
+            class="p-3 mb-1 rounded-lg cursor-pointer transition-colors duration-200 flex justify-between items-center group"
+            [class.bg-primary-100]="selectedDomain()?.domainId === domain.domainId"
+            [class.dark:bg-primary-900]="selectedDomain()?.domainId === domain.domainId"
+            [class.text-primary-700]="selectedDomain()?.domainId === domain.domainId"
+            [class.dark:text-primary-100]="selectedDomain()?.domainId === domain.domainId"
+            [class.hover:bg-surface-100]="selectedDomain()?.domainId !== domain.domainId"
+            [class.dark:hover:bg-surface-800]="selectedDomain()?.domainId !== domain.domainId"
+            (click)="onSelectDomain(domain)" tabindex="0" (keydown.enter)="onSelectDomain(domain)">
+
+            <span class="font-medium text-wrap flex-1" [pTooltip]="domain.domainName.replace('_', ' ')"
+              tooltipPosition="top">
+              {{ domain.domainName.replaceAll('_', ' ') | titlecase }}
+            </span>
+
+            <div class="flex gap-1 opacity-0 group-hover:opacity-100 transition-opacity focus-within:opacity-100"
+              [class.opacity-100]="selectedDomain()?.domainId === domain.domainId">
+              <p-button icon="pi pi-pencil" [text]="true" [rounded]="true" severity="secondary" size="small"
+                (onClick)="openEditDomainDialog(domain, $event)" pTooltip="Edit" tooltipPosition="top" />
+              <p-button icon="pi pi-trash" [text]="true" [rounded]="true" severity="danger" size="small"
+                (onClick)="deleteDomain(domain, $event)" pTooltip="Delete" tooltipPosition="top" />
             </div>
-            <h2 class="text-2xl font-semibold text-surface-600 dark:text-surface-300 mb-2">No Domain Selected</h2>
-            <p class="max-w-md text-surface-500">Select a domain from the list on the left to view and manage its
-              configuration options.</p>
           </div>
           }
-        </p-card>
-      </div>
+          }
+        </div>
+      </p-card>
+    </div>
+
+    <div class="md:col-span-8 lg:col-span-9 h-full flex flex-col min-h-0">
+      <p-card styleClass="h-full flex flex-col" contentStyleClass="flex-1 flex flex-col overflow-hidden p-0">
+        <ng-template pTemplate="header">
+          @if (selectedDomain(); as domain) {
+          <div
+            class="p-4 border-b border-surface-200 dark:border-surface-700 flex flex-col sm:flex-row justify-between items-center gap-4 bg-surface-50 dark:bg-surface-900 rounded-t-lg shrink-0">
+            <div class="flex items-center gap-3">
+              <div
+                class="flex items-center justify-center w-10 h-10 rounded-full bg-primary-100 dark:bg-primary-900/50 text-primary-600 dark:text-primary-400">
+                <i class="pi pi-list text-xl"></i>
+              </div>
+              <div class="flex flex-col">
+                <span class="text-xl font-bold text-surface-900 dark:text-surface-0">
+                  {{ domain.domainName.replaceAll('_', ' ') | titlecase }}
+                </span>
+                <span class="text-sm text-surface-500">Manage available options</span>
+              </div>
+            </div>
+
+            <div class="flex gap-2 w-full sm:w-auto">
+              <p-iconfield iconPosition="left" class="w-full sm:w-auto">
+                <p-inputicon styleClass="pi pi-search" />
+                <input pInputText type="text" [formControl]="optionSearchControl" placeholder="Search options..."
+                  class="w-full sm:w-64 px-10" aria-label="Filter options" />
+              </p-iconfield>
+
+              <p-button label="Add Option" icon="pi pi-plus" (onClick)="openNewOptionDialog()" />
+            </div>
+          </div>
+          }
+        </ng-template>
+
+        @if (selectedDomain(); as domain) {
+        <p-table [value]="filteredOptions()" [paginator]="true" [rows]="10" [rowsPerPageOptions]="[10, 25, 50]"
+          [loading]="loadingOptions()" [stripedRows]="true" [scrollable]="true" scrollHeight="flex" [rowHover]="true"
+          class="flex-1 flex flex-col h-full w-full" tableStyleClass="w-full h-full">
+          <ng-template pTemplate="header">
+            <tr>
+              <th style="width: 70%">Value</th>
+              <th style="width: 30%" class="text-center">Actions</th>
+            </tr>
+          </ng-template>
+          <ng-template pTemplate="body" let-option>
+            <tr>
+              <td>
+                <span class="font-medium text-surface-700 dark:text-surface-200">{{ option.value }}</span>
+              </td>
+              <td class="text-center">
+                <div class="flex justify-center gap-2">
+                  <p-button icon="pi pi-pencil" [text]="true" [rounded]="true" severity="secondary"
+                    (onClick)="openEditOptionDialog(option)" pTooltip="Edit Option" tooltipPosition="top" />
+                  <p-button icon=" pi pi-trash" [text]="true" [rounded]="true" severity="danger"
+                    (onClick)="deleteOption(option)" pTooltip="Delete Option" tooltipPosition="top" />
+                </div>
+              </td>
+            </tr>
+          </ng-template>
+          <ng-template pTemplate="emptymessage">
+            <tr>
+              <td colspan="2" class="text-center p-8">
+                <div class="flex flex-col items-center gap-2 text-surface-500">
+                  <i class="pi pi-filter-slash text-2xl"></i>
+                  @if (optionSearchControl.value) {
+                  <span>No options match your filter.</span>
+                  } @else {
+                  <span>No options found for this domain.</span>
+                  }
+                </div>
+              </td>
+            </tr>
+          </ng-template>
+        </p-table>
+        } @else {
+        <div class="flex flex-col items-center justify-center h-full text-surface-400 p-8 text-center">
+          <div class="w-24 h-24 rounded-full bg-surface-100 dark:bg-surface-800 flex items-center justify-center mb-6">
+            <i class="pi pi-arrow-left text-4xl text-surface-400 md:hidden"></i>
+            <i class="pi pi-sliders-h text-5xl text-surface-400 hidden md:block"></i>
+          </div>
+          <h2 class="text-2xl font-semibold text-surface-600 dark:text-surface-300 mb-2">No Domain Selected</h2>
+          <p class="max-w-md text-surface-500">Select a domain from the list on the left to view and manage its
+            configuration options.</p>
+        </div>
+        }
+      </p-card>
     </div>
   </div>
 </div>
 
 <p-dialog [(visible)]="domainDialogVisible" [style]="{ width: '450px' }"
-  [header]="isEditMode() ? 'Edit Domain' : 'New Domain'" [modal]="true" [draggable]="false" [resizable]="false"
-  styleClass="p-fluid">
+  [header]="isEditMode() ? 'Edit Domain' : 'New Domain'" [modal]="true" [draggable]="false" [resizable]="false">
   <ng-template pTemplate="content">
     <form [formGroup]="domainForm" class="flex flex-col gap-4 mt-4">
       <div class="flex flex-col gap-2">
@@ -185,15 +171,14 @@
     </form>
   </ng-template>
   <ng-template pTemplate="footer">
-    <p-button label="Cancel" icon="pi pi-times" [text]="true" (onClick)="domainDialogVisible.set(false)"
-      severity="secondary" />
-    <p-button label="Save" icon="pi pi-check" [text]="true" (onClick)="saveDomain()" severity="primary" />
+    <p-button label="Cancel" icon="pi pi-times" (onClick)="domainDialogVisible.set(false)" severity="danger"
+      [text]="true" />
+    <p-button label="Save" icon="pi pi-check" (onClick)="saveDomain()" severity="primary" />
   </ng-template>
 </p-dialog>
 
 <p-dialog [(visible)]="optionDialogVisible" [style]="{ width: '450px' }"
-  [header]="isEditMode() ? 'Edit Option' : 'New Option'" [modal]="true" [draggable]="false" [resizable]="false"
-  styleClass="p-fluid">
+  [header]="isEditMode() ? 'Edit Option' : 'New Option'" [modal]="true" [draggable]="false" [resizable]="false">
   <ng-template pTemplate="content">
     <form [formGroup]="optionForm" class="flex flex-col gap-4 mt-4">
       <div class="flex flex-col gap-2">
@@ -209,8 +194,8 @@
     </form>
   </ng-template>
   <ng-template pTemplate="footer">
-    <p-button label="Cancel" icon="pi pi-times" [text]="true" (onClick)="optionDialogVisible.set(false)"
-      severity="secondary" />
-    <p-button label="Save" icon="pi pi-check" [text]="true" (onClick)="saveOption()" severity="primary" />
+    <p-button label="Cancel" icon="pi pi-times" (onClick)="optionDialogVisible.set(false)" severity="danger"
+      [text]="true" />
+    <p-button label="Save" icon="pi pi-check" (onClick)="saveOption()" severity="primary" />
   </ng-template>
 </p-dialog>

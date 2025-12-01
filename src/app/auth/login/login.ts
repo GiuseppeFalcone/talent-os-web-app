@@ -27,7 +27,6 @@ import { finalize } from 'rxjs';
     PasswordModule,
     ToastModule,
   ],
-  providers: [MessageService],
 })
 export class Login {
   private readonly fb = inject(FormBuilder);

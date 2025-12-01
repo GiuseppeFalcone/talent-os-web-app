@@ -28,6 +28,8 @@ import { InputIconModule } from 'primeng/inputicon';
 import { TooltipModule } from 'primeng/tooltip';
 import { Subscription } from 'rxjs';
 import { debounceTime, distinctUntilChanged } from 'rxjs/operators';
+import { Card } from 'primeng/card';
+import { FloatLabel } from 'primeng/floatlabel';
 
 @Component({
   selector: 'app-manage-user',
@@ -49,10 +51,11 @@ import { debounceTime, distinctUntilChanged } from 'rxjs/operators';
     IconFieldModule,
     InputIconModule,
     TooltipModule,
+    Card,
+    FloatLabel,
   ],
   templateUrl: './manage-user.html',
   styleUrl: './manage-user.css',
-  providers: [MessageService, ConfirmationService],
 })
 export class ManageUser implements OnInit, OnDestroy {
   private readonly userService = inject(ManageUserService);

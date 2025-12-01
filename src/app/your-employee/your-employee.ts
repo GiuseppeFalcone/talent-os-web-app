@@ -19,7 +19,7 @@ import { SelectModule } from 'primeng/select';
 import { IconFieldModule } from 'primeng/iconfield';
 import { InputIconModule } from 'primeng/inputicon';
 import { MessageService } from 'primeng/api';
-import { TitleCasePipe } from '@angular/common';
+import { TitleCasePipe, NgClass } from '@angular/common';
 import { YourEmployeeService } from './service/your-employee-service';
 import { CurriculumAndUserLightDto } from './model/curriculum-and-user-light-dto';
 import { UserRoleEnum } from '../enumeration/user-role-enum';
@@ -29,6 +29,7 @@ import { AccordionModule } from 'primeng/accordion';
 import { Divider } from 'primeng/divider';
 import { Subscription } from 'rxjs';
 import { debounceTime, distinctUntilChanged } from 'rxjs/operators';
+import { HasRoleDirective } from '../rbac/directive/has-role-directive';
 
 @Component({
   selector: 'app-your-employee',
@@ -51,8 +52,8 @@ import { debounceTime, distinctUntilChanged } from 'rxjs/operators';
     InputIconModule,
     AccordionModule,
     Divider,
+    HasRoleDirective,
   ],
-  providers: [MessageService],
 })
 export class YourEmployee implements OnInit, OnDestroy {
   private readonly yourEmployeeService = inject(YourEmployeeService);

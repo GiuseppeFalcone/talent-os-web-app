@@ -26,6 +26,7 @@ import { DomainOptionDto } from './model/domain-option-dto';
 import { CreateDomainDto } from './model/create-domain-dto';
 import { debounceTime, distinctUntilChanged } from 'rxjs/operators';
 import { Subscription } from 'rxjs';
+import { HasRoleDirective } from '../rbac/directive/has-role-directive';
 
 @Component({
   selector: 'app-manage-domain',
@@ -46,10 +47,10 @@ import { Subscription } from 'rxjs';
     InputIconModule,
     TooltipModule,
     TitleCasePipe,
+    HasRoleDirective,
   ],
   templateUrl: './manage-domain.html',
   styleUrl: './manage-domain.css',
-  providers: [MessageService, ConfirmationService],
 })
 export class ManageDomain implements OnInit, OnDestroy {
   private readonly domainService = inject(ManageDomainService);

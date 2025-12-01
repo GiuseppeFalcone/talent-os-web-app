@@ -13,11 +13,11 @@ import { FloatLabelModule } from 'primeng/floatlabel';
 import { InputTextModule } from 'primeng/inputtext';
 import { PasswordModule } from 'primeng/password';
 import { ToastModule } from 'primeng/toast';
-import { MessageService } from 'primeng/api';
 import { AuthService } from '../service/auth-service';
 import { HttpErrorResponse } from '@angular/common/http';
 import { toSignal, takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { finalize } from 'rxjs';
+import { MessageService } from 'primeng/api';
 
 function passwordMatchValidator(control: AbstractControl): ValidationErrors | null {
   const parent = control.parent;
@@ -46,7 +46,6 @@ function passwordMatchValidator(control: AbstractControl): ValidationErrors | nu
     PasswordModule,
     ToastModule,
   ],
-  providers: [MessageService],
 })
 export class ForgotPassword {
   private readonly fb = inject(FormBuilder);

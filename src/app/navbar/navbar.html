@@ -1,53 +1,48 @@
-<nav class="sticky top-0 z-50 border-bottom-2 px-4 py-3 shadow-sm bg-white/70 dark:bg-gray-900/60 backdrop-blur-md">
+<nav
+  class="sticky top-0 z-50 border-b border-surface-200 dark:border-surface-700 bg-surface-0/70 dark:bg-surface-900/70 backdrop-blur-md">
   @let loggedIn = isLoggedIn();
   @let user = currentUser();
   @let menuItems = userMenuItems();
   @let modeIcon = theme.modeIcon();
   @let modeLabel = theme.modeLabel();
 
-  <div class="mx-auto flex h-16 justify-between max-w-7xl items-center gap-4 px-4 sm:px-6 lg:px-8">
-    <div class="flex items-center justify-start">
-      <a routerLink="/" class="group flex items-center gap-2 transition-all duration-200" aria-label="EasyCV home">
-        <span
-          class="text-2xl text-primary-600 transition-transform duration-200 group-hover:scale-110 dark:text-primary-400">
+  <div class="mx-auto flex h-16 justify-between max-w-7xl items-center px-4 sm:px-6 lg:px-8">
+    <div class="flex items-center">
+      <a routerLink="/" class="flex items-center gap-2 transition-opacity duration-200 hover:opacity-80"
+        aria-label="EasyCV home">
+        <span class="text-2xl text-primary">
           <i class="pi pi-sparkles"></i>
         </span>
-        <span
-          class="text-lg font-bold tracking-tight text-primary-600 transition-colors group-hover:text-primary-600 dark:text-surface-50 dark:group-hover:text-primary-400">
+        <span class="text-lg font-bold tracking-tight text-primary">
           EasyCV
         </span>
       </a>
     </div>
 
-    <div class="flex items-center justify-center gap-1 sm:gap-2">
+    <div class="flex items-center gap-1 sm:gap-2">
       @if (loggedIn && user) {
-      <p-button routerLink="/dashboard" icon="pi pi-home" [text]="true"
-        styleClass="inline-flex !gap-0 !px-0 !text-primary-500" [attr.aria-label]="'Navigate to dashboard'" />
-
+      <p-button routerLink="/dashboard" icon="pi pi-home" [text]="true" [rounded]="true" aria-label="Dashboard" />
 
       <p-button *appHasRole="['ADMIN', 'MANAGER', 'EMPLOYEE', 'SUPERADMIN']" routerLink="/cv" label="Your CV"
-        icon="pi pi-id-card" [text]="true" styleClass="inline-flex !text-primary-500"
-        [attr.aria-label]="'Navigate to your CV'" />
+        icon="pi pi-id-card" [text]="true" [rounded]="true" />
       <p-button *appHasRole="['MANAGER']" routerLink="/employees" label="Employees" icon="pi pi-users" [text]="true"
-        styleClass="inline-flex !text-primary-500" [attr.aria-label]="'Manage employees'" />
+        [rounded]="true" />
       <p-button *appHasRole="['ADMIN', 'SUPERADMIN']" routerLink="/domains" label="Domains" icon="pi pi-shield"
-        [text]="true" styleClass="inline-flex !text-primary-500" [attr.aria-label]="'Manage domains'" />
+        [text]="true" [rounded]="true" />
       <p-button *appHasRole="['ADMIN', 'SUPERADMIN']" routerLink="/manage-users" label="Users" icon="pi pi-sitemap"
-        [text]="true" styleClass="inline-flex !text-primary-500" [attr.aria-label]="'Manage users'" />
+        [text]="true" [rounded]="true" />
       }
     </div>
 
-    <div class="flex items-end justify-end gap-1 sm:gap-2">
+    <div class="flex items-center gap-2">
       @if (loggedIn && user) {
       <p-splitbutton [label]="user.firstName + ' ' + user.lastName" icon="pi pi-user" (onClick)="navigateToProfile()"
-        [model]="menuItems" [text]="true" styleClass="inline-flex"
-        [attr.aria-label]="'User menu for ' + user.firstName + ' ' + user.lastName" />
+        [model]="menuItems" [text]="true" [rounded]="true" />
       } @else {
-      <p-button type="button" label="Login" icon="pi pi-sign-in" [raised]="true" [rounded]="true"
-        (onClick)="navigateToLogin()" styleClass="inline-flex" aria-label="Login to your account" />
+      <p-button label="Login" icon="pi pi-sign-in" (onClick)="navigateToLogin()" [text]="true" [rounded]="true" />
       }
-      <p-button type="button" [icon]="modeIcon" [raised]="true" (onClick)="theme.toggle()"
-        styleClass="ml-1 !gap-0 !px-0" [attr.aria-label]="'Switch to ' + modeLabel + ' mode'" />
+      <p-button [icon]="modeIcon" [text]="true" [rounded]="true" (onClick)="theme.toggle()"
+        [attr.aria-label]="'Switch to ' + modeLabel + ' mode'" />
     </div>
   </div>
 </nav>

@@ -30,6 +30,7 @@ import {
 } from 'rxjs/operators';
 import { of, Subscription } from 'rxjs';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { HasRoleDirective } from '../rbac/directive/has-role-directive';
 
 function passwordMatchValidator(control: AbstractControl): ValidationErrors | null {
   const parent = control.parent;
@@ -58,8 +59,8 @@ function passwordMatchValidator(control: AbstractControl): ValidationErrors | nu
     PasswordModule,
     FloatLabelModule,
     TitleCasePipe,
+    HasRoleDirective,
   ],
-  providers: [MessageService],
   templateUrl: './profile.html',
 })
 export class Profile implements OnInit, OnDestroy {
@@ -235,13 +236,9 @@ export class Profile implements OnInit, OnDestroy {
   }
 
   savePassword(): void {
-    // If form is invalid (including mismatch), this returns early
     if (this.passwordForm.invalid || !this.currentUser()) return;
 
     const { newPassword } = this.passwordForm.getRawValue();
-
-    // REMOVED: Manual check for newPassword !== confirmPassword
-    // The form validator handles this now.
 
     const credential: Credential = {
       username: this.currentUser()!.username,

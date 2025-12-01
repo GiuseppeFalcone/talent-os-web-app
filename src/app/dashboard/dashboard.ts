@@ -5,11 +5,12 @@ import { CardModule } from 'primeng/card';
 import { ButtonModule } from 'primeng/button';
 import { AuthService } from '../auth/service/auth-service';
 import { UserRoleEnum } from '../enumeration/user-role-enum';
+import { HasRoleDirective } from '../rbac/directive/has-role-directive';
 
 @Component({
   selector: 'app-dashboard',
   standalone: true,
-  imports: [CardModule, TitleCasePipe, RouterLink, ButtonModule],
+  imports: [CardModule, TitleCasePipe, RouterLink, ButtonModule, HasRoleDirective],
   templateUrl: './dashboard.html',
   styleUrl: './dashboard.css',
 })
@@ -18,9 +19,4 @@ export class Dashboard {
   readonly authService = inject(AuthService);
 
   readonly currentUser = computed(() => this.authService.currentUser());
-
-  readonly isManager = computed(() => this.currentUser()?.role === UserRoleEnum.MANAGER);
-  readonly isAdmin = computed(() =>
-    [UserRoleEnum.ADMIN, UserRoleEnum.SUPERADMIN].includes(this.currentUser()?.role as UserRoleEnum)
-  );
 }

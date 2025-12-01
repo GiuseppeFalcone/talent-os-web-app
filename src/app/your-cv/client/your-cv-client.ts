@@ -58,11 +58,12 @@ export class YourCvClient {
   }
 
   updateCurriculum(dto: UpdateCurriculumDto): Observable<ApiResponse<CurriculumDetailDto>> {
-    let httpParams = new HttpParams().set('curriculumId', dto.curriculum.curriculumId.toString());
-    return this.http.put<ApiResponse<CurriculumDetailDto>>(this.baseUrl.concat('/views/your-cv'), {
-      params: httpParams,
-      body: dto,
-    });
+    let httpParams = new HttpParams().set('curriculumId', dto.curriculum.curriculumId);
+    return this.http.put<ApiResponse<CurriculumDetailDto>>(
+      this.baseUrl.concat('/views/your-cv'),
+      dto,
+      { params: httpParams }
+    );
   }
 
   createCurriculum(curriculum: CreateCurriculumDetailDto): Observable<ApiResponse<CurriculumDto>> {

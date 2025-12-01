@@ -9,7 +9,8 @@ import { provideAnimationsAsync } from '@angular/platform-browser/animations/asy
 import { provideHttpClient, withInterceptors } from '@angular/common/http';
 import { authInterceptor } from './auth/middleware/auth-interceptor';
 import { providePrimeNG } from 'primeng/config';
-import { MyGlobalPT, MyPreset } from './theme/theme';
+import { MyPreset } from './theme/theme';
+import { ConfirmationService, MessageService } from 'primeng/api';
 
 export const appConfig: ApplicationConfig = {
   providers: [
@@ -22,13 +23,15 @@ export const appConfig: ApplicationConfig = {
       theme: {
         preset: MyPreset,
         options: {
+          darkModeSelector: '.dark',
           cssLayer: {
             name: 'primeng',
             order: 'theme, base, primeng',
           },
         },
       },
-      pt: MyGlobalPT,
     }),
+    MessageService,
+    ConfirmationService,
   ],
 };

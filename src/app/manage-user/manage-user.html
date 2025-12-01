@@ -1,84 +1,78 @@
-<p-toast />
-<p-confirmdialog />
-
-<div class="surface-ground min-h-screen p-4">
-  <div class="mx-auto max-w-7xl">
-    <div class="mb-6 flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
-      <div>
-        <h1 class="text-3xl font-bold text-primary-500">Manage Users</h1>
-        <p class="text-surface-600 dark:text-surface-300">
-          Create, edit, and manage system users.
-        </p>
-      </div>
-      <p-button label="New User" icon="pi pi-plus" (onClick)="openNew()" [raised]="true" />
+<div class="flex flex-col gap-4">
+  <div class="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
+    <div>
+      <h1 class="text-3xl font-bold text-primary-500">Manage Users</h1>
+      <p class="text-surface-600 dark:text-surface-300">
+        Create, edit, and manage system users.
+      </p>
     </div>
-
-    <p-card>
-      <p-table #dt [value]="users()" [lazy]="true" (onLazyLoad)="loadUsers($event)" [paginator]="true" [rows]="10"
-        [totalRecords]="totalRecords()" [loading]="loading()" [rowsPerPageOptions]="[10, 25, 50]"
-        [showCurrentPageReport]="true" currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries">
-
-        <ng-template pTemplate="caption">
-          <div class="flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
-            <p-iconfield iconPosition="left">
-              <p-inputicon styleClass="pi pi-search" />
-              <input pInputText type="text" [formControl]="searchControl" placeholder="Search..."
-                class="w-full md:w-64 px-10" />
-            </p-iconfield>
-
-            <p-select [options]="roleOptions" [(ngModel)]="selectedRoleFilter" (onChange)="onFilter()"
-              optionLabel="label" optionValue="value" placeholder="Filter by Role" [showClear]="true"
-              styleClass="w-full md:w-48" />
-          </div>
-        </ng-template>
-
-        <ng-template pTemplate="header">
-          <tr>
-            <th>Name</th>
-            <th>Username</th>
-            <th class="text-center">Role</th>
-            <th class="text-center">Actions</th>
-          </tr>
-        </ng-template>
-
-        <ng-template pTemplate="body" let-user>
-          <tr>
-            <td>
-              <div class="flex flex-col">
-                <span class="font-medium text-surface-900 dark:text-surface-50">
-                  {{ user.firstName | titlecase}} {{ user.lastName | titlecase}}
-                </span>
-                <span class="text-sm text-surface-500">{{ user.email }}</span>
-              </div>
-            </td>
-            <td>{{ user.username }}</td>
-            <td class="text-center">
-              <p-tag [value]="user.role | titlecase" [severity]="'info'" />
-            </td>
-            <td class="text-center">
-              <div class="flex justify-center gap-2">
-                <p-button icon="pi pi-pencil" [rounded]="true" severity="info" (onClick)="editUser(user)"
-                  pTooltip="Edit User" tooltipPosition="top" aria-label="Edit User" styleClass="gap-0! p-0!" />
-                <p-button icon="pi pi-key" [rounded]="true" severity="warn" (onClick)="openPasswordReset(user)"
-                  pTooltip="Reset Password" tooltipPosition="top" aria-label="Reset Password"
-                  styleClass="gap-0! p-0!" />
-                <p-button icon="pi pi-trash" [rounded]="true" severity="danger" (onClick)="deleteUser(user)"
-                  pTooltip="Delete User" tooltipPosition="top" aria-label="Delete User" styleClass="gap-0! p-0!" />
-              </div>
-            </td>
-          </tr>
-        </ng-template>
-
-        <ng-template pTemplate="emptymessage">
-          <tr>
-            <td colspan="4" class="text-center p-4 text-surface-500">
-              No users found.
-            </td>
-          </tr>
-        </ng-template>
-      </p-table>
-    </p-card>
+    <p-button label="New User" icon="pi pi-plus" (onClick)="openNew()" [raised]="true" />
   </div>
+
+  <p-card>
+    <p-table #dt [value]="users()" [lazy]="true" (onLazyLoad)="loadUsers($event)" [paginator]="true" [rows]="10"
+      [totalRecords]="totalRecords()" [loading]="loading()" [rowsPerPageOptions]="[10, 25, 50]"
+      [showCurrentPageReport]="true" currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries"
+      [stripedRows]="true" [rowHover]="true" tableStyleClass="w-full">
+
+      <ng-template pTemplate="caption">
+        <div class="flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
+          <p-iconfield iconPosition="left">
+            <p-inputicon styleClass="pi pi-search" />
+            <input pInputText type="text" [formControl]="searchControl" placeholder="Search..."
+              class="w-full md:w-64" />
+          </p-iconfield>
+
+          <p-select [options]="roleOptions" [(ngModel)]="selectedRoleFilter" (onChange)="onFilter()" optionLabel="label"
+            optionValue="value" placeholder="Filter by Role" [showClear]="true" styleClass="w-full md:w-48" />
+        </div>
+      </ng-template>
+
+      <ng-template pTemplate="header">
+        <tr>
+          <th>Name</th>
+          <th>Username</th>
+          <th class="text-center">Role</th>
+          <th class="text-center">Actions</th>
+        </tr>
+      </ng-template>
+
+      <ng-template pTemplate="body" let-user>
+        <tr>
+          <td>
+            <div class="flex flex-col">
+              <span class="font-medium text-surface-900 dark:text-surface-50">
+                {{ user.firstName | titlecase}} {{ user.lastName | titlecase}}
+              </span>
+              <span class="text-sm text-surface-500">{{ user.email }}</span>
+            </div>
+          </td>
+          <td>{{ user.username }}</td>
+          <td class="text-center">
+            <p-tag [value]="user.role | titlecase" severity="info" />
+          </td>
+          <td class="text-center">
+            <div class="flex justify-center gap-2">
+              <p-button icon="pi pi-pencil" [rounded]="true" [text]="true" severity="secondary"
+                (onClick)="editUser(user)" pTooltip="Edit User" tooltipPosition="top" />
+              <p-button icon="pi pi-key" [rounded]="true" [text]="true" severity="warn"
+                (onClick)="openPasswordReset(user)" pTooltip="Reset Password" tooltipPosition="top" />
+              <p-button icon="pi pi-trash" [rounded]="true" [text]="true" severity="danger" (onClick)="deleteUser(user)"
+                pTooltip="Delete User" tooltipPosition="top" />
+            </div>
+          </td>
+        </tr>
+      </ng-template>
+
+      <ng-template pTemplate="emptymessage">
+        <tr>
+          <td colspan="4" class="text-center p-4 text-surface-500">
+            No users found.
+          </td>
+        </tr>
+      </ng-template>
+    </p-table>
+  </p-card>
 </div>
 
 <p-dialog [(visible)]="userDialog" [style]="{ width: '450px' }" [header]="isEditMode() ? 'Edit User' : 'New User'"
@@ -138,7 +132,7 @@
   </ng-template>
 
   <ng-template pTemplate="footer">
-    <p-button label="Cancel" icon="pi pi-times" (onClick)="hideDialog()" severity="danger" />
+    <p-button label="Cancel" icon="pi pi-times" (onClick)="hideDialog()" severity="danger" [text]="true" />
     <p-button label="Save" icon="pi pi-check" (onClick)="saveUser()" severity="primary" />
   </ng-template>
 </p-dialog>
@@ -152,7 +146,7 @@
           <p-password id="newPassword" formControlName="newPassword" [toggleMask]="true" [feedback]="true"
             [invalid]="passwordForm.controls['newPassword'].invalid && passwordForm.controls['newPassword'].touched"
             appendTo="body" class="w-full" inputStyleClass="w-full" />
-          <label for="newPassword" class="font-medium bg-surface-100 dark:bg-surface-100">New Password</label>
+          <label for="newPassword" class="font-medium bg-surface-0 dark:bg-surface-900 px-2">New Password</label>
         </p-floatlabel>
 
         @if (passwordForm.controls['newPassword'].invalid && (passwordForm.controls['newPassword'].dirty ||
@@ -164,7 +158,7 @@
   </ng-template>
 
   <ng-template pTemplate="footer">
-    <p-button label="Cancel" icon="pi pi-times" (onClick)="passwordDialog.set(false)" severity="danger" />
+    <p-button label="Cancel" icon="pi pi-times" (onClick)="passwordDialog.set(false)" severity="danger" [text]="true" />
     <p-button label="Reset" icon="pi pi-check" (onClick)="savePassword()" severity="primary"
       [disabled]="passwordForm.invalid" />
   </ng-template>

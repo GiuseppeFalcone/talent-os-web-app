@@ -36,6 +36,7 @@ import { DomainOptionDto } from '../manage-domain/model/domain-option-dto';
 import { EducationDto } from './model/education-dto';
 import { UserDomainOptionDto } from '../dashboard/model/user-domain-option-dto';
 import { UserDto } from '../dashboard/model/user-dto';
+import { HasRoleDirective } from '../rbac/directive/has-role-directive';
 
 interface EducationFormControls {
   educationId: FormControl<number | undefined>;
@@ -71,8 +72,8 @@ type UserSkillsFormControls = Record<string, FormControl>;
     MultiSelectModule,
     TitleCasePipe,
     ConfirmDialogModule,
+    HasRoleDirective,
   ],
-  providers: [MessageService, ConfirmationService],
 })
 export class YourCv implements OnInit {
   private readonly authService = inject(AuthService);
@@ -184,6 +185,11 @@ export class YourCv implements OnInit {
 
   readonly schoolsIndex = computed(() => {
     const map = new Map<number, string>();
+
+    for (const s of this.schools()) {
+      map.set(s.domainOptionId, s.value);
+    }
+
     const schoolDomain = this.possibleDomains().find(
       (d) => d.domainName.toLowerCase() === 'school'
     );
@@ -192,11 +198,17 @@ export class YourCv implements OnInit {
         map.set(option.domainOptionId, option.value);
       }
     }
+
     return map;
   });
 
   readonly degreesIndex = computed(() => {
     const map = new Map<number, string>();
+
+    for (const d of this.degrees()) {
+      map.set(d.domainOptionId, d.value);
+    }
+
     const degreeDomain = this.possibleDomains().find(
       (d) => d.domainName.toLowerCase() === 'degree'
     );
@@ -205,6 +217,7 @@ export class YourCv implements OnInit {
         map.set(option.domainOptionId, option.value);
       }
     }
+
     return map;
   });
 
@@ -502,7 +515,6 @@ export class YourCv implements OnInit {
     const formValue = this.cvForm.value;
     const current = this.curriculumDetail()!;
 
-    // FIX: Include curriculumId and userId so Update works correctly
     const curriculumDto: any = {
       curriculumId: current.curriculum.curriculumId,
       userId: current.curriculum.userId,

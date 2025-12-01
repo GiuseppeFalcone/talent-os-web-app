@@ -56,7 +56,6 @@ import { FloatLabel } from 'primeng/floatlabel';
   ],
   templateUrl: './manage-user.html',
   styleUrl: './manage-user.css',
-  providers: [MessageService, ConfirmationService],
 })
 export class ManageUser implements OnInit, OnDestroy {
   private readonly userService = inject(ManageUserService);

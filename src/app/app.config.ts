@@ -7,7 +7,7 @@ import { routes } from './app.routes';
 import { provideRouter } from '@angular/router';
 import { provideAnimationsAsync } from '@angular/platform-browser/animations/async';
 import { provideHttpClient, withInterceptors } from '@angular/common/http';
-import { authInterceptor } from './auth/middleware/auth-interceptor';
+import { authInterceptor } from './auth/interceptor/auth-interceptor';
 import { providePrimeNG } from 'primeng/config';
 import { MyPreset } from './theme/theme';
 import { ConfirmationService, MessageService } from 'primeng/api';

@@ -10,12 +10,14 @@ import { BehaviorSubject, Observable, throwError } from 'rxjs';
 import { catchError, filter, switchMap, take, finalize } from 'rxjs/operators';
 import { ApiResponseCode } from '../../response/api-response-enum';
 import { AuthService } from '../service/auth-service';
+import { Router } from '@angular/router';
 
 let isRefreshing = false;
 const refreshTokenSubject = new BehaviorSubject<string | null>(null);
 
 export const authInterceptor: HttpInterceptorFn = (req, next) => {
   const authService = inject(AuthService);
+  const router = inject(Router);
   const accessToken = authService.getAccessToken();
 
   const reqWithAuth =
@@ -24,6 +26,9 @@ export const authInterceptor: HttpInterceptorFn = (req, next) => {
     catchError((error: HttpErrorResponse) => {
       if (!isAuthRequest(req) && isExpiredJwtError(error)) {
         return handleExpiredToken(req, next, authService);
+      }
+      if (error.status === 403) {
+        router.navigate(['/unauthorized'], { replaceUrl: true });
       }
       return throwError(() => error);
     })

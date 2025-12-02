@@ -46,8 +46,7 @@
             [class.dark:hover:bg-surface-800]="selectedDomain()?.domainId !== domain.domainId"
             (click)="onSelectDomain(domain)" tabindex="0" (keydown.enter)="onSelectDomain(domain)">
 
-            <span class="font-medium text-wrap flex-1" [pTooltip]="domain.domainName.replace('_', ' ')"
-              tooltipPosition="top">
+            <span class="font-medium text-wrap flex-1">
               {{ domain.domainName.replaceAll('_', ' ') | titlecase }}
             </span>
 

@@ -4,6 +4,6 @@ export interface EducationDto {
   degreeNameId?: number;
   grade?: number;
   maxGrade?: number;
-  startDate: string; // Serialized LocalDate
-  endDate?: string; // Serialized LocalDate
+  startDate: string;
+  endDate?: string;
 }

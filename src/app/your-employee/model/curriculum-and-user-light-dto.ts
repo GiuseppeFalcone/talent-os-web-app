@@ -6,7 +6,7 @@ export interface CurriculumAndUserLightDto {
   username: string;
   firstName: string;
   lastName: string;
-  role: UserRoleEnum; // Consider using an enum if UserRoleEnum is defined elsewhere
+  role: UserRoleEnum;
   hasCar: boolean;
   openForTravel: boolean;
   numberOfProjects: number;

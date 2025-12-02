@@ -14,7 +14,7 @@ export interface CurriculumDto {
   hasCar?: boolean;
   openForTravel?: boolean;
   summary?: string;
-  lastModifiedAt?: string; // Serialized LocalDateTime
+  lastModifiedAt?: string;
   educationHistory?: EducationDto[];
   projects?: ProjectDto[];
   domainOptions?: ProjectDomainOptionDto[];

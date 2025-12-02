@@ -30,6 +30,7 @@ import { Divider } from 'primeng/divider';
 import { Subscription } from 'rxjs';
 import { debounceTime, distinctUntilChanged } from 'rxjs/operators';
 import { HasRoleDirective } from '../rbac/directive/has-role-directive';
+import { TooltipModule } from 'primeng/tooltip';
 
 @Component({
   selector: 'app-your-employee',
@@ -53,6 +54,7 @@ import { HasRoleDirective } from '../rbac/directive/has-role-directive';
     AccordionModule,
     Divider,
     HasRoleDirective,
+    TooltipModule,
   ],
 })
 export class YourEmployee implements OnInit, OnDestroy {

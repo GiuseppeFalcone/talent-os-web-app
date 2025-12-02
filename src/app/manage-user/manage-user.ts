@@ -232,7 +232,7 @@ export class ManageUser implements OnInit, OnDestroy {
               detail: 'User Deleted',
               life: 3000,
             });
-            this.onFilter(); // Reload table
+            this.onFilter();
           },
           error: () => {
             this.messageService.add({

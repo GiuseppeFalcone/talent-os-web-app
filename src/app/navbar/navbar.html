@@ -35,13 +35,21 @@
 
     <div class="flex items-center gap-2">
       @if (loggedIn && user) {
-      <p-splitbutton [label]="user.firstName + ' ' + user.lastName" icon="pi pi-user" (onClick)="navigateToProfile()"
-        [model]="menuItems" [text]="true" [rounded]="true" />
+      <p-splitbutton icon="pi pi-user" (onClick)="navigateToProfile()" [model]="menuItems" [text]="true"
+        [rounded]="true">
+        <ng-template #content>
+          <span class="flex flex-col items-start text-left">
+            <span class="font-bold leading-none">{{ user.firstName | titlecase }} {{ user.lastName | titlecase}}</span>
+            <span class="text-xs font-normal opacity-70 leading-none mt-1">{{ user.role | titlecase }}</span>
+          </span>
+        </ng-template>
+      </p-splitbutton>
       } @else {
       <p-button label="Login" icon="pi pi-sign-in" (onClick)="navigateToLogin()" [text]="true" [rounded]="true" />
       }
       <p-button [icon]="modeIcon" [text]="true" [rounded]="true" (onClick)="theme.toggle()"
-        [attr.aria-label]="'Switch to ' + modeLabel + ' mode'" />
+        [attr.aria-label]="'Switch to ' + modeLabel + ' mode'" [pTooltip]="'Switch to ' + modeLabel + ' mode'"
+        tooltipPosition="bottom" [attr.aria-label]="'Switch to ' + modeLabel + ' mode'" />
     </div>
   </div>
 </nav>

@@ -13,9 +13,9 @@ export class AuthService {
   private authClient = inject(AuthClient);
   private router = inject(Router);
 
-  private readonly REFRESH_TOKEN_KEY = 'easycv:refresh-token';
-  private readonly ACCESS_TOKEN_KEY = 'easycv:access-token';
-  private readonly USER_KEY = 'easycv:user';
+  private readonly REFRESH_TOKEN_KEY = 'talentos:refresh-token';
+  private readonly ACCESS_TOKEN_KEY = 'talentos:access-token';
+  private readonly USER_KEY = 'talentos:user';
 
   private accessToken = signal<string | null>(null);
   private _currentUser = signal<UserLightDto | null>(null);

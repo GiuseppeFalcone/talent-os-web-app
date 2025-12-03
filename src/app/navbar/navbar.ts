@@ -6,12 +6,21 @@ import { MenuItem } from 'primeng/api';
 import { Theme } from '../theme/theme';
 import { HasRoleDirective } from '../rbac/directive/has-role-directive';
 import { AuthService } from '../auth/service/auth-service';
+import { TitleCasePipe } from '@angular/common';
+import { TooltipModule } from 'primeng/tooltip';
 
 @Component({
   selector: 'app-navbar',
   templateUrl: './navbar.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [RouterLink, ButtonModule, SplitButtonModule, HasRoleDirective],
+  imports: [
+    RouterLink,
+    ButtonModule,
+    SplitButtonModule,
+    HasRoleDirective,
+    TitleCasePipe,
+    TooltipModule,
+  ],
 })
 export class Navbar {
   private readonly router = inject(Router);

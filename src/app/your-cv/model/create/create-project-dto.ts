@@ -1,8 +1,8 @@
 import { CreateProjectDomainOptionDto } from './create-project-domain-option-dto';
 
 export interface CreateProjectDto {
-  startDate: string; // Serialized LocalDate
-  endDate?: string; // Serialized LocalDate
+  startDate: string;
+  endDate?: string;
   description: string;
   domainOptions?: CreateProjectDomainOptionDto[];
 }

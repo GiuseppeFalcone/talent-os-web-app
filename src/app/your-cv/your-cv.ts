@@ -37,6 +37,7 @@ import { EducationDto } from './model/education-dto';
 import { UserDomainOptionDto } from '../dashboard/model/user-domain-option-dto';
 import { UserDto } from '../dashboard/model/user-dto';
 import { HasRoleDirective } from '../rbac/directive/has-role-directive';
+import { TooltipModule } from 'primeng/tooltip';
 
 interface EducationFormControls {
   educationId: FormControl<number | undefined>;
@@ -73,6 +74,7 @@ type UserSkillsFormControls = Record<string, FormControl>;
     TitleCasePipe,
     ConfirmDialogModule,
     HasRoleDirective,
+    TooltipModule,
   ],
 })
 export class YourCv implements OnInit {

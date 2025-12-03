@@ -25,7 +25,7 @@ export class Theme {
   }
 
   private getInitialTheme(): boolean {
-    const stored = localStorage.getItem('theme');
+    const stored = localStorage.getItem('talentos:theme');
     if (stored) {
       return stored === 'dark';
     }
@@ -41,7 +41,7 @@ export class Theme {
       htmlElement.classList.remove('dark');
     }
 
-    localStorage.setItem('theme', isDark ? 'dark' : 'light');
+    localStorage.setItem('talentos:theme', isDark ? 'dark' : 'light');
   }
 }
 

@@ -41,7 +41,8 @@
 
               <div class="flex items-center gap-2 flex-1 min-w-0">
                 <p-button icon="pi pi-chevron-left" [rounded]="true" [text]="true" size="small" severity="secondary"
-                  (onClick)="scrollLeft(skillsContainer)" styleClass="shrink-0" />
+                  (onClick)="scrollLeft(skillsContainer)" styleClass="shrink-0" pTooltip="Scroll left"
+                  tooltipPosition="left" />
 
                 <div #skillsContainer class="flex gap-2 overflow-x-auto scroll-smooth pb-1"
                   style="scrollbar-width: none; -ms-overflow-style: none;">
@@ -55,7 +56,8 @@
                 </div>
 
                 <p-button icon="pi pi-chevron-right" [rounded]="true" [text]="true" size="small" severity="secondary"
-                  (onClick)="scrollRight(skillsContainer)" styleClass="shrink-0" />
+                  (onClick)="scrollRight(skillsContainer)" styleClass="shrink-0" pTooltip="Scroll right"
+                  tooltipPosition="right" />
               </div>
             </div>
             <p-divider styleClass="my-2" />
@@ -99,21 +101,21 @@
           </td>
           <td class="text-center">
             @if (employee.hasDegree) {
-            <i class="pi pi-check-circle text-green-500 text-xl"></i>
+            <i class="pi pi-check-circle text-green-500 text-xl" pTooltip="Has Degree" tooltipPosition="top"></i>
             } @else {
-            <i class="pi pi-times-circle text-surface-400 text-xl"></i>
+            <i class="pi pi-times-circle text-surface-400 text-xl" pTooltip="No Degree" tooltipPosition="top"></i>
             }
           </td>
           <td class="text-center">
             @if (employee.hasCar) {
-            <i class="pi pi-car text-green-500 text-xl"></i>
+            <i class="pi pi-car text-green-500 text-xl" pTooltip="Has Personal Car" tooltipPosition="top"></i>
             } @else {
             <span class="text-surface-400">-</span>
             }
           </td>
           <td class="text-center">
             @if (employee.openForTravel) {
-            <i class="pi pi-globe text-green-500 text-xl"></i>
+            <i class="pi pi-globe text-green-500 text-xl" pTooltip="Open for Travel" tooltipPosition="top"></i>
             } @else {
             <span class="text-surface-400">-</span>
             }
@@ -121,12 +123,12 @@
           <td class="text-center">
             @if (employee.numberOfProjects > 0) {
             <p-tag [value]="employee.numberOfProjects" [severity]="employee.numberOfProjects > 0 ? 'success' : 'warn'"
-              [rounded]="true" />
+              pTooltip="Number of projects" tooltipPosition="top" [rounded]="true" />
             }
           </td>
           <td class="text-center">
             <p-button icon="pi pi-file" label="View CV" size="small" [outlined]="true"
-              (onClick)="navigateToCv(employee.userId)" [attr.aria-label]="'View CV for ' + employee.firstName" />
+              (onClick)="navigateToCv(employee.userId)" />
           </td>
         </tr>
       </ng-template>

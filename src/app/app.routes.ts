@@ -16,7 +16,6 @@ export const routes: Routes = [
     path: 'unauthorized',
     loadComponent: () => import('./unauthorized/unauthorized').then((m) => m.Unauthorized),
   },
-  // Protected Routes
   {
     path: 'profile',
     loadComponent: () => import('./profile/profile').then((m) => m.Profile),
@@ -75,7 +74,6 @@ export const routes: Routes = [
     path: '',
     loadComponent: () => import('./homepage/homepage').then((m) => m.Homepage),
   },
-  // Wildcard Route for 404
   {
     path: '**',
     loadComponent: () => import('./not-found/not-found').then((m) => m.NotFound),

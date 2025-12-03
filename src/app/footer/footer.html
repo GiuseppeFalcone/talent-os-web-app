@@ -3,12 +3,15 @@
     <div class="grid grid-cols-1 gap-8 md:grid-cols-2 lg:grid-cols-4">
 
       <div class="flex flex-col gap-4">
-        <div class="flex items-center gap-2">
-          <i class="pi pi-sparkles text-2xl text-primary"></i>
-          <span class="text-xl font-bold text-surface-900 dark:text-surface-50">EasyCV</span>
-        </div>
+        <a routerLink="/" class="flex items-center gap-2 transition-opacity duration-200 hover:opacity-80"
+          aria-label="TalentOS home">
+          <img src="/talentos-icon.svg" alt="TalentOS Logo" class="h-8 w-auto" />
+          <span class="text-lg font-bold tracking-tight text-surface-900 dark:text-surface-50">
+            Talent<span class="text-primary">OS</span>
+          </span>
+        </a>
         <p class="text-sm text-surface-600 dark:text-surface-400 leading-relaxed">
-          Streamlining career growth and team management with intuitive CV tools and powerful analytics.
+          The Operating System for Your Workforce.
         </p>
       </div>
 
@@ -48,7 +51,7 @@
         <ul class="flex flex-col gap-3 text-sm text-surface-600 dark:text-surface-400">
           <li class="flex items-center gap-2">
             <i class="pi pi-envelope text-primary"></i>
-            <span>contact@easycv.com</span>
+            <span>contact@talentos.com</span>
           </li>
           <li class="flex items-center gap-2">
             <i class="pi pi-map-marker text-primary"></i>
@@ -72,7 +75,7 @@
 
     <div class="mt-12 border-t border-surface-200 dark:border-surface-700 pt-8">
       <p class="text-center text-sm text-surface-500">
-        &copy; {{ currentYear | date:'yyyy' }} EasyCV. All rights reserved.
+        &copy; {{ currentYear | date:'yyyy' }} TalentOS. All rights reserved.
       </p>
     </div>
   </div>

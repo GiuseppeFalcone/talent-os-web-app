@@ -10,6 +10,7 @@
 /node_modules
 npm-debug.log
 yarn-error.log
+package-lock.json
 
 # IDEs and editors
 .idea/
@@ -41,3 +42,10 @@ __screenshots__/
 # System files
 .DS_Store
 Thumbs.db
+
+# env
+.env
+src/main.server.ts
+src/app/app.config.server.ts
+src/app/app.routes.server.ts
+src/server.ts

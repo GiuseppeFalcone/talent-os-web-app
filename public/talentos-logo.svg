@@ -1,0 +1,18 @@
+<svg width="1200" height="400" viewBox="0 0 1200 400" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <g transform="translate(140, 50)">
+    <rect x="0" y="0" width="90" height="90" rx="24" fill="#0EA5E9"/>
+    <rect x="105" y="0" width="90" height="90" rx="24" fill="#0EA5E9"/>
+    <rect x="210" y="0" width="90" height="90" rx="24" fill="#0EA5E9"/>
+
+    <rect x="0" y="105" width="90" height="90" rx="24" fill="#E2E8F0"/>
+    <rect x="105" y="105" width="90" height="90" rx="24" fill="#0EA5E9"/>
+    <rect x="210" y="105" width="90" height="90" rx="24" fill="#E2E8F0"/>
+
+    <rect x="0" y="210" width="90" height="90" rx="24" fill="#E2E8F0"/>
+    <rect x="105" y="210" width="90" height="90" rx="24" fill="#0EA5E9"/>
+    <rect x="210" y="210" width="90" height="90" rx="24" fill="#E2E8F0"/>
+  </g>
+
+  <text x="480" y="260" font-family="Inter, sans-serif" font-size="160" font-weight="500" fill="#0F172A">Talent</text>
+  <text x="965" y="260" font-family="Inter, sans-serif" font-size="160" font-weight="700" fill="#0EA5E9">OS</text>
+</svg>

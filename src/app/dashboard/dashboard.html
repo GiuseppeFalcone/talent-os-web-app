@@ -1,0 +1,84 @@
+<div class="flex flex-col gap-6">
+  <div class="relative overflow-hidden rounded-xl bg-primary-600 dark:bg-primary-900 text-white p-8 shadow-lg">
+    <div class="relative z-10">
+      <h1 class="text-3xl font-bold">Welcome back, {{ currentUser()?.firstName | titlecase }}!</h1>
+      <p class="mt-2 text-primary-100">Here is what's happening with your profile today.</p>
+    </div>
+    <i class="pi pi-user absolute -bottom-4 -right-4 text-9xl text-white/20"></i>
+  </div>
+
+  <div class="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
+
+    <p-card styleClass="h-full flex flex-col">
+      <ng-template pTemplate="header">
+        <div class="flex items-center gap-3 px-6 pt-6">
+          <span
+            class="flex h-10 w-10 items-center justify-center rounded-lg bg-primary-100 dark:bg-primary-900/50 text-primary-600 dark:text-primary-400">
+            <i class="pi pi-id-card text-xl"></i>
+          </span>
+          <span class="text-lg font-semibold">Your CV</span>
+        </div>
+      </ng-template>
+      <p class="mt-0 mb-4 text-surface-600 dark:text-surface-300">
+        Keep your professional profile and skills up to date.
+      </p>
+      <ng-template pTemplate="footer">
+        <p-button label="View CV" icon="pi pi-arrow-right" routerLink="/cv" [outlined]="true" />
+      </ng-template>
+    </p-card>
+
+    <p-card *appHasRole="['MANAGER']" styleClass="h-full flex flex-col">
+      <ng-template pTemplate="header">
+        <div class="flex items-center gap-3 px-6 pt-6">
+          <span
+            class="flex h-10 w-10 items-center justify-center rounded-lg bg-primary-100 dark:bg-primary-900/50 text-primary-600 dark:text-primary-400">
+            <i class="pi pi-briefcase text-xl"></i>
+          </span>
+          <span class="text-lg font-semibold">Team</span>
+        </div>
+      </ng-template>
+      <p class="mt-0 mb-4 text-surface-600 dark:text-surface-300">
+        Manage your team members and view their profiles.
+      </p>
+      <ng-template pTemplate="footer">
+        <p-button label="Manage Employees" icon="pi pi-arrow-right" routerLink="/employees" [outlined]="true" />
+      </ng-template>
+    </p-card>
+
+    <p-card *appHasRole="['ADMIN', 'SUPERADMIN']" styleClass="h-full flex flex-col">
+      <ng-template pTemplate="header">
+        <div class="flex items-center gap-3 px-6 pt-6">
+          <span
+            class="flex h-10 w-10 items-center justify-center rounded-lg bg-primary-100 dark:bg-primary-900/50 text-primary-600 dark:text-primary-400">
+            <i class="pi pi-sitemap text-xl"></i>
+          </span>
+          <span class="text-lg font-semibold">System Domains</span>
+        </div>
+      </ng-template>
+      <p class="mt-0 mb-4 text-surface-600 dark:text-surface-300">
+        Configure system-wide skills, schools, and degrees.
+      </p>
+      <ng-template pTemplate="footer">
+        <p-button label="Configure" icon="pi pi-arrow-right" routerLink="/domains" [outlined]="true" />
+      </ng-template>
+    </p-card>
+
+    <p-card *appHasRole="['ADMIN', 'SUPERADMIN']" styleClass="h-full flex flex-col">
+      <ng-template pTemplate="header">
+        <div class="flex items-center gap-3 px-6 pt-6">
+          <span
+            class="flex h-10 w-10 items-center justify-center rounded-lg bg-primary-100 dark:bg-primary-900/50 text-primary-600 dark:text-primary-400">
+            <i class="pi pi-users text-xl"></i>
+          </span>
+          <span class="text-lg font-semibold">Manage Users</span>
+        </div>
+      </ng-template>
+      <p class="mt-0 mb-4 text-surface-600 dark:text-surface-300">
+        Manage all users of the application.
+      </p>
+      <ng-template pTemplate="footer">
+        <p-button label="Configure" icon="pi pi-arrow-right" routerLink="/manage-users" [outlined]="true" />
+      </ng-template>
+    </p-card>
+  </div>
+</div>

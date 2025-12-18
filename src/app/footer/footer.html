@@ -1,0 +1,82 @@
+<footer class="mt-auto border-t border-surface-200 dark:border-surface-700 bg-surface-0 dark:bg-surface-900 pt-12 pb-8">
+  <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+    <div class="grid grid-cols-1 gap-8 md:grid-cols-2 lg:grid-cols-4">
+
+      <div class="flex flex-col gap-4">
+        <a routerLink="/" class="flex items-center gap-2 transition-opacity duration-200 hover:opacity-80"
+          aria-label="TalentOS home">
+          <img src="/talentos-icon.svg" alt="TalentOS Logo" class="h-8 w-auto" />
+          <span class="text-lg font-bold tracking-tight text-surface-900 dark:text-surface-50">
+            Talent<span class="text-primary">OS</span>
+          </span>
+        </a>
+        <p class="text-sm text-surface-600 dark:text-surface-400 leading-relaxed">
+          The Operating System for Your Workforce.
+        </p>
+      </div>
+
+      <div>
+        <h3 class="mb-4 text-sm font-semibold uppercase tracking-wider text-surface-900 dark:text-surface-50">Site Map
+        </h3>
+        <ul class="flex flex-col gap-3 text-sm text-surface-600 dark:text-surface-400">
+          <li>
+            <a routerLink="/dashboard" class="hover:text-primary transition-colors cursor-pointer">Dashboard</a>
+          </li>
+          <li>
+            <a routerLink="/cv" class="hover:text-primary transition-colors cursor-pointer">CV Builder</a>
+          </li>
+          <li>
+            <a routerLink="/employees" class="hover:text-primary transition-colors cursor-pointer">Team Management</a>
+          </li>
+          <li>
+            <a routerLink="/domains" class="hover:text-primary transition-colors cursor-pointer">System Domains</a>
+          </li>
+        </ul>
+      </div>
+
+      <div>
+        <h3 class="mb-4 text-sm font-semibold uppercase tracking-wider text-surface-900 dark:text-surface-50">Company
+        </h3>
+        <ul class="flex flex-col gap-3 text-sm text-surface-600 dark:text-surface-400">
+          <li><a class="hover:text-primary transition-colors cursor-pointer">About Us</a></li>
+          <li><a class="hover:text-primary transition-colors cursor-pointer">Careers</a></li>
+          <li><a class="hover:text-primary transition-colors cursor-pointer">Privacy Policy</a></li>
+          <li><a class="hover:text-primary transition-colors cursor-pointer">Terms of Service</a></li>
+        </ul>
+      </div>
+
+      <div>
+        <h3 class="mb-4 text-sm font-semibold uppercase tracking-wider text-surface-900 dark:text-surface-50">Connect
+        </h3>
+        <ul class="flex flex-col gap-3 text-sm text-surface-600 dark:text-surface-400">
+          <li class="flex items-center gap-2">
+            <i class="pi pi-envelope text-primary"></i>
+            <span>contact@talentos.com</span>
+          </li>
+          <li class="flex items-center gap-2">
+            <i class="pi pi-map-marker text-primary"></i>
+            <span>Lungo Dora Colletta, 75, Torino, TO</span>
+          </li>
+        </ul>
+        <div class="mt-6 flex gap-4">
+          <a class="text-surface-500 hover:text-primary transition-colors cursor-pointer" aria-label="Twitter">
+            <i class="pi pi-twitter text-xl"></i>
+          </a>
+          <a class="text-surface-500 hover:text-primary transition-colors cursor-pointer" aria-label="LinkedIn">
+            <i class="pi pi-linkedin text-xl"></i>
+          </a>
+          <a class="text-surface-500 hover:text-primary transition-colors cursor-pointer" aria-label="GitHub">
+            <i class="pi pi-github text-xl"></i>
+          </a>
+        </div>
+      </div>
+
+    </div>
+
+    <div class="mt-12 border-t border-surface-200 dark:border-surface-700 pt-8">
+      <p class="text-center text-sm text-surface-500">
+        &copy; {{ currentYear | date:'yyyy' }} TalentOS. All rights reserved.
+      </p>
+    </div>
+  </div>
+</footer>

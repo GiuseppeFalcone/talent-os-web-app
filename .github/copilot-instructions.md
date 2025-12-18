@@ -15,6 +15,12 @@ You are an expert in TypeScript, Angular, and scalable web application developme
 - Do NOT use the `@HostBinding` and `@HostListener` decorators. Put host bindings inside the `host` object of the `@Component` or `@Directive` decorator instead
 - Use `NgOptimizedImage` for all static images.
   - `NgOptimizedImage` does not work for inline base64 images.
+- Keep in mind that Angular 20+ version is being used
+- Project structure has to be domain specific.
+- Each domain has its own component
+- Component can have sub components
+- Create services and models for each component (do not be afraid of generating the same file twice)
+- Create a ts file as a http client wrapper for each component that needs to use HttpClient
 
 ## Components
 
@@ -26,6 +32,9 @@ You are an expert in TypeScript, Angular, and scalable web application developme
 - Prefer Reactive forms instead of Template-driven ones
 - Do NOT use `ngClass`, use `class` bindings instead
 - Do NOT use `ngStyle`, use `style` bindings instead
+- Use primeNg 20
+- For components that need to change based on the user role, create a custom directive and rbac so that the template will dynamically change (do not use guards and sub components just for the user role)
+- For styling use primeng aura theme and Tailwind 4
 
 ## State Management
 

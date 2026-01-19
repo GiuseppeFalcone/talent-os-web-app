@@ -147,13 +147,13 @@ Each domain follows a consistent structure:
 
 The application uses environment-specific configuration files:
 
-- `src/environments/environment.ts` - Default/Production environment
+- `src/environments/environment.ts` - Default environment configuration
 - `src/environments/environment.development.ts` - Development environment (replaces environment.ts during development builds)
 
-Production configuration (`environment.ts`):
+Default configuration (`environment.ts`):
 ```typescript
 export const environment = {
-  production: true,
+  production: false,
   baseBffUrl: 'http://localhost:8080/api/bff-web-app',
 };
 ```
@@ -162,10 +162,15 @@ Development configuration (`environment.development.ts`):
 ```typescript
 export const environment = {
   production: false,
+  // Add baseBffUrl and other development-specific settings here if needed
 };
 ```
 
-The Angular build system automatically replaces `environment.ts` with `environment.development.ts` when running in development mode. Update these files to configure the backend API URL and other environment-specific settings.
+The Angular build system automatically replaces `environment.ts` with `environment.development.ts` when running in development mode (`ng serve`).
+
+**Note**: For production deployments, update `environment.ts` with:
+- Set `production: true`
+- Use your production API URL for `baseBffUrl`
 
 ## 🏗️ Building
 
